@@ -111,7 +111,7 @@
         </form>
 
         <!-- Bouton pour ajouter un salaire -->
-        <button onclick="showForm('Ajouter une épargne')" id="button" class="buttonForm mt-8">Ajouter une épargne</a>
+        <button onclick="showForm('Ajouter une épargne', 'Ajouter', '{{ route('addEpargne') }}')" id="button" class="buttonForm mt-8">Ajouter une épargne</a>
     </div>
 </section>
 @endsection
