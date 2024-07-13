@@ -455,6 +455,23 @@ class PrivateController extends Controller
         }
     }
 
+    /**
+     * Affiche les détails d'un investissement
+     */
+    public function detailsInvestissement(string $type, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des investissements */
+        $investissements = Investissement::all()->where('type_investissement', $type)->where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->sortByDesc('date_transaction');
+        $nombreInvestissement = Investissement::where('type_investissement', $type)->where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->count();
+        $montantInvesties = Investissement::where('type_investissement', $type)->where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->sum('montant_transaction');
+        $montantFrais = Investissement::where('type_investissement', $type)->where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->sum('frais_transaction');
+        $type_investissement = $type;
+
+        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
+    }
+
 
     /*-----------------*/
     /* Crypto-monnaies */
@@ -470,10 +487,12 @@ class PrivateController extends Controller
         $investissements = Investissement::all()->where('type_investissement', 'crypto')->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
         $nombreInvestissement = Investissement::where('type_investissement', 'crypto')->where('user_id', auth()->user()->id)->count();
         $montantInvesties = Investissement::where('type_investissement', 'crypto')->where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $montantFrais = Investissement::where('type_investissement', 'crypto')->where('user_id', auth()->user()->id)->sum('frais_transaction');
         $type_investissement = 'crypto';
 
-        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'type_investissement'));
+        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
+
 
 
     /*--------*/
@@ -490,8 +509,9 @@ class PrivateController extends Controller
         $investissements = Investissement::all()->where('type_investissement', 'bourse')->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
         $nombreInvestissement = Investissement::where('type_investissement', 'bourse')->where('user_id', auth()->user()->id)->count();
         $montantInvesties = Investissement::where('type_investissement', 'bourse')->where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $montantFrais = Investissement::where('type_investissement', 'bourse')->where('user_id', auth()->user()->id)->sum('frais_transaction');
         $type_investissement = 'bourse';
 
-        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'type_investissement'));
+        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
 }

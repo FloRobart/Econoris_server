@@ -28,13 +28,25 @@
     <!-- Information générale -->
     <div class="colCenterContainer">
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
+
         <!-- Nombre de d'opérations d'épargne -->
         <div class="rowCenterContainer">
             <span class="normalText">Nombre d'investissement : <span class="normalTextBleuLogo font-bold">{{ $nombreInvestissement }}</span></span>
         </div>
+
         <!-- Montant total épargné -->
         <div class="rowCenterContainer">
             <span class="normalText">Montant total investie : <span class="normalTextBleuLogo font-bold">{{ number_format($montantInvesties, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant total des frais -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant total des frais de transaction : <span class="normalTextBleuLogo font-bold">{{ number_format($montantFrais, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant total hors frais -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant total hors frais de transaction : <span class="normalTextBleuLogo font-bold">{{ number_format($montantInvesties - $montantFrais, 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 
@@ -66,7 +78,7 @@
                             <td class="tableCell" title="{{ strftime('%A %d %B %Y',strtotime($investissement->date_transaction)); }}">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</td>
 
                             <!-- Nom de l'actif -->
-                            <td class="tableCell" title="{{ $investissement->nom_actif }}">{{ $investissement->nom_actif }}</td>
+                            <td class="tableCell" title="Voir les détails de {{ $investissement->nom_actif }}"><a href="{{ route('detailsInvestissement', [$type_investissement, $investissement->nom_actif]) }}">{{ $investissement->nom_actif }}</a></td>
 
                             <!-- Montant investie -->
                             <td class="tableCell" title="{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</td>

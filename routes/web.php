@@ -34,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/investissement/add', [PrivateController::class, 'addInvestissement'])->name('addInvestissement');
     Route::post('/investissement/edit', [PrivateController::class, 'editInvestissement'])->name('editInvestissement');
     Route::get('/investissement/remove/{id}', [PrivateController::class, 'removeInvestissement'])->name('removeInvestissement');
+    Route::get('/investissement/details/{type}/{nom_actif}', [PrivateController::class, 'detailsInvestissement'])->name('detailsInvestissement');
 
     /* Crypto-monnaies */
     Route::get('/crypto', [PrivateController::class, 'crypto'])->name('crypto');
