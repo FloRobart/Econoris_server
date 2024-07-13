@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 /* Route pour les utilisateurs */
 /*      PrivateController      */
 /*-----------------------------*/
-Route::middleware(['auth'])->group(function () { // auth
+Route::middleware(['auth'])->group(function () {
     /*---------*/
     /* Accueil */
     /*---------*/
