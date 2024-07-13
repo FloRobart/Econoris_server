@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 /* Route pour les utilisateurs */
 /*      PrivateController      */
 /*-----------------------------*/
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () { // auth
     /*---------*/
     /* Accueil */
     /*---------*/
@@ -20,17 +20,20 @@ Route::middleware(['auth'])->group(function () {
     /*-----------*/
     /* Salaires */
     Route::get('/salaire', [PrivateController::class, 'salaire'])->name('salaire');
-    Route::post('/salaire', [PrivateController::class, 'addSalaire'])->name('addSalaire');
-    Route::get('/salaire/{id}', [PrivateController::class, 'removeSalaire'])->name('removeSalaire');
+    Route::post('/salaire/add', [PrivateController::class, 'addSalaire'])->name('addSalaire');
+    Route::post('/salaire/edit', [PrivateController::class, 'editSalaire'])->name('editSalaire');
+    Route::get('/salaire/remove/{id}', [PrivateController::class, 'removeSalaire'])->name('removeSalaire');
 
     /* Epargnes */
     Route::get('/epargne', [PrivateController::class, 'epargne'])->name('epargne');
-    Route::post('/epargne', [PrivateController::class, 'addEpargne'])->name('addEpargne');
-    Route::get('/epargne/{id}', [PrivateController::class, 'removeEpargne'])->name('removeEpargne');
+    Route::post('/epargne/add', [PrivateController::class, 'addEpargne'])->name('addEpargne');
+    Route::post('/epargne/edit', [PrivateController::class, 'editEpargne'])->name('editEpargne');
+    Route::get('/epargne/remove/{id}', [PrivateController::class, 'removeEpargne'])->name('removeEpargne');
 
     /* Investissements */
-    Route::post('/investissement', [PrivateController::class, 'addInvestissement'])->name('addInvestissement');
-    Route::get('/investissement/{id}', [PrivateController::class, 'removeInvestissement'])->name('removeInvestissement');
+    Route::post('/investissement/add', [PrivateController::class, 'addInvestissement'])->name('addInvestissement');
+    Route::post('/investissement/edit', [PrivateController::class, 'editInvestissement'])->name('editInvestissement');
+    Route::get('/investissement/remove/{id}', [PrivateController::class, 'removeInvestissement'])->name('removeInvestissement');
 
     /* Crypto-monnaies */
     Route::get('/crypto', [PrivateController::class, 'crypto'])->name('crypto');

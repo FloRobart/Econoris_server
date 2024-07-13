@@ -27,11 +27,11 @@
     /*-----------------------------------*/
     /* Base du style du texte */
     .font                   { @apply font-sans; }
-    .fontSizeTitre          { @apply text-[24px] min-[380px]:text-[28px] min-[500px]:text-[34px] lg:text-[52px] xl:text-[64px]; }
-    .fontSizeBig            { @apply text-[20px] min-[380px]:text-[24px] min-[500px]:text-[26px] lg:text-[32px] xl:text-[38px]; }
-    .fontSizeNormal         { @apply text-[14px] min-[380px]:text-[18px] min-[500px]:text-[20px] lg:text-[26px] xl:text-[32px]; }
-    .fontSizeSmall          { @apply text-[12px] min-[380px]:text-[14px] min-[500px]:text-[16px] lg:text-[20px] xl:text-[24px]; }
-    .fontSizeTiny           { @apply text-[8px]  min-[380px]:text-[10px] min-[500px]:text-[12px] lg:text-[14px] xl:text-[16px]; }
+    .fontSizeTitre          { @apply text-[20px] min-[350px]:text-[24px] min-[400px]:text-[28px] min-[500px]:text-[34px] lg:text-[52px] xl:text-[64px]; }
+    .fontSizeBig            { @apply text-[18px] min-[350px]:text-[20px] min-[400px]:text-[24px] min-[500px]:text-[26px] lg:text-[32px] xl:text-[38px]; }
+    .fontSizeNormal         { @apply text-[14px] min-[350px]:text-[14px] min-[400px]:text-[18px] min-[500px]:text-[20px] lg:text-[26px] xl:text-[32px]; }
+    .fontSizeSmall          { @apply text-[10px] min-[350px]:text-[12px] min-[400px]:text-[14px] min-[500px]:text-[16px] lg:text-[20px] xl:text-[24px]; }
+    .fontSizeTiny           { @apply text-[8px]  min-[350px]:text-[8px]  min-[400px]:text-[10px] min-[500px]:text-[12px] lg:text-[14px] xl:text-[16px]; }
     .colorFont              { @apply text-[var(--textColor)]; }
     .colorFontReverse       { @apply text-[var(--textColorReverse)]; }
     .colorFontBleuLogo      { @apply text-[var(--bleuLogo)]; }
@@ -100,6 +100,7 @@
     .borderBleuSombre       { @apply border-[var(--bleuSombre)]; }
     .tableRow               { @apply border-solid border-y border-[var(--bleuSombre)]; }
     .tableRowTop            { @apply border-solid border-t border-[var(--bleuSombre)]; }
+    .tableCell              { @apply w-fit px-1 min-[600px]:px-3 }
 
     /* Container */
     .myContainer            { @apply flex items-center w-full; }

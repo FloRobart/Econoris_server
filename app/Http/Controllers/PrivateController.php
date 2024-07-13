@@ -93,6 +93,51 @@ class PrivateController extends Controller
     }
 
     /**
+     * Modifie un salaire
+     */
+    public function editSalaire(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.salaires,id',
+            'date_transaction' => 'required|date|before:tomorrow',
+            'montant_transaction' => 'required|numeric|min:0'
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Message de confirmation */
+        if (Salaire::where('date_transaction', $request->date_transaction)->first()) {
+            $message = 'Attention, un salaire similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Modification du salaire */
+        $salaire = Salaire::find($request->id);
+        if ($salaire->user_id != auth()->user()->id) { back()->with('error', 'Le salaire ne vous appartient pas ❌.'); }
+
+        $salaire->date_transaction = $request->date_transaction;
+        $salaire->montant_transaction = $request->montant_transaction;
+
+        if ($salaire->save()) {
+            return back()->with('success', 'Le salaire a bien été modifié 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est sur venue lors de la modification du salaire ❌.');
+        }
+    }
+
+    /**
      * Supprime un salaire
      */
     public function removeSalaire(string $id)
