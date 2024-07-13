@@ -108,6 +108,7 @@ class PrivateController extends Controller
             'id.required' => 'L\'id est obligatoire.',
             'id.numeric' => 'L\'id doit être un nombre.',
             'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
             'date_transaction.required' => 'La date est obligatoire.',
             'date_transaction.date' => 'La date doit être une date.',
             'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
@@ -231,6 +232,62 @@ class PrivateController extends Controller
     }
 
     /**
+     * Modifie une épargne
+     */
+    public function editEpargne(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.epargnes,id',
+            'date_transaction' => 'required|date|before:tomorrow',
+            'montant_transaction' => 'required|numeric|min:0',
+            'banque' => 'required|string|max:255',
+            'compte' => 'required|string|max:255'
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
+            'banque.required' => 'La banque est obligatoire.',
+            'banque.string' => 'La banque doit être une chaîne de caractères.',
+            'banque.max' => 'La banque ne doit pas dépasser 255 caractères.',
+            'compte.required' => 'Le compte est obligatoire.',
+            'compte.string' => 'Le compte doit être une chaîne de caractères.',
+            'compte.max' => 'Le compte ne doit pas dépasser 255 caractères.'
+        ]);
+
+        /* Message de confirmation */
+        if (Epargne::where('date_transaction', $request->date_transaction)->where('montant_transaction', $request->montant_transaction)->where('banque', $request->banque)->where('compte', $request->compte)->first()) {
+            $message = 'Attention, une épargne similaire a déjà été ajoutée pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Modification de l'épargne */
+        $epargne = Epargne::find($request->id);
+        if ($epargne->user_id != auth()->user()->id) { back()->with('error', 'L\'épargne ne vous appartient pas ❌.'); }
+
+        $epargne->date_transaction = $request->date_transaction;
+        $epargne->montant_transaction = $request->montant_transaction;
+        $epargne->banque = $request->banque;
+        $epargne->compte = $request->compte;
+
+        if ($epargne->save()) {
+            return back()->with('success', 'L\'épargne a bien été modifiée 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de l\'épargne ❌.');
+        }
+    }
+
+    /**
      * Supprime une épargne
      */
     public function removeEpargne(string $id)
@@ -310,6 +367,67 @@ class PrivateController extends Controller
             return back()->with('success', 'L\'investissement a bien été ajouté 👍.')->with('message', $message);
         } else {
             return back()->with('error', 'Une erreur est survenue lors de l\'ajout de l\'investissement ❌.');
+        }
+    }
+
+    /**
+     * Modifie un investissement
+     */
+    public function editInvestissement(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.investissements,id',
+            'date_transaction' => 'required|date|before:tomorrow',
+            'type_investissement' => 'required|string|max:255',
+            'nom_actif' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0',
+            'frais_transaction' => 'required|numeric|min:0',
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
+            'type_investissement.required' => 'Le type d\'investissement est obligatoire.',
+            'type_investissement.string' => 'Le type d\'investissement doit être une chaîne de caractères.',
+            'type_investissement.max' => 'Le type d\'investissement ne doit pas dépasser 255 caractères.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
+            'frais_transaction.required' => 'Les frais sont obligatoires.',
+            'frais_transaction.numeric' => 'Les frais doivent être un nombre.',
+            'frais_transaction.min' => 'Les frais doivent être supérieurs ou égaux à 0.'
+        ]);
+
+        /* Message de confirmation */
+        if (Investissement::where('date_transaction', $request->date_transaction)->where('type_investissement', $request->type_investissement)->where('nom_actif', $request->nom_actif)->where('montant_transaction', $request->montant_transaction)->where('frais_transaction', $request->frais_transaction)->first()) {
+            $message = 'Attention, un investissement en ' . $request->type_investissement . ' similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Modification de l'investissement */
+        $investissement = Investissement::find($request->id);
+        if ($investissement->user_id != auth()->user()->id) { back()->with('error', 'L\'investissement ne vous appartient pas ❌.'); }
+
+        $investissement->date_transaction = $request->date_transaction;
+        $investissement->type_investissement = $request->type_investissement;
+        $investissement->nom_actif = $request->nom_actif;
+        $investissement->montant_transaction = $request->montant_transaction;
+        $investissement->frais_transaction = $request->frais_transaction;
+
+        if ($investissement->save()) {
+            return back()->with('success', 'L\'investissement a bien été modifié 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de l\'investissement ❌.');
         }
     }
 
