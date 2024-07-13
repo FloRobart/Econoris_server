@@ -473,6 +473,7 @@ class PrivateController extends Controller
     }
 
 
+
     /*-----------------*/
     /* Crypto-monnaies */
     /*-----------------*/
