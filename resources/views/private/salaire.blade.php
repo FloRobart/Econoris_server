@@ -127,7 +127,7 @@
             @csrf
             <div class="colCenterContainer">
                 <div class="colStartContainer min-[450px]:rowStartContainer">
-                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"  class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant du salaire" min="0" class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 </div>
