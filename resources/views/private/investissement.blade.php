@@ -6,7 +6,7 @@
 
 @section('content')
 <!-- Titre de la page -->
-<livewire:page-title :title="$type_investissement" />
+<livewire:page-title :title="ucfirst($type_investissement)" />
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">

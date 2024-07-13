@@ -50,7 +50,33 @@
     <div class="rowBetweenContainer bgBleuFonce2 py-3">
         <!-- Fil d'ariane -->
         <div id="breadcrumb" class="rowStartContainer ml-20">
-            <span class="smallTextReverse">Fil d'ariane</span>
+            <!-- Accueil -->
+            <a href="{{ route('accueil') }}" class="smallTextReverse">Accueil</a>
+
+            <!-- Salaire -->
+            @if (str_contains(strtolower(URL::current()), 'salaire'))
+                <livewire:breadcrumb-link name="Salaire" link="{{ route('salaire') }}" />
+            @endif
+
+            <!-- Épargne -->
+            @if (str_contains(strtolower(URL::current()), 'epargne'))
+                <livewire:breadcrumb-link name="Épargne" link="{{ route('epargne') }}" />
+            @endif
+
+            <!-- Crypto-monnaies -->
+            @if (str_contains(strtolower(URL::current()), 'crypto'))
+                <livewire:breadcrumb-link name="Cryptomonnaie" link="{{ route('crypto') }}" />
+            @endif
+
+            <!-- Bourse -->
+            @if (str_contains(strtolower(URL::current()), 'bourse'))
+                <livewire:breadcrumb-link name="Bourse" link="{{ route('bourse') }}" />
+            @endif
+
+            <!-- Détails -->
+            @if (str_contains(strtolower(URL::current()), 'details'))
+                <livewire:breadcrumb-link name="Détails" link="{{ URL::current() }}" />
+            @endif
         </div>
     </div>
 </header>
