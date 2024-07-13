@@ -15,6 +15,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/', [PrivateController::class, 'accueil'])->name('accueil');
     Route::get('/accueil', [PrivateController::class, 'accueil'])->name('accueil');
 
+    /*--------*/
+    /* Profil */
+    /*--------*/
+    Route::get('/profil', function () { return redirect('http://192.168.1.250:2000/profil'); })->name('profil');
+
     /*-----------*/
     /* Dashboard */
     /*-----------*/
