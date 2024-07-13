@@ -16,7 +16,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/accueil', [PrivateController::class, 'accueil'])->name('accueil');
 
     /* Route vers l'accueil général du serveur */
-    Route::get('/accueil/general', function () { return redirect('http://192.168.1.250:2000/private/accueil'); })->name('accueilGeneral');
+    Route::get('/accueil/general', function () { return redirect('http://192.168.1.250:2000/private/accueil'); })->name('accueil.general');
 
 
     /*--------*/

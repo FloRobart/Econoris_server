@@ -3,7 +3,7 @@
     <div class="rowBetweenContainer">
         <!-- Logo + lien vers la page d'accueil -->
         <div class="smallRowCenterContainer mx-6 min-[400px]:mx-14">
-            <a href="{{ route('login') }}" class="logo">
+            <a href="{{ route('accueil.general') }}" class="logo">
                 <img class="w-20 sm:w-28" src="{{ asset('img/logo/logo_white.png') }}" alt="Logo">
             </a>
         </div>
@@ -51,7 +51,7 @@
         <!-- Fil d'ariane -->
         <div id="breadcrumb" class="rowStartContainer ml-20">
             <!-- Accueil -->
-            <a href="{{ route('accueilGeneral') }}" class="smallTextReverse">Accueil</a>
+            <a href="{{ route('accueil.general') }}" class="smallTextReverse">Accueil</a>
             <livewire:breadcrumb-link name="Tableau de bord des finances" link="{{ route('accueil') }}" />
 
             <!-- Salaire -->
