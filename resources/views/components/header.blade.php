@@ -51,7 +51,8 @@
         <!-- Fil d'ariane -->
         <div id="breadcrumb" class="rowStartContainer ml-20">
             <!-- Accueil -->
-            <a href="{{ route('accueil') }}" class="smallTextReverse">Accueil</a>
+            <a href="{{ route('accueilGeneral') }}" class="smallTextReverse">Accueil</a>
+            <livewire:breadcrumb-link name="Tableau de bord des finances" link="{{ route('accueil') }}" />
 
             <!-- Salaire -->
             @if (str_contains(strtolower(URL::current()), 'salaire'))
