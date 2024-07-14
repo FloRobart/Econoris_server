@@ -92,7 +92,7 @@
                                     @php $montantInvestissement += $investissement->montant_transaction; @endphp
                                 @endif
                             @endforeach
-                            <td class="tableCell" title="{{ number_format($montantInvestissement, 2, ',', ' ') }} €">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</td>
+                            <td class="tableCell" title="{{ number_format($montantInvestissement, 2, ',', ' ') }} €"><a href="{{ route('investissement.date', ['investissements', $salaire->date_transaction]) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences -->
                             @php
