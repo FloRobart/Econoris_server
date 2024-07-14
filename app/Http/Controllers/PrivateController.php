@@ -258,12 +258,8 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        /* Récupération des épargnes */
         $epargnes = PrivateController::getEpargnes('date_transaction');
-        $montantEpargnes = $epargnes->sum('montant_transaction');
-        $nombreEpargnes = $epargnes->count();
-
-        return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
+        return view('private.epargne', compact('epargnes'));
     }
 
     /**
@@ -273,12 +269,8 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        /* Récupération des épargnes du mois */
         $epargnes = PrivateController::getEpargnesDate($date, 'date_transaction');
-        $montantEpargnes = $epargnes->sum('montant_transaction');
-        $nombreEpargnes = $epargnes->count();
-
-        return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
+        return view('private.epargne', compact('epargnes'));
     }
 
     /**
@@ -288,12 +280,19 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        /* Récupération des épargnes du mois */
         $epargnes = PrivateController::getEpargnesBanque($banque, 'date_transaction');
-        $montantEpargnes = $epargnes->sum('montant_transaction');
-        $nombreEpargnes = $epargnes->count();
+        return view('private.epargne', compact('epargnes'));
+    }
 
-        return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
+    /**
+     * Affiche les épargnes d'un même compte
+     */
+    public function epargnesCompte(string $compte)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $epargnes = PrivateController::getEpargnesCompte($compte, 'date_transaction');
+        return view('private.epargne', compact('epargnes'));
     }
 
     /**
@@ -303,12 +302,41 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        /* Récupération des épargnes du mois */
         $epargnes = PrivateController::getEpargnesDateBanque($date, $banque, 'date_transaction');
-        $montantEpargnes = $epargnes->sum('montant_transaction');
-        $nombreEpargnes = $epargnes->count();
+        return view('private.epargne', compact('epargnes'));
+    }
 
-        return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
+    /**
+     * Affiche les épargnes d'une même date et d'un même compte
+     */
+    public function epargnesDateCompte(string $date, string $compte)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $epargnes = PrivateController::getEpargnesDateCompte($date, $compte, 'date_transaction');
+        return view('private.epargne', compact('epargnes'));
+    }
+
+    /**
+     * Affiche les épargnes d'une même banque et d'un même compte
+     */
+    public function epargnesBanqueCompte(string $banque, string $compte)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $epargnes = PrivateController::getEpargnesBanqueCompte($banque, $compte, 'date_transaction');
+        return view('private.epargne', compact('epargnes'));
+    }
+
+    /**
+     * Récupère les épargnes d'une même date, d'une même banque et d'un même compte
+     */
+    public function epargnesDateBanqueCompte(string $date, string $banque, string $compte)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $epargnes = PrivateController::getEpargnesDateBanqueCompte($date, $banque, $compte, 'date_transaction');
+        return view('private.epargne', compact('epargnes'));
     }
 
 
@@ -893,6 +921,16 @@ class PrivateController extends Controller
     }
 
     /**
+     * Récupère les épargnes d'un même compte
+     */
+    public function getEpargnesCompte(string $compte, string $sort)
+    {
+        return Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('compte', $compte)
+                             ->sortByDesc($sort);
+    }
+
+    /**
      * Récupère les épargnes d'une même date et d'une même banque
      */
     public function getEpargnesDateBanque(string $date, string $banque, string $sort)
@@ -901,6 +939,42 @@ class PrivateController extends Controller
                              ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                              ->where('date_transaction', '<=', PrivateController::getLastDay($date))
                              ->where('banque', $banque)
+                             ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les épargnes d'une même date et d'un même compte
+     */
+    public function getEpargnesDateCompte(string $date, string $compte, string $sort)
+    {
+        return Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                             ->where('compte', $compte)
+                             ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les épargnes d'une même banque et d'un même compte
+     */
+    public function getEpargnesBanqueCompte(string $banque, string $compte, string $sort)
+    {
+        return Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('banque', $banque)
+                             ->where('compte', $compte)
+                             ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les épargnes d'une même date, d'une même banque et d'un même compte
+     */
+    public function getEpargnesDateBanqueCompte(string $date, string $banque, string $compte, string $sort)
+    {
+        return Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                             ->where('banque', $banque)
+                             ->where('compte', $compte)
                              ->sortByDesc($sort);
     }
 

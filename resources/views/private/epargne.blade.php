@@ -64,16 +64,64 @@
                     @foreach ($epargnes as $epargne)
                         <tr class="tableRow smallText text-center">
                             <!-- Date de la transaction -->
-                            <td class="tableCell" title="{{ strftime('%A %d %B %Y',strtotime($epargne->date_transaction)); }}">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</td>
+                            @if (str_contains(strtolower(URL::current()), 'date'))
+                                <td class="tableCell" title="">{{ strftime('%d %B %Y', strtotime($epargne->date_transaction)); }}</td>
+                            @else
+                                @if (str_contains(strtolower(URL::current()), 'banque'))
+                                    @if (str_contains(strtolower(URL::current()), 'compte'))
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
+                                    @else
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque', [$epargne->date_transaction, $epargne->banque]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
+                                    @endif
+                                @else
+                                    @if (str_contains(strtolower(URL::current()), 'compte'))
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.compte', [$epargne->date_transaction, $epargne->compte]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
+                                    @else
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date', [$epargne->date_transaction]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
+                                    @endif
+                                @endif
+                            @endif
                             
                             <!-- Montant de la transaction -->
-                            <td class="tableCell" title="{{ number_format($epargne->montant_transaction, 2, ',', ' ') }} €">{{ number_format($epargne->montant_transaction, 2, ',', ' ') }} €</td>
+                            <td class="tableCell" title="">{{ number_format($epargne->montant_transaction, 2, ',', ' ') }} €</td>
                             
                             <!-- Nom de la banque -->
-                            <td class="tableCell" title="{{ $epargne->banque }}">{{ $epargne->banque }}</td>
+                            @if (str_contains(strtolower(URL::current()), 'banque'))
+                                <td class="tableCell" title="">{{ $epargne->banque }}</td>
+                            @else
+                                @if (str_contains(strtolower(URL::current()), 'date'))
+                                    @if (str_contains(strtolower(URL::current()), 'compte'))
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->banque }}</a></td>
+                                    @else
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque', [$epargne->date_transaction, $epargne->banque]) }}" class="link">{{ $epargne->banque }}</a></td>
+                                    @endif
+                                @else
+                                    @if (str_contains(strtolower(URL::current()), 'compte'))
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.banque.compte', [$epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->banque }}</a></td>
+                                    @else
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.banque', $epargne->banque) }}" class="link">{{ $epargne->banque }}</a></td>
+                                    @endif
+                                @endif
+                            @endif
                             
                             <!-- Nom du compte -->
-                            <td class="tableCell" title="{{ $epargne->compte }}">{{ $epargne->compte }}</td>
+                            @if (str_contains(strtolower(URL::current()), 'compte'))
+                                <td class="tableCell" title="">{{ $epargne->compte }}</td>
+                            @else
+                                @if (str_contains(strtolower(URL::current()), 'banque'))
+                                    @if (str_contains(strtolower(URL::current()), 'date'))
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
+                                    @else
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.banque.compte', [$epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
+                                    @endif
+                                @else
+                                    @if (str_contains(strtolower(URL::current()), 'date'))
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.compte', [$epargne->date_transaction, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
+                                    @else
+                                        <td class="tableCell" title=""><a href="{{ route('epargnes.compte', $epargne->compte) }}" class="link">{{ $epargne->compte }}</a></td>
+                                    @endif
+                                @endif
+                            @endif
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
@@ -85,7 +133,7 @@
                                 </button>
 
                                 <!-- Supprimer -->
-                                <a href="{{ route('removeEpargne', $epargne->id) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'épargne du {{ strftime('%A %d %B %Y',strtotime($epargne->date_transaction)) }} ? Cette action est irréversible.')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgError hover:bgErrorFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2 ml-1 min-[500px]:ml-2">
+                                <a href="{{ route('epargne.remove', $epargne->id) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer l\'épargne du {{ strftime('%A %d %B %Y',strtotime($epargne->date_transaction)) }} ? Cette action est irréversible.')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgError hover:bgErrorFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2 ml-1 min-[500px]:ml-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                     </svg>
@@ -98,7 +146,7 @@
         </table>
 
         <!-- Formulaire pour ajouter une épargne -->
-        <form id="form" action="{{ route('addEpargne') }}" method="POST" class="rowStartContainer hidden">
+        <form id="form" action="{{ route('epargne.add') }}" method="POST" class="rowStartContainer hidden">
             @csrf
             <div class="colCenterContainer">
                 <div class="colStartContainer sm:rowStartContainer">
@@ -113,7 +161,7 @@
         </form>
 
         <!-- Bouton pour ajouter une épargne -->
-        <button onclick="showForm('Ajouter une épargne', 'Ajouter', '{{ route('addEpargne') }}')" id="button" class="buttonForm mt-8">Ajouter une épargne</a>
+        <button onclick="showForm('Ajouter une épargne', 'Ajouter', '{{ route('epargne.add') }}')" id="button" class="buttonForm mt-8">Ajouter une épargne</a>
     </div>
 </section>
 @endsection
@@ -127,10 +175,10 @@
         /* Affichage du formulaire */
         hidden = document.getElementById('form').classList.contains('hidden');
         if (hidden || oldId == id) {
-            showForm('Ajouter une épargne', 'Modifier', '{{ route('editEpargne') }}');
+            showForm('Ajouter une épargne', 'Modifier', '{{ route('epargne.edit') }}');
         } else {
             document.getElementById('formButton').innerText = 'Modifier';
-            document.getElementById('form').action = '{{ route('editEpargne') }}';
+            document.getElementById('form').action = '{{ route('epargne.edit') }}';
         }
 
         /* Remplissage du formulaire */

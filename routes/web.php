@@ -38,9 +38,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/salaires/date/{date}/employeur/{employeur}', [PrivateController::class, 'salairesDateEmployeur'])->name('salaires.date.employeur');
 
     /* Édition des salaires */
-    Route::post('/salaire/add', [PrivateController::class, 'addSalaire'])->name('addSalaire');
-    Route::post('/salaire/edit', [PrivateController::class, 'editSalaire'])->name('editSalaire');
-    Route::get('/salaire/remove/{id}', [PrivateController::class, 'removeSalaire'])->name('removeSalaire');
+    Route::post('/salaire/add', [PrivateController::class, 'addSalaire'])->name('salaire.add');
+    Route::post('/salaire/edit', [PrivateController::class, 'editSalaire'])->name('salaire.edit');
+    Route::get('/salaire/remove/{id}', [PrivateController::class, 'removeSalaire'])->name('salaire.remove');
 
     /*----------*/
     /* Épargnes */
@@ -49,18 +49,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/epargnes', [PrivateController::class, 'epargnes'])->name('epargnes');
     Route::get('/epargnes/date/{date}', [PrivateController::class, 'epargnesDate'])->name('epargnes.date');
     Route::get('/epargnes/banque/{banque}', [PrivateController::class, 'epargnesBanque'])->name('epargnes.banque');
+    route::get('/epargnes/compte/{compte}', [PrivateController::class, 'epargnesCompte'])->name('epargnes.compte');
     Route::get('/epargnes/date/{date}/banque/{banque}', [PrivateController::class, 'epargnesDateBanque'])->name('epargnes.date.banque');
+    Route::get('/epargnes/date/{date}/compte/{compte}', [PrivateController::class, 'epargnesDateCompte'])->name('epargnes.date.compte');
+    Route::get('/epargnes/banque/{banque}/compte/{compte}', [PrivateController::class, 'epargnesBanqueCompte'])->name('epargnes.banque.compte');
+    Route::get('/epargnes/date/{date}/banque/{banque}/compte/{compte}', [PrivateController::class, 'epargnesDateBanqueCompte'])->name('epargnes.date.banque.compte');
 
     /* Édition des épargnes */
-    Route::post('/epargne/add', [PrivateController::class, 'addEpargne'])->name('addEpargne');
-    Route::post('/epargne/edit', [PrivateController::class, 'editEpargne'])->name('editEpargne');
-    Route::get('/epargne/remove/{id}', [PrivateController::class, 'removeEpargne'])->name('removeEpargne');
+    Route::post('/epargne/add', [PrivateController::class, 'addEpargne'])->name('epargne.add');
+    Route::post('/epargne/edit', [PrivateController::class, 'editEpargne'])->name('epargne.edit');
+    Route::get('/epargne/remove/{id}', [PrivateController::class, 'removeEpargne'])->name('epargne.remove');
 
     /*-----------------*/
     /* Investissements */
     /*-----------------*/
     /* Affichage des investissements */
-    Route::get('/investissements/all', [PrivateController::class, 'investissements'])->name('investissements.all');
+    Route::get('/investissements', [PrivateController::class, 'investissements'])->name('investissements');
     Route::get('/investissements/date/{date}', [PrivateController::class, 'investissementsDate'])->name('investissements.date');
     Route::get('/investissements/type/{type}', [PrivateController::class, 'investissementsType'])->name('investissements.type');
     Route::get('/investissements/nomActif/{nom_actif}', [PrivateController::class, 'investissementsNom'])->name('investissements.nomActif');
@@ -70,9 +74,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/investissements/date/{date}/type/{type}/nomActif/{nom_actif}', [PrivateController::class, 'investissementsDateTypeNom'])->name('investissements.date.type.nomActif');
 
     /* Édition des investissements */
-    Route::post('/investissement/add', [PrivateController::class, 'addInvestissement'])->name('addInvestissement');
-    Route::post('/investissement/edit', [PrivateController::class, 'editInvestissement'])->name('editInvestissement');
-    Route::get('/investissement/remove/{id}', [PrivateController::class, 'removeInvestissement'])->name('removeInvestissement');
+    Route::post('/investissement/add', [PrivateController::class, 'addInvestissement'])->name('investissement.add');
+    Route::post('/investissement/edit', [PrivateController::class, 'editInvestissement'])->name('investissement.edit');
+    Route::get('/investissement/remove/{id}', [PrivateController::class, 'removeInvestissement'])->name('investissement.remove');
 
 
     /*-----------------*/

@@ -55,18 +55,18 @@
             <livewire:breadcrumb-link name="Tableau de bord des finances" link="{{ route('accueil') }}" />
 
             <!-- Salaire -->
-            @if (str_contains(strtolower(URL::current()), 'salaire'))
-                <livewire:breadcrumb-link name="Salaire" link="{{ route('salaire') }}" />
+            @if (str_contains(strtolower(URL::current()), 'salaires'))
+                <livewire:breadcrumb-link name="Salaire" link="{{ route('salaires') }}" />
             @endif
 
             <!-- Épargne -->
-            @if (str_contains(strtolower(URL::current()), 'epargne'))
-                <livewire:breadcrumb-link name="Épargne" link="{{ route('epargne') }}" />
+            @if (str_contains(strtolower(URL::current()), 'epargnes'))
+                <livewire:breadcrumb-link name="Épargne" link="{{ route('epargnes') }}" />
             @endif
 
             <!-- Investissements -->
-            @if (str_contains(strtolower(URL::current()), 'investissement'))
-                <livewire:breadcrumb-link name="Investissements" link="{{ route('allInvestissement') }}" />
+            @if (str_contains(strtolower(URL::current()), 'investissements'))
+                <livewire:breadcrumb-link name="Investissements" link="{{ route('investissements') }}" />
             @endif
 
             <!-- Crypto-monnaies -->
