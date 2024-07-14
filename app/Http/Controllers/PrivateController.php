@@ -34,7 +34,7 @@ class PrivateController extends Controller
     /**
      * Affiche la page des salaires
      */
-    public function salaire()
+    public function salaires()
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -254,7 +254,7 @@ class PrivateController extends Controller
     /**
      * Affiche la page des épargnes
      */
-    public function epargne()
+    public function epargnes()
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -565,7 +565,7 @@ class PrivateController extends Controller
     /**
      * Affiche les détails d'un investissement d'un même mois et d'un même type
      */
-    public function investissementDateTypeNom(string $date, string $type, string $nom_actif)
+    public function investissementsDateTypeNom(string $date, string $type, string $nom_actif)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -725,22 +725,6 @@ class PrivateController extends Controller
         }
     }
 
-    /**
-     * Affiche les détails d'un investissement
-     */
-    public function detailsInvestissement(string $type, string $nom_actif)
-    {
-        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
-
-        /* Récupération des investissements */
-        $type_investissement = $type;
-        $investissements = PrivateController::getInvestissementsTypeNom($type_investissement, $nom_actif, 'date_transaction');
-        $montantInvesties     = $investissements->sum('montant_transaction');
-        $montantFrais         = $investissements->sum('frais_transaction');
-        $nombreInvestissement = $investissements->count();
-
-        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
-    }
 
 
 

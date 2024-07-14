@@ -32,7 +32,10 @@ Route::middleware(['auth'])->group(function () {
     /* Salaires */
     /*----------*/
     /* Affichage des salaires */
-    Route::get('/salaire', [PrivateController::class, 'salaire'])->name('salaire');
+    Route::get('/salaires', [PrivateController::class, 'salaires'])->name('salaires');
+    Route::get('/salaires/date/{date}', [PrivateController::class, 'salairesDate'])->name('salaires.date');
+    Route::get('/salaires/employeur/{employeur}', [PrivateController::class, 'salairesEmployeur'])->name('salaires.employeur');
+    Route::get('/salaires/date/{date}/employeur/{employeur}', [PrivateController::class, 'salairesDateEmployeur'])->name('salaires.date.employeur');
 
     /* Édition des salaires */
     Route::post('/salaire/add', [PrivateController::class, 'addSalaire'])->name('addSalaire');
@@ -43,7 +46,10 @@ Route::middleware(['auth'])->group(function () {
     /* Épargnes */
     /*----------*/
     /* Affichage des épargnes */
-    Route::get('/epargne', [PrivateController::class, 'epargne'])->name('epargne');
+    Route::get('/epargnes', [PrivateController::class, 'epargnes'])->name('epargnes');
+    Route::get('/epargnes/date/{date}', [PrivateController::class, 'epargnesDate'])->name('epargnes.date');
+    Route::get('/epargnes/banque/{banque}', [PrivateController::class, 'epargnesBanque'])->name('epargnes.banque');
+    Route::get('/epargnes/date/{date}/banque/{banque}', [PrivateController::class, 'epargnesDateBanque'])->name('epargnes.date.banque');
 
     /* Édition des épargnes */
     Route::post('/epargne/add', [PrivateController::class, 'addEpargne'])->name('addEpargne');
@@ -54,10 +60,14 @@ Route::middleware(['auth'])->group(function () {
     /* Investissements */
     /*-----------------*/
     /* Affichage des investissements */
-    Route::get('/investissement/all', [PrivateController::class, 'allInvestissement'])->name('allInvestissement');
-    Route::get('/investissement/type/{type}/date/{date}', [PrivateController::class, 'investissementDate'])->name('investissement.date');
-    Route::get('/investissement/type/{type}/nom/{nom_actif}', [PrivateController::class, 'detailsInvestissement'])->name('detailsInvestissement');
-    Route::get('/investissement/type/{type}/nom/{nom_actif}/date/{date}', [PrivateController::class, 'detailsInvestissementDate'])->name('detailsInvestissement.date');
+    Route::get('/investissements/all', [PrivateController::class, 'investissements'])->name('investissements.all');
+    Route::get('/investissements/date/{date}', [PrivateController::class, 'investissementsDate'])->name('investissements.date');
+    Route::get('/investissements/type/{type}', [PrivateController::class, 'investissementsType'])->name('investissements.type');
+    Route::get('/investissements/nomActif/{nom_actif}', [PrivateController::class, 'investissementsNom'])->name('investissements.nomActif');
+    Route::get('/investissements/date/{date}/type/{type}', [PrivateController::class, 'investissementsDateType'])->name('investissement.date.type');
+    Route::get('/investissements/date/{date}/nomActif/{nom_actif}', [PrivateController::class, 'investissementsDateNom'])->name('investissement.date.nomActif');
+    Route::get('/investissements/type/{type}/nomActif/{nom_actif}', [PrivateController::class, 'investissementsTypeNom'])->name('investissements.type.nomActif');
+    Route::get('/investissements/date/{date}/type/{type}/nomActif/{nom_actif}', [PrivateController::class, 'investissementsDateTypeNom'])->name('investissements.date.type.nomActif');
 
     /* Édition des investissements */
     Route::post('/investissement/add', [PrivateController::class, 'addInvestissement'])->name('addInvestissement');
@@ -69,19 +79,19 @@ Route::middleware(['auth'])->group(function () {
     /* Crypto-monnaies */
     /*-----------------*/
     /* Affichage des crypto-monnaies */
-    Route::get('/investissement/crypto', [PrivateController::class, 'crypto'])->name('crypto');
+    Route::get('/investissements/crypto', [PrivateController::class, 'crypto'])->name('crypto');
 
     /*--------*/
     /* Bourse */
     /*--------*/
     /* Affichage des investissements en bourse */
-    Route::get('/investissement/bourse', [PrivateController::class, 'bourse'])->name('bourse');
+    Route::get('/investissements/bourse', [PrivateController::class, 'bourse'])->name('bourse');
 
     /*------------*/
     /* Immobilier */
     /*------------*/
     /* Affichage des investissements immobiliers */
-    Route::get('/investissement/immobilier', [PrivateController::class, 'immobilier'])->name('immobilier');
+    Route::get('/investissements/immobilier', [PrivateController::class, 'immobilier'])->name('immobilier');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */
