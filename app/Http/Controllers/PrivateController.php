@@ -37,17 +37,86 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         /* Récupération des salaires */
-        $salaires = Salaire::all()->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
-        $nombreSalaires = Salaire::where('user_id', auth()->user()->id)->count();
-        $montantSalaires = Salaire::where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $salaires = PrivateController::getSalaires('date_transaction');
+        $nombreSalaires = $salaires->count();
+        $montantSalaires = $salaires->sum('montant_transaction');
         
         /* Récupération des épargnes */
-        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
-        $montantEpargne = Epargne::where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $epargnes = PrivateController::getEpargnes('date_transaction');
+        $montantEpargne = $epargnes->sum('montant_transaction');
         
         /* Récupération des investissements */
-        $investissements = Investissement::all()->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
-        $montantInvestissement = Investissement::where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $investissements = PrivateController::getInvestissements('date_transaction');
+        $montantInvestissement = $investissements->sum('montant_transaction');
+
+        return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
+    }
+
+    /**
+     * Affiche les salaires d'un même mois
+     */
+    public function salairesDate(string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des salaires du mois */
+        $salaires = PrivateController::getSalairesDate($date, 'date_transaction');
+        $montantSalaires = $salaires->sum('montant_transaction');
+        $nombreSalaires = $salaires->count();
+
+        /* Récupération des épargnes du mois */
+        $epargnes = PrivateController::getEpargnesDate($date, 'date_transaction');
+        $montantEpargne = $epargnes->sum('montant_transaction');
+        
+        /* Récupération des investissements du mois */
+        $investissements = PrivateController::getInvestissementsDate($date, 'date_transaction');
+        $montantInvestissement = $investissements->sum('montant_transaction');
+
+        return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
+    }
+
+    /**
+     * Affiche les salaires d'un même employeur
+     */
+    public function salairesEmployeur(string $employeur)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des salaires du mois */
+        $salaires = PrivateController::getSalairesEmployeur($employeur, 'date_transaction');
+        $montantSalaires = $salaires->sum('montant_transaction');
+        $nombreSalaires = $salaires->count();
+
+        /* Récupération des épargnes du mois */
+        $epargnes = PrivateController::getEpargnes('date_transaction');
+        $montantEpargne = $epargnes->sum('montant_transaction');
+        
+        /* Récupération des investissements du mois */
+        $investissements = PrivateController::getInvestissements('date_transaction');
+        $montantInvestissement = $investissements->sum('montant_transaction');
+
+        return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
+    }
+
+    /**
+     * Affiche les salaires d'un même mois et d'un même employeur
+     */
+    public function salairesEmployeurDate(string $employeur, string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des salaires du mois */
+        $salaires = PrivateController::getSalairesDateEmployeur($date, $employeur, 'date_transaction');
+        $montantSalaires = $salaires->sum('montant_transaction');
+        $nombreSalaires = $salaires->count();
+
+        /* Récupération des épargnes du mois */
+        $epargnes = PrivateController::getEpargnesDate($date, 'date_transaction');
+        $montantEpargne = $epargnes->sum('montant_transaction');
+        
+        /* Récupération des investissements du mois */
+        $investissements = PrivateController::getInvestissementsDate($date, 'date_transaction');
+        $montantInvestissement = $investissements->sum('montant_transaction');
 
         return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
     }
@@ -174,9 +243,54 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         /* Récupération des épargnes */
-        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
-        $nombreEpargnes = Epargne::where('user_id', auth()->user()->id)->count();
-        $montantEpargnes = Epargne::where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $epargnes = PrivateController::getEpargnes('date_transaction');
+        $montantEpargnes = $epargnes->sum('montant_transaction');
+        $nombreEpargnes = $epargnes->count();
+
+        return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
+    }
+
+    /**
+     * Affiche les épargnes d'un même mois
+     */
+    public function epargnesDate(string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des épargnes du mois */
+        $epargnes = PrivateController::getEpargnesDate($date, 'date_transaction');
+        $montantEpargnes = $epargnes->sum('montant_transaction');
+        $nombreEpargnes = $epargnes->count();
+
+        return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
+    }
+
+    /**
+     * Affiche les épargnes d'une même banque
+     */
+    public function epargnesBanque(string $banque)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des épargnes du mois */
+        $epargnes = PrivateController::getEpargnesBanque($banque, 'date_transaction');
+        $montantEpargnes = $epargnes->sum('montant_transaction');
+        $nombreEpargnes = $epargnes->count();
+
+        return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
+    }
+
+    /**
+     * Affiche les épargnes d'un même mois et d'une même banque
+     */
+    public function epargnesBanqueDate(string $date, string $banque)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des épargnes du mois */
+        $epargnes = PrivateController::getEpargnesDateBanque($date, $banque, 'date_transaction');
+        $montantEpargnes = $epargnes->sum('montant_transaction');
+        $nombreEpargnes = $epargnes->count();
 
         return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
     }
@@ -541,7 +655,6 @@ class PrivateController extends Controller
     }
 
 
-
     /*-----------------*/
     /* Crypto-monnaies */
     /*-----------------*/
@@ -561,7 +674,6 @@ class PrivateController extends Controller
 
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
-
 
 
     /*--------*/
@@ -584,6 +696,7 @@ class PrivateController extends Controller
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
 
+
     /*------------*/
     /* Immobilier */
     /*------------*/
@@ -605,6 +718,7 @@ class PrivateController extends Controller
     }
 
 
+
     /*======================*/
     /* Fonction Utilitaires */
     /*======================*/
@@ -620,6 +734,97 @@ class PrivateController extends Controller
      * Récupère la dernière date d'un mois
      */
     public function getLastDay(string $date) { return date('Y-m-t', strtotime($date)); }
+
+
+    /*---------*/
+    /* Salaire */
+    /*---------*/
+    /**
+     * Récupère tous les salaires
+     */
+    public function getSalaires(string $sort)
+    {
+        return Salaire::all()->where('user_id', auth()->user()->id)->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les salaires d'une même date
+     */
+    public function getSalairesDate(string $date, string $sort)
+    {
+        return Salaire::all()->where('user_id', auth()->user()->id)
+                             ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                             ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les salaires d'un même employeur
+     */
+    public function getSalairesEmployeur(string $employeur, string $sort)
+    {
+        return Salaire::all()->where('user_id', auth()->user()->id)
+                             ->where('employeur', $employeur)
+                             ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les salaires d'une même date et d'un même employeur
+     */
+    public function getSalairesDateEmployeur(string $date, string $employeur, string $sort)
+    {
+        return Salaire::all()->where('user_id', auth()->user()->id)
+                             ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                             ->where('employeur', $employeur)
+                             ->sortByDesc($sort);
+    }
+
+
+    /*---------*/
+    /* Épargne */
+    /*---------*/
+    /**
+     * Récupère toutes les épargnes
+     */
+    public function getEpargnes(string $sort)
+    {
+        return Epargne::all()->where('user_id', auth()->user()->id)->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les épargnes d'une même date
+     */
+    public function getEpargnesDate(string $date, string $sort)
+    {
+        return Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                             ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les épargnes d'une même banque
+     */
+    public function getEpargnesBanque(string $banque, string $sort)
+    {
+        return Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('banque', $banque)
+                             ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les épargnes d'une même date et d'une même banque
+     */
+    public function getEpargnesDateBanque(string $date, string $banque, string $sort)
+    {
+        return Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                             ->where('banque', $banque)
+                             ->sortByDesc($sort);
+    }
+
 
     /*----------------*/
     /* Investissement */

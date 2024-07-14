@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->date('date_transaction');
             $table->float('montant_transaction');
+            $table->string('employeur');
             $table->timestamps();
         });
     }

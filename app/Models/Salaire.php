@@ -16,6 +16,7 @@ class Salaire extends Model
         'id',
         'user_id',
         'date_transaction',
-        'montant_transaction'
+        'montant_transaction',
+        'employeur'
     ];
 }
