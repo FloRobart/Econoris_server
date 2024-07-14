@@ -30,19 +30,19 @@
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
         <!-- Nombre de salaires reçus -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de salaires reçus : <span class="normalTextBleuLogo font-bold">{{ $nombreSalaires }}</span></span>
+            <span class="normalText">Nombre de salaires reçus : <span class="normalTextBleuLogo font-bold">{{ $salaires->count() }}</span></span>
         </div>
         <!-- Montant total des salaires reçus -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des salaires reçus : <span class="normalTextBleuLogo font-bold">{{ number_format($montantSalaires, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total des salaires reçus : <span class="normalTextBleuLogo font-bold">{{ number_format($salaires->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
         <!-- Montant total épargné -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total épargné : <span class="normalTextBleuLogo font-bold">{{ number_format($montantEpargne, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total épargné : <span class="normalTextBleuLogo font-bold">{{ number_format($epargnes->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
         <!-- Montant total investie -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total investie : <span class="normalTextBleuLogo font-bold">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total investie : <span class="normalTextBleuLogo font-bold">{{ number_format($investissements->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 
@@ -129,6 +129,7 @@
                 <div class="colStartContainer min-[450px]:rowStartContainer">
                     <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"  class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant du salaire" min="0" class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="employeur"           name="employeur"           required type="text" placeholder="Nom de l'employeur"                       class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 </div>
                 <div class="w-full tableRowTop"></div>

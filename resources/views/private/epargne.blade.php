@@ -31,12 +31,12 @@
 
         <!-- Nombre de d'opérations d'épargne -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre d'opérations d'épargne : <span class="normalTextBleuLogo font-bold">{{ $nombreEpargnes }}</span></span>
+            <span class="normalText">Nombre d'opérations d'épargne : <span class="normalTextBleuLogo font-bold">{{ $epargnes->count() }}</span></span>
         </div>
 
         <!-- Montant total épargné -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total épargné : <span class="normalTextBleuLogo font-bold">{{ number_format($montantEpargnes, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total épargné : <span class="normalTextBleuLogo font-bold">{{ number_format($epargnes->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 

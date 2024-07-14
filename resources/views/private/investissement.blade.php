@@ -31,22 +31,22 @@
 
         <!-- Nombre de d'opérations d'investissement -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre d'investissement : <span class="normalTextBleuLogo font-bold">{{ $nombreInvestissement }}</span></span>
+            <span class="normalText">Nombre d'investissement : <span class="normalTextBleuLogo font-bold">{{ $investissements->count() }}</span></span>
         </div>
 
         <!-- Montant total investie -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total investie : <span class="normalTextBleuLogo font-bold">{{ number_format($montantInvesties, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total investie : <span class="normalTextBleuLogo font-bold">{{ number_format($investissements->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total des frais -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des frais de transaction : <span class="normalTextBleuLogo font-bold">{{ number_format($montantFrais, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total des frais de transaction : <span class="normalTextBleuLogo font-bold">{{ number_format($investissements->sum('frais_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total hors frais -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total hors frais de transaction : <span class="normalTextBleuLogo font-bold">{{ number_format($montantInvesties - $montantFrais, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total hors frais de transaction : <span class="normalTextBleuLogo font-bold">{{ number_format($investissements->sum('montant_transaction') - $investissements->sum('frais_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 

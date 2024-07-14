@@ -23,12 +23,14 @@ class PrivateController extends Controller
 
 
 
+
     /*===========*/
     /* Dashboard */
     /*===========*/
     /*----------*/
     /* Salaires */
     /*----------*/
+    /* Affiche des salaires */
     /**
      * Affiche la page des salaires
      */
@@ -101,7 +103,7 @@ class PrivateController extends Controller
     /**
      * Affiche les salaires d'un même mois et d'un même employeur
      */
-    public function salairesEmployeurDate(string $employeur, string $date)
+    public function salairesDateEmployeur(string $date, string $employeur)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -121,6 +123,8 @@ class PrivateController extends Controller
         return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
     }
 
+
+    /* Édition des salaires */
     /**
      * Ajoute un salaire
      */
@@ -131,14 +135,18 @@ class PrivateController extends Controller
         /* Validation des données */
         $request->validate([
             'date_transaction' => 'required|date|before:tomorrow',
-            'montant_transaction' => 'required|numeric|min:0'
+            'montant_transaction' => 'required|numeric|min:0',
+            'employeur' => 'required|string|max:255'
         ], [
             'date_transaction.required' => 'La date est obligatoire.',
             'date_transaction.date' => 'La date doit être une date.',
             'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
             'montant_transaction.required' => 'Le montant est obligatoire.',
             'montant_transaction.numeric' => 'Le montant doit être un nombre.',
-            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
+            'employeur.required' => 'L\'employeur est obligatoire.',
+            'employeur.string' => 'L\'employeur doit être une chaîne de caractères.',
+            'employeur.max' => 'L\'employeur ne doit pas dépasser 255 caractères.'
         ]);
 
         /* Message de confirmation */
@@ -153,6 +161,7 @@ class PrivateController extends Controller
         $salaire->user_id = auth()->user()->id;
         $salaire->date_transaction = $request->date_transaction;
         $salaire->montant_transaction = $request->montant_transaction;
+        $salaire->employeur = $request->employeur;
         
         if ($salaire->save()) {
             return back()->with('success', 'Le salaire a bien été ajouté 👍.')->with('message', $message);
@@ -172,7 +181,8 @@ class PrivateController extends Controller
         $request->validate([
             'id' => 'required|numeric|min:1|exists:finance_dashboard.salaires,id',
             'date_transaction' => 'required|date|before:tomorrow',
-            'montant_transaction' => 'required|numeric|min:0'
+            'montant_transaction' => 'required|numeric|min:0',
+            'employeur' => 'required|string|max:255'
         ], [
             'id.required' => 'L\'id est obligatoire.',
             'id.numeric' => 'L\'id doit être un nombre.',
@@ -183,7 +193,10 @@ class PrivateController extends Controller
             'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
             'montant_transaction.required' => 'Le montant est obligatoire.',
             'montant_transaction.numeric' => 'Le montant doit être un nombre.',
-            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
+            'employeur.required' => 'L\'employeur est obligatoire.',
+            'employeur.string' => 'L\'employeur doit être une chaîne de caractères.',
+            'employeur.max' => 'L\'employeur ne doit pas dépasser 255 caractères.'
         ]);
 
         /* Message de confirmation */
@@ -199,6 +212,7 @@ class PrivateController extends Controller
 
         $salaire->date_transaction = $request->date_transaction;
         $salaire->montant_transaction = $request->montant_transaction;
+        $salaire->employeur = $request->employeur;
 
         if ($salaire->save()) {
             return back()->with('success', 'Le salaire a bien été modifié 👍.')->with('message', $message);
@@ -232,9 +246,11 @@ class PrivateController extends Controller
     }
 
 
+
     /*----------*/
     /* Épargnes */
     /*----------*/
+    /* Affiche des épargnes */
     /**
      * Affiche la page des épargnes
      */
@@ -283,7 +299,7 @@ class PrivateController extends Controller
     /**
      * Affiche les épargnes d'un même mois et d'une même banque
      */
-    public function epargnesBanqueDate(string $date, string $banque)
+    public function epargnesDateBanque(string $date, string $banque)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -295,6 +311,8 @@ class PrivateController extends Controller
         return view('private.epargne', compact('epargnes', 'montantEpargnes', 'nombreEpargnes'));
     }
 
+
+    /* Édition des épargnes */
     /**
      * Ajoute une épargne
      */
@@ -426,9 +444,137 @@ class PrivateController extends Controller
     }
 
 
+
     /*-----------------*/
     /* Investissements */
     /*-----------------*/
+    /* Affiche des investissements */
+    /**
+     * Affiche tous les investissements
+     */
+    public function investissements()
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des investissements */
+        $type_investissement  = 'investissements';
+        $investissements      = PrivateController::getInvestissements('date_transaction');
+
+        return view('private.investissement', compact('investissements', 'type_investissement'));
+    }
+
+    public function investissementsDate(string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $type_investissement  = 'investissements';
+        $investissements      = PrivateController::getInvestissementsDate($date, 'date_transaction');
+
+        return view('private.investissement', compact('investissements', 'type_investissement'));
+    }
+
+    /**
+     * Affiche tous les investissements d'un même type
+     */
+    public function investissementsType(string $type)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        if ($type == 'investissements')
+        {
+            $type_investissement  = 'investissements';
+            $investissements      = PrivateController::getInvestissements('date_transaction');
+        }
+        else
+        {
+            $type_investissement  = $type;
+            $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
+        }
+
+        return view('private.investissement', compact('investissements', 'type_investissement'));
+    }
+
+    /**
+     * Affiche tous les investissements d'un même nom d'actif
+     */
+    public function investissementsNom(string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $type_investissement  = 'investissements';
+        $investissements      = PrivateController::getInvestissementsNom($nom_actif, 'date_transaction');
+
+        return view('private.investissement', compact('investissements', 'type_investissement'));
+    }
+
+    /**
+     * Affiche les investissements d'une même date et d'un même type
+     */
+    public function investissementsDateType(string $date, string $type)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        if ($type == 'investissements')
+        {
+            $type_investissement  = 'investissements';
+            $investissements      = PrivateController::getInvestissementsDate($date, 'date_transaction');
+        }
+        else
+        {
+            $type_investissement  = $type;
+            $investissements      = PrivateController::getInvestissementsDateType($date, $type_investissement, 'date_transaction');
+        }
+
+        return view('private.investissement', compact('investissements', 'type_investissement'));
+    }
+
+    /**
+     * Affiche les investissements d'une même date et d'un même nom d'actif
+     */
+    public function investissementsDateNom(string $date, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $type_investissement  = 'investissements';
+        $investissements      = PrivateController::getInvestissementsDateNom($date, $nom_actif, 'date_transaction');
+
+        return view('private.investissement', compact('investissements', 'type_investissement'));
+    }
+
+    /**
+     * Affiche les investissements d'un même type et d'un même nom d'actif
+     */
+    public function investissementsTypeNom(string $type, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        if ($type == 'investissements')
+        {
+            $type_investissement  = 'investissements';
+            $investissements      = PrivateController::getInvestissementsNom($nom_actif, 'date_transaction');
+        }
+        else
+        {
+            $type_investissement  = $type;
+            $investissements      = PrivateController::getInvestissementsTypeNom($type_investissement, $nom_actif, 'date_transaction');
+        }
+
+        return view('private.investissement', compact('investissements', 'type_investissement'));
+    }
+
+    /**
+     * Affiche les détails d'un investissement d'un même mois et d'un même type
+     */
+    public function investissementDateTypeNom(string $date, string $type, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $investissements = PrivateController::getInvestissementsDateTypeNom($date, $type, $nom_actif, 'date_transaction');
+        return view('private.investissement', compact('investissements', 'type'));
+    }
+
+
+    /* Édition des investissements */
     /**
      * Ajoute un investissement
      */
@@ -596,68 +742,12 @@ class PrivateController extends Controller
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
 
-    /**
-     * Affiche tous les investissements
-     */
-    public function allInvestissement()
-    {
-        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
-
-        /* Récupération des investissements */
-        $type_investissement  = 'investissements';
-        $investissements      = PrivateController::getInvestissements('date_transaction');
-        $montantInvesties     = $investissements->sum('montant_transaction');
-        $montantFrais         = $investissements->sum('frais_transaction');
-        $nombreInvestissement = $investissements->count();
-
-        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
-    }
-
-    /**
-     * Affiche tous les investissements d'un même mois et d'un même type
-     */
-    public function investissementDate(string $type, string $date)
-    {
-        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
-
-        if ($type == 'investissements')
-        {
-            $type_investissement  = 'investissements';
-            $investissements      = PrivateController::getInvestissementsDate($date, 'date_transaction');
-        }
-        else
-        {
-            $type_investissement  = $type;
-            $investissements      = PrivateController::getInvestissementsDateType($date, $type_investissement, 'date_transaction');
-        }
-
-        $montantInvesties     = $investissements->sum('montant_transaction');
-        $montantFrais         = $investissements->sum('frais_transaction');
-        $nombreInvestissement = $investissements->count();
-
-        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
-    }
-
-    /**
-     * Affiche les détails d'un investissement d'un même mois et d'un même type
-     */
-    public function detailsInvestissementDate(string $type, string $nom_actif, string $date)
-    {
-        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
-
-        $type_investissement = $type;
-        $investissements      = PrivateController::getInvestissementsDateTypeNom($date, $type_investissement, $nom_actif, 'date_transaction');
-        $montantInvesties     = $investissements->sum('montant_transaction');
-        $montantFrais         = $investissements->sum('frais_transaction');
-        $nombreInvestissement = $investissements->count();
-
-        return view('private.investissement', compact('investissements', 'nombreInvestissement', 'montantInvesties', 'montantFrais', 'type_investissement'));
-    }
 
 
     /*-----------------*/
     /* Crypto-monnaies */
     /*-----------------*/
+    /* Affiche des investissements en crypto-monnaies */
     /**
      * Affiche la page des investissements en crypto-monnaies
      */
@@ -676,9 +766,11 @@ class PrivateController extends Controller
     }
 
 
+
     /*--------*/
     /* Bourse */
     /*--------*/
+    /* Affiche des investissements en bourse */
     /**
      * Affiche la page des investissements en bourse
      */
@@ -697,9 +789,11 @@ class PrivateController extends Controller
     }
 
 
+
     /*------------*/
     /* Immobilier */
     /*------------*/
+    /* Affiche des investissements en immobilier */
     /**
      * Affiche la page des investissements en immobilier
      */
@@ -716,6 +810,7 @@ class PrivateController extends Controller
 
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
+
 
 
 
