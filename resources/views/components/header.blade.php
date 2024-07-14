@@ -64,6 +64,11 @@
                 <livewire:breadcrumb-link name="Épargne" link="{{ route('epargne') }}" />
             @endif
 
+            <!-- Investissements -->
+            @if (str_contains(strtolower(URL::current()), 'investissement'))
+                <livewire:breadcrumb-link name="Investissements" link="{{ route('allInvestissement') }}" />
+            @endif
+
             <!-- Crypto-monnaies -->
             @if (str_contains(strtolower(URL::current()), 'crypto'))
                 <livewire:breadcrumb-link name="Cryptomonnaie" link="{{ route('crypto') }}" />
@@ -77,6 +82,11 @@
             <!-- Détails -->
             @if (str_contains(strtolower(URL::current()), 'details'))
                 <livewire:breadcrumb-link name="Détails" link="{{ URL::current() }}" />
+            @endif
+
+            <!-- Date -->
+            @if (str_contains(strtolower(URL::current()), 'date'))
+                <livewire:breadcrumb-link name="Date" link="{{ URL::current() }}" />
             @endif
         </div>
     </div>

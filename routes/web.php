@@ -45,12 +45,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/investissement/edit', [PrivateController::class, 'editInvestissement'])->name('editInvestissement');
     Route::get('/investissement/remove/{id}', [PrivateController::class, 'removeInvestissement'])->name('removeInvestissement');
     Route::get('/investissement/details/{type}/{nom_actif}', [PrivateController::class, 'detailsInvestissement'])->name('detailsInvestissement');
+    Route::get('/investissement/all', [PrivateController::class, 'allInvestissement'])->name('allInvestissement');
+
+    /* Investissements par date */
+    Route::get('/investissement/{type}/date/{date}', [PrivateController::class, 'investissementDate'])->name('investissement.date');
+    Route::get('/investissement/details/{type}/{nom_actif}/date/{date}', [PrivateController::class, 'detailsInvestissementDate'])->name('detailsInvestissement.date');
 
     /* Crypto-monnaies */
-    Route::get('/crypto', [PrivateController::class, 'crypto'])->name('crypto');
+    Route::get('/investissement/crypto', [PrivateController::class, 'crypto'])->name('crypto');
 
     /* Bourse */
-    Route::get('/bourse', [PrivateController::class, 'bourse'])->name('bourse');
+    Route::get('/investissement/bourse', [PrivateController::class, 'bourse'])->name('bourse');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

@@ -59,7 +59,7 @@
                     <th class="tableCell">Date du virement</th>
                     <th class="tableCell">Montant du salaire</th>
                     <th class="tableCell"><a href="{{ route('epargne') }}">Montant épargné</a></th>
-                    <th class="tableCell">Montant investie</th>
+                    <th class="tableCell"><a href="{{ route('allInvestissement') }}">Montant investie</a></th>
                     <th class="tableCell">Dépences possibles</th>
                     <th class="tableCell max-[460px]:hidden">Actions</th>
                 </tr>
