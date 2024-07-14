@@ -366,12 +366,12 @@ class PrivateController extends Controller
 
         /* Ajout de l'investissement */
         $investissement = new Investissement();
-        $investissement->user_id = auth()->user()->id;
-        $investissement->date_transaction = $request->date_transaction;
+        $investissement->user_id             = auth()->user()->id;
+        $investissement->date_transaction    = $request->date_transaction;
         $investissement->type_investissement = $type_investissement;
-        $investissement->nom_actif = $request->nom_actif;
+        $investissement->nom_actif           = $request->nom_actif;
         $investissement->montant_transaction = $request->montant_transaction;
-        $investissement->frais_transaction = $request->frais_transaction;
+        $investissement->frais_transaction   = $request->frais_transaction;
 
         if ($investissement->save()) {
             return back()->with('success', 'L\'investissement a bien été ajouté 👍.')->with('message', $message);
@@ -428,11 +428,11 @@ class PrivateController extends Controller
         $investissement = Investissement::find($request->id);
         if ($investissement->user_id != auth()->user()->id) { back()->with('error', 'L\'investissement ne vous appartient pas ❌.'); }
 
-        $investissement->date_transaction = $request->date_transaction;
+        $investissement->date_transaction    = $request->date_transaction;
         $investissement->type_investissement = $request->type_investissement;
-        $investissement->nom_actif = $request->nom_actif;
+        $investissement->nom_actif           = $request->nom_actif;
         $investissement->montant_transaction = $request->montant_transaction;
-        $investissement->frais_transaction = $request->frais_transaction;
+        $investissement->frais_transaction   = $request->frais_transaction;
 
         if ($investissement->save()) {
             return back()->with('success', 'L\'investissement a bien été modifié 👍.')->with('message', $message);
@@ -473,11 +473,11 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         /* Récupération des investissements */
-        $investissements = Investissement::all()->where('type_investissement', $type)->where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->sortByDesc('date_transaction');
-        $nombreInvestissement = Investissement::where('type_investissement', $type)->where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->count();
-        $montantInvesties = Investissement::where('type_investissement', $type)->where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->sum('montant_transaction');
-        $montantFrais = Investissement::where('type_investissement', $type)->where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->sum('frais_transaction');
         $type_investissement = $type;
+        $investissements = PrivateController::getInvestissementsTypeNom($type_investissement, $nom_actif, 'date_transaction');
+        $montantInvesties     = $investissements->sum('montant_transaction');
+        $montantFrais         = $investissements->sum('frais_transaction');
+        $nombreInvestissement = $investissements->count();
 
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
@@ -490,11 +490,11 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         /* Récupération des investissements */
-        $investissements = Investissement::all()->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
-        $nombreInvestissement = Investissement::where('user_id', auth()->user()->id)->count();
-        $montantInvesties = Investissement::where('user_id', auth()->user()->id)->sum('montant_transaction');
-        $montantFrais = Investissement::where('user_id', auth()->user()->id)->sum('frais_transaction');
-        $type_investissement = 'investissements';
+        $type_investissement  = 'investissements';
+        $investissements      = PrivateController::getInvestissements('date_transaction');
+        $montantInvesties     = $investissements->sum('montant_transaction');
+        $montantFrais         = $investissements->sum('frais_transaction');
+        $nombreInvestissement = $investissements->count();
 
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
@@ -506,25 +506,20 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $firstDay = date('Y-m-01', strtotime($date));
-        $lastDay = date('Y-m-t', strtotime($date));
-
         if ($type == 'investissements')
         {
-            $investissements      = Investissement::all()->where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->sortByDesc('date_transaction')->sortByDesc('type_investissement');
-            $nombreInvestissement = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->count();
-            $montantInvesties     = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->sum('montant_transaction');
-            $montantFrais         = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->sum('frais_transaction');
             $type_investissement  = 'investissements';
+            $investissements      = PrivateController::getInvestissementsDate($date, 'date_transaction');
         }
         else
         {
-            $investissements      = Investissement::all()->where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->where('type_investissement', $type)->sortByDesc('date_transaction')->sortByDesc('type_investissement');
-            $nombreInvestissement = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->where('type_investissement', $type)->count();
-            $montantInvesties     = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->where('type_investissement', $type)->sum('montant_transaction');
-            $montantFrais         = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->where('type_investissement', $type)->sum('frais_transaction');
             $type_investissement  = $type;
+            $investissements      = PrivateController::getInvestissementsDateType($date, $type_investissement, 'date_transaction');
         }
+
+        $montantInvesties     = $investissements->sum('montant_transaction');
+        $montantFrais         = $investissements->sum('frais_transaction');
+        $nombreInvestissement = $investissements->count();
 
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
@@ -536,14 +531,11 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $firstDay = date('Y-m-01', strtotime($date));
-        $lastDay = date('Y-m-t', strtotime($date));
-
-        $investissements      = Investissement::all()->where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->where('type_investissement', $type)->sortByDesc('date_transaction')->where('nom_actif', $nom_actif)->sortByDesc('type_investissement');
-        $nombreInvestissement = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->where('type_investissement', $type)->where('nom_actif', $nom_actif)->count();
-        $montantInvesties     = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->where('type_investissement', $type)->where('nom_actif', $nom_actif)->sum('montant_transaction');
-        $montantFrais         = Investissement::where('user_id', auth()->user()->id)->where('date_transaction', '>=', $firstDay)->where('date_transaction', '<=', $lastDay)->where('type_investissement', $type)->where('nom_actif', $nom_actif)->sum('frais_transaction');
         $type_investissement = $type;
+        $investissements      = PrivateController::getInvestissementsDateTypeNom($date, $type_investissement, $nom_actif, 'date_transaction');
+        $montantInvesties     = $investissements->sum('montant_transaction');
+        $montantFrais         = $investissements->sum('frais_transaction');
+        $nombreInvestissement = $investissements->count();
 
         return view('private.investissement', compact('investissements', 'nombreInvestissement', 'montantInvesties', 'montantFrais', 'type_investissement'));
     }
@@ -561,11 +553,11 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         /* Récupération des investissements en crypto-monnaies */
-        $investissements = Investissement::all()->where('type_investissement', 'crypto')->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
-        $nombreInvestissement = Investissement::where('type_investissement', 'crypto')->where('user_id', auth()->user()->id)->count();
-        $montantInvesties = Investissement::where('type_investissement', 'crypto')->where('user_id', auth()->user()->id)->sum('montant_transaction');
-        $montantFrais = Investissement::where('type_investissement', 'crypto')->where('user_id', auth()->user()->id)->sum('frais_transaction');
-        $type_investissement = 'crypto';
+        $type_investissement  = 'crypto';
+        $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
+        $montantInvesties     = $investissements->sum('montant_transaction');
+        $montantFrais         = $investissements->sum('frais_transaction');
+        $nombreInvestissement = $investissements->count();
 
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
     }
@@ -583,12 +575,139 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         /* Récupération des investissements en bourse */
-        $investissements = Investissement::all()->where('type_investissement', 'bourse')->where('user_id', auth()->user()->id)->sortByDesc('date_transaction');
-        $nombreInvestissement = Investissement::where('type_investissement', 'bourse')->where('user_id', auth()->user()->id)->count();
-        $montantInvesties = Investissement::where('type_investissement', 'bourse')->where('user_id', auth()->user()->id)->sum('montant_transaction');
-        $montantFrais = Investissement::where('type_investissement', 'bourse')->where('user_id', auth()->user()->id)->sum('frais_transaction');
-        $type_investissement = 'bourse';
+        $type_investissement  = 'bourse';
+        $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
+        $montantInvesties     = $investissements->sum('montant_transaction');
+        $montantFrais         = $investissements->sum('frais_transaction');
+        $nombreInvestissement = $investissements->count();
 
         return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
+    }
+
+    /*------------*/
+    /* Immobilier */
+    /*------------*/
+    /**
+     * Affiche la page des investissements en immobilier
+     */
+    public function immobilier()
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Récupération des investissements en immobilier */
+        $type_investissement  = 'immobilier';
+        $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
+        $montantInvesties     = $investissements->sum('montant_transaction');
+        $montantFrais         = $investissements->sum('frais_transaction');
+        $nombreInvestissement = $investissements->count();
+
+        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
+    }
+
+
+    /*======================*/
+    /* Fonction Utilitaires */
+    /*======================*/
+    /*------*/
+    /* Date */
+    /*------*/
+    /**
+     * Récupère la première date d'un mois
+     */
+    public function getFirstDay(string $date) { return date('Y-m-01', strtotime($date)); }
+
+    /**
+     * Récupère la dernière date d'un mois
+     */
+    public function getLastDay(string $date) { return date('Y-m-t', strtotime($date)); }
+
+    /*----------------*/
+    /* Investissement */
+    /*----------------*/
+    /**
+     * Récupère tous les investissements
+     */
+    public function getInvestissements(string $sort)
+    {
+        return Investissement::all()->where('user_id', auth()->user()->id)->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère tous les investissements d'une même date
+     */
+    public function getInvestissementsDate(string $date, string $sort)
+    {
+        return Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                    ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                                    ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère tous les investissements d'un même type
+     */
+    public function getInvestissementsType(string $type, string $sort)
+    {
+        return Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('type_investissement', $type)
+                                    ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère tous les investissements d'un même nom d'actif
+     */
+    public function getInvestissementsNom(string $nom_actif, string $sort)
+    {
+        return Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('nom_actif', $nom_actif)
+                                    ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les investissements d'une même date et d'un même type
+     */
+    public function getInvestissementsDateType(string $date, string $type, string $sort)
+    {
+        return Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                    ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                                    ->where('type_investissement', $type)
+                                    ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les investissements d'une même date et d'un même nom d'actif
+     */
+    public function getInvestissementsDateNom(string $date, string $nom_actif, string $sort)
+    {
+        return Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                    ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                                    ->where('nom_actif', $nom_actif)
+                                    ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les investissements d'un même type et d'un même nom d'actif
+     */
+    public function getInvestissementsTypeNom(string $type, string $nom_actif, string $sort)
+    {
+        return Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('type_investissement', $type)
+                                    ->where('nom_actif', $nom_actif)
+                                    ->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les investissements d'une même date, d'un même type et d'un même nom d'actif
+     */
+    public function getInvestissementsDateTypeNom(string $date, string $type, string $nom_actif, string $sort)
+    {
+        return Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                    ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                                    ->where('type_investissement', $type)
+                                    ->where('nom_actif', $nom_actif)
+                                    ->sortByDesc($sort);
     }
 }
