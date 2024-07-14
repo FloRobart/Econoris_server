@@ -76,17 +76,17 @@
                         <tr class="tableRow smallText text-center">
                             <!-- Date du virement -->
                             @if (str_contains(strtolower(URL::current()), 'investissement/all'))
-                                <td class="tableCell" title="{{ strftime('%A %d %B %Y', strtotime($investissement->date_transaction)); }}"><a href="{{ route('investissement.date', ['investissements', $investissement->date_transaction]) }}">{{ strftime('%d %B %Y', strtotime($investissement->date_transaction)) }}</a></td>
+                                <td class="tableCell" title="{{ strftime('%A %d %B %Y', strtotime($investissement->date_transaction)); }}"><a href="{{ route('investissement.date', ['investissements', $investissement->date_transaction]) }}" class="link">{{ strftime('%d %B %Y', strtotime($investissement->date_transaction)) }}</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'investissement/details'))
-                                    <td class="tableCell" title="{{ strftime('%A %d %B %Y', strtotime($investissement->date_transaction)); }}"><a href="{{ route('detailsInvestissement.date', [$investissement->type_investissement, $investissement->date_transaction, $investissement->nom_actif]) }}">{{ strftime('%d %B %Y', strtotime($investissement->date_transaction)) }}</a></td>
+                                    <td class="tableCell" title="{{ strftime('%A %d %B %Y', strtotime($investissement->date_transaction)); }}"><a href="{{ route('detailsInvestissement.date', [$investissement->type_investissement, $investissement->nom_actif, $investissement->date_transaction]) }}" class="link">{{ strftime('%d %B %Y', strtotime($investissement->date_transaction)) }}</a></td>
                                 @else
-                                    <td class="tableCell" title="{{ strftime('%A %d %B %Y', strtotime($investissement->date_transaction)); }}"><a href="{{ route('investissement.date', [$investissement->type_investissement, $investissement->date_transaction]) }}">{{ strftime('%d %B %Y', strtotime($investissement->date_transaction)) }}</a></td>
+                                    <td class="tableCell" title="{{ strftime('%A %d %B %Y', strtotime($investissement->date_transaction)); }}"><a href="{{ route('investissement.date', [$investissement->type_investissement, $investissement->date_transaction]) }}" class="link">{{ strftime('%d %B %Y', strtotime($investissement->date_transaction)) }}</a></td>
                                 @endif
                             @endif
 
                             <!-- Nom de l'actif -->
-                            <td class="tableCell" title="Voir les détails de {{ $investissement->nom_actif }}"><a href="{{ route('detailsInvestissement', [$investissement->type_investissement, $investissement->nom_actif]) }}">{{ $investissement->nom_actif }}</a></td>
+                            <td class="tableCell" title="Voir les détails de {{ $investissement->nom_actif }}"><a href="{{ route('detailsInvestissement', [$investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ $investissement->nom_actif }}</a></td>
 
                             <!-- Montant investie -->
                             <td class="tableCell" title="{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</td>

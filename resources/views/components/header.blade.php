@@ -81,7 +81,16 @@
 
             <!-- Détails -->
             @if (str_contains(strtolower(URL::current()), 'details'))
-                <livewire:breadcrumb-link name="Détails" link="{{ URL::current() }}" />
+                @php
+                    if (str_contains(strtolower(URL::current()), 'date')) {
+                        $url = explode('/', URL::current());
+                        $url = array_slice($url, 0, count($url) - 2);
+                        $url = implode('/', $url);
+                    } else {
+                        $url = URL::current();
+                    }
+                @endphp
+                <livewire:breadcrumb-link name="Détails" link="{{ $url }}" />
             @endif
 
             <!-- Date -->
