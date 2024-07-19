@@ -758,67 +758,6 @@ class PrivateController extends Controller
 
 
 
-    /*-----------------*/
-    /* Crypto-monnaies */
-    /*-----------------*/
-    /* Affiche des investissements en crypto-monnaies */
-    /**
-     * Affiche la page des investissements en crypto-monnaies
-     */
-    public function crypto()
-    {
-        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
-
-        /* Récupération des investissements en crypto-monnaies */
-        $type_investissement  = 'crypto';
-        $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
-
-        return view('private.investissement', compact('investissements', 'type_investissement'));
-    }
-
-
-
-    /*--------*/
-    /* Bourse */
-    /*--------*/
-    /* Affiche des investissements en bourse */
-    /**
-     * Affiche la page des investissements en bourse
-     */
-    public function bourse()
-    {
-        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
-
-        /* Récupération des investissements en bourse */
-        $type_investissement  = 'bourse';
-        $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
-
-        return view('private.investissement', compact('investissements', 'type_investissement'));
-    }
-
-
-
-    /*------------*/
-    /* Immobilier */
-    /*------------*/
-    /* Affiche des investissements en immobilier */
-    /**
-     * Affiche la page des investissements en immobilier
-     */
-    public function immobilier()
-    {
-        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
-
-        /* Récupération des investissements en immobilier */
-        $type_investissement  = 'immobilier';
-        $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
-
-        return view('private.investissement', compact('investissements', 'type_investissement'));
-    }
-
-
-
-
     /*======================*/
     /* Fonction Utilitaires */
     /*======================*/
@@ -834,6 +773,7 @@ class PrivateController extends Controller
      * Récupère la dernière date d'un mois
      */
     public function getLastDay(string $date) { return date('Y-m-t', strtotime($date)); }
+
 
 
     /*---------*/
@@ -879,6 +819,7 @@ class PrivateController extends Controller
                              ->where('employeur', $employeur)
                              ->sortByDesc($sort);
     }
+
 
 
     /*---------*/
@@ -970,6 +911,7 @@ class PrivateController extends Controller
                              ->where('compte', $compte)
                              ->sortByDesc($sort);
     }
+
 
 
     /*----------------*/
