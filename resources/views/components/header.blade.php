@@ -49,54 +49,49 @@
     <!-- Partie basse du header -->
     <div class="rowBetweenContainer bgBleuFonce2 py-3">
         <!-- Fil d'ariane -->
+        @php
+            $urlInfo = parse_url(URL::current());
+            $urlPath = $urlInfo['path'] ?? null;
+            $breadcrumb = [];
+
+            if ($urlPath !== null)
+            {
+                $breadcrumb = [
+                    'salaire' => route('salaires'),
+                    'epargne' => route('epargnes'),
+                    'investissements' => route('investissements'),
+                    'date' => parseUrl($urlPath, 'date'),
+                    'employeur' => parseUrl($urlPath, 'employeur'),
+                    'banque' => parseUrl($urlPath, 'banque'),
+                    'compte' => parseUrl($urlPath, 'compte'),
+                    'type' => parseUrl($urlPath, 'type'),
+                    'nom_actif' => parseUrl($urlPath, 'nom_actif'),
+                ];
+            }
+
+
+            function parseUrl(string $url, string $limit)
+            {
+                $urlArray = explode('/', $url);
+                $limitNumber = array_search($limit, $urlArray) == false ? count($urlArray) : (array_search($limit, $urlArray) + 2);
+
+                $urlArray = array_slice($urlArray, 0, $limitNumber);
+                $urlArray = implode('/', $urlArray);
+
+                return $urlArray;
+            }
+        @endphp
+
         <div id="breadcrumb" class="rowStartContainer ml-20">
             <!-- Accueil -->
             <a href="{{ route('accueil.general') }}" class="smallTextReverse">Accueil</a>
             <livewire:breadcrumb-link name="Tableau de bord des finances" link="{{ route('accueil') }}" />
 
-            <!-- Salaire -->
-            @if (str_contains(strtolower(URL::current()), 'salaires'))
-                <livewire:breadcrumb-link name="Salaire" link="{{ route('salaires') }}" />
-            @endif
-
-            <!-- Épargne -->
-            @if (str_contains(strtolower(URL::current()), 'epargnes'))
-                <livewire:breadcrumb-link name="Épargne" link="{{ route('epargnes') }}" />
-            @endif
-
-            <!-- Investissements -->
-            @if (str_contains(strtolower(URL::current()), 'investissements'))
-                <livewire:breadcrumb-link name="Investissements" link="{{ route('investissements') }}" />
-            @endif
-
-            <!-- Crypto-monnaies -->
-            @if (str_contains(strtolower(URL::current()), 'crypto'))
-                <livewire:breadcrumb-link name="Cryptomonnaie" link="{{ route('crypto') }}" />
-            @endif
-
-            <!-- Bourse -->
-            @if (str_contains(strtolower(URL::current()), 'bourse'))
-                <livewire:breadcrumb-link name="Bourse" link="{{ route('bourse') }}" />
-            @endif
-
-            <!-- Détails -->
-            @if (str_contains(strtolower(URL::current()), 'details'))
-                @php
-                    if (str_contains(strtolower(URL::current()), 'date')) {
-                        $url = explode('/', URL::current());
-                        $url = array_slice($url, 0, count($url) - 2);
-                        $url = implode('/', $url);
-                    } else {
-                        $url = URL::current();
-                    }
-                @endphp
-                <livewire:breadcrumb-link name="Détails" link="{{ $url }}" />
-            @endif
-
-            <!-- Date -->
-            @if (str_contains(strtolower(URL::current()), 'date'))
-                <livewire:breadcrumb-link name="Date" link="{{ URL::current() }}" />
-            @endif
+            @foreach ($breadcrumb as $key => $value)
+                @if (str_contains(strtolower($urlPath), $key))
+                    <livewire:breadcrumb-link name="{{ ucfirst($key) }}" link="{{ $value }}" />
+                @endif
+            @endforeach
         </div>
     </div>
 </header>

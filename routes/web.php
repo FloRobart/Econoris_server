@@ -64,14 +64,14 @@ Route::middleware(['auth'])->group(function () {
     /* Investissements */
     /*-----------------*/
     /* Affichage des investissements */
-    Route::get('/investissements', [PrivateController::class, 'investissements'])->name('investissements');
+    Route::get('/investissements', function () { return redirect(route('investissements.type', 'investissements')); })->name('investissements');
     Route::get('/investissements/date/{date}', [PrivateController::class, 'investissementsDate'])->name('investissements.date');
     Route::get('/investissements/type/{type}', [PrivateController::class, 'investissementsType'])->name('investissements.type');
-    Route::get('/investissements/nomActif/{nom_actif}', [PrivateController::class, 'investissementsNom'])->name('investissements.nomActif');
-    Route::get('/investissements/date/{date}/type/{type}', [PrivateController::class, 'investissementsDateType'])->name('investissement.date.type');
-    Route::get('/investissements/date/{date}/nomActif/{nom_actif}', [PrivateController::class, 'investissementsDateNom'])->name('investissement.date.nomActif');
-    Route::get('/investissements/type/{type}/nomActif/{nom_actif}', [PrivateController::class, 'investissementsTypeNom'])->name('investissements.type.nomActif');
-    Route::get('/investissements/date/{date}/type/{type}/nomActif/{nom_actif}', [PrivateController::class, 'investissementsDateTypeNom'])->name('investissements.date.type.nomActif');
+    Route::get('/investissements/nom_actif/{nom_actif}', [PrivateController::class, 'investissementsNom'])->name('investissements.nom_actif');
+    Route::get('/investissements/date/{date}/type/{type}', [PrivateController::class, 'investissementsDateType'])->name('investissements.date.type');
+    Route::get('/investissements/date/{date}/nom_actif/{nom_actif}', [PrivateController::class, 'investissementsDateNom'])->name('investissements.date.nom_actif');
+    Route::get('/investissements/type/{type}/nom_actif/{nom_actif}', [PrivateController::class, 'investissementsTypeNom'])->name('investissements.type.nom_actif');
+    Route::get('/investissements/date/{date}/type/{type}/nom_actif/{nom_actif}', [PrivateController::class, 'investissementsDateTypeNom'])->name('investissements.date.type.nom_actif');
 
     /* Édition des investissements */
     Route::post('/investissement/add', [PrivateController::class, 'addInvestissement'])->name('investissement.add');

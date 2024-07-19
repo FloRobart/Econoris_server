@@ -597,8 +597,10 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $investissements = PrivateController::getInvestissementsDateTypeNom($date, $type, $nom_actif, 'date_transaction');
-        return view('private.investissement', compact('investissements', 'type'));
+        $type_investissement  = $type;
+        $investissements = PrivateController::getInvestissementsDateTypeNom($date, $type_investissement, $nom_actif, 'date_transaction');
+
+        return view('private.investissement', compact('investissements', 'type_investissement'));
     }
 
 
@@ -770,11 +772,8 @@ class PrivateController extends Controller
         /* Récupération des investissements en crypto-monnaies */
         $type_investissement  = 'crypto';
         $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
-        $montantInvesties     = $investissements->sum('montant_transaction');
-        $montantFrais         = $investissements->sum('frais_transaction');
-        $nombreInvestissement = $investissements->count();
 
-        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
+        return view('private.investissement', compact('investissements', 'type_investissement'));
     }
 
 
@@ -793,11 +792,8 @@ class PrivateController extends Controller
         /* Récupération des investissements en bourse */
         $type_investissement  = 'bourse';
         $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
-        $montantInvesties     = $investissements->sum('montant_transaction');
-        $montantFrais         = $investissements->sum('frais_transaction');
-        $nombreInvestissement = $investissements->count();
 
-        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
+        return view('private.investissement', compact('investissements', 'type_investissement'));
     }
 
 
@@ -816,11 +812,8 @@ class PrivateController extends Controller
         /* Récupération des investissements en immobilier */
         $type_investissement  = 'immobilier';
         $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
-        $montantInvesties     = $investissements->sum('montant_transaction');
-        $montantFrais         = $investissements->sum('frais_transaction');
-        $nombreInvestissement = $investissements->count();
 
-        return view('private.investissement', compact('investissements', 'montantInvesties', 'nombreInvestissement', 'montantFrais', 'type_investissement'));
+        return view('private.investissement', compact('investissements', 'type_investissement'));
     }
 
 
