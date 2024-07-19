@@ -122,7 +122,7 @@
 
                             <!-- Montant investie -->
                             @if (str_contains(strtolower(URL::current()), 'type'))
-                                <td class="tableCell" title=""><a href="{{ route('investissements.type', $investissement->type_investissement) }}">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
+                                <td class="tableCell" title=""><a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'date'))
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))

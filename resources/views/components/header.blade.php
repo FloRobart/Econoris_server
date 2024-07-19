@@ -82,9 +82,9 @@
             }
         @endphp
 
-        <div id="breadcrumb" class="rowStartContainer ml-20">
+        <div id="breadcrumb" class="rowStartContainer px-4 min-[550px]:px-6 sm:px-14">
             <!-- Accueil -->
-            <a href="{{ route('accueil.general') }}" class="smallTextReverse">Accueil</a>
+            <a href="{{ route('accueil.general') }}" class="tinyTextReverse sm:smallTextReverse">Accueil</a>
             <livewire:breadcrumb-link name="Tableau de bord des finances" link="{{ route('accueil') }}" />
 
             @foreach ($breadcrumb as $key => $value)
