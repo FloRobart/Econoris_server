@@ -29,7 +29,7 @@
     <a href="{{ route('epargnes') }}" class="buttonForm">Épargnes</a>
 
     <h1 class="titleText">Investissements</h1>
-    <a href="{{ route('investissements.type', 'investissements') }}" class="buttonForm">Tous les investissements</a>
+    <a href="{{ route('investissements') }}" class="buttonForm">Tous les investissements</a>
     <a href="{{ route('investissements.type', 'crypto') }}" class="buttonForm">Crypto-monnaies</a>
     <a href="{{ route('investissements.type', 'bourse') }}" class="buttonForm">Bourse</a>
     <a href="{{ route('investissements.type', 'immobilier') }}" class="buttonForm">Immobilier</a>

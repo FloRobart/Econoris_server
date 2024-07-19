@@ -34,17 +34,17 @@
 
 ### Salaires
 
-- Date
+- date
 - employeur
 
 ### Épargnes
 
-- Date
-- Banque
-- Compte
+- date
+- banque
+- compte
 
 ### Investissements
 
-- Date
-- Type (type_investissement)
-- Nom (nom_actif)
+- date
+- type (type_investissement)
+- nom_actif
