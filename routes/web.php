@@ -77,25 +77,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/investissement/add', [PrivateController::class, 'addInvestissement'])->name('investissement.add');
     Route::post('/investissement/edit', [PrivateController::class, 'editInvestissement'])->name('investissement.edit');
     Route::get('/investissement/remove/{id}', [PrivateController::class, 'removeInvestissement'])->name('investissement.remove');
-
-
-    /*-----------------*/
-    /* Crypto-monnaies */
-    /*-----------------*/
-    /* Affichage des crypto-monnaies */
-    Route::get('/investissements/crypto', [PrivateController::class, 'crypto'])->name('crypto');
-
-    /*--------*/
-    /* Bourse */
-    /*--------*/
-    /* Affichage des investissements en bourse */
-    Route::get('/investissements/bourse', [PrivateController::class, 'bourse'])->name('bourse');
-
-    /*------------*/
-    /* Immobilier */
-    /*------------*/
-    /* Affichage des investissements immobiliers */
-    Route::get('/investissements/immobilier', [PrivateController::class, 'immobilier'])->name('immobilier');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */
