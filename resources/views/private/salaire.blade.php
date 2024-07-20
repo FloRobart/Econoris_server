@@ -57,10 +57,10 @@
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}" class="link">Date du virement</a></th>
-                    <th class="tableCell"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant du salaire</a></th>
-                    <th class="tableCell"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
-                    <th class="tableCell"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
+                    <th class="tableCell" title="Trier les salaires par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}" class="link">Date du virement</a></th>
+                    <th class="tableCell" title="Trier les salaires par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant du salaire</a></th>
+                    <th class="tableCell" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
+                    <th class="tableCell" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
                     <th class="tableCell">Dépences possibles</th>
                     <th class="tableCell max-[460px]:hidden">Actions</th>
                 </tr>
@@ -72,10 +72,10 @@
                     @foreach ($salaires as $salaire)
                         <tr class="tableRow smallText text-center">
                             <!-- Date du virement -->
-                            <td class="tableCell" title=""><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
+                            <td class="tableCell" title="Afficher les salaires du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
                             
                             <!-- Montant du salaire -->
-                            <td class="tableCell" title=""><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($salaire->montant_transaction, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell" title="Afficher les salaires versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($salaire->montant_transaction, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant épargné -->
                             @php $montantEpargne = 0; @endphp
@@ -84,7 +84,7 @@
                                     @php $montantEpargne += $epargne->montant_transaction; @endphp
                                 @endif
                             @endforeach
-                            <td class="tableCell" title=""><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant investie -->
                             @php $montantInvestissement = 0; @endphp
@@ -93,13 +93,13 @@
                                     @php $montantInvestissement += $investissement->montant_transaction; @endphp
                                 @endif
                             @endforeach
-                            <td class="tableCell" title=""><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell" title="Afficher les investissements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences -->
                             @php
                                 $montantDepences = $salaire->montant_transaction - $montantEpargne - $montantInvestissement;
                             @endphp
-                            <td class="tableCell @if ($montantDepences < 0) fontColorError @endif" title="{{ number_format($montantDepences, 2, ',', ' ') }} €">{{ number_format($montantDepences, 2, ',', ' ') }} €</td>
+                            <td class="tableCell @if ($montantDepences < 0) fontColorError @endif">{{ number_format($montantDepences, 2, ',', ' ') }} €</td>
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">

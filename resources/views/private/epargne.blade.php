@@ -51,10 +51,10 @@
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}">Date du virement</a></th>
-                    <th class="tableCell"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}">Montant épargné</a></th>
-                    <th class="tableCell"><a href="{{ URL::current() . '?sort=banque'              . '&order=' . $order }}">Nom de la banque</a></th>
-                    <th class="tableCell"><a href="{{ URL::current() . '?sort=compte'              . '&order=' . $order }}">Nom du compte</a></th>
+                    <th class="tableCell" title="Trier les épargnes par date          @if ($order == 'asc') croissante   @else décroissante      @endif"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}">Date du virement</a></th>
+                    <th class="tableCell" title="Trier les épargnes par montant       @if ($order == 'asc') croissant    @else décroissant       @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}">Montant épargné </a></th>
+                    <th class="tableCell" title="Trier les épargnes par nom de banque @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=banque'              . '&order=' . $order }}">Nom de la banque</a></th>
+                    <th class="tableCell" title="Trier les épargnes par nom de compte @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=compte'              . '&order=' . $order }}">Nom du compte   </a></th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
@@ -66,60 +66,60 @@
                         <tr class="tableRow smallText text-center">
                             <!-- Date de la transaction -->
                             @if (str_contains(strtolower(URL::current()), 'date'))
-                                <td class="tableCell" title="">{{ strftime('%d %B %Y', strtotime($epargne->date_transaction)); }}</td>
+                                <td class="tableCell">{{ strftime('%d %B %Y', strtotime($epargne->date_transaction)); }}</td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'banque'))
                                     @if (str_contains(strtolower(URL::current()), 'compte'))
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }} placé sur le {{ $epargne->compte }} du {{ $epargne->banque }}"><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
                                     @else
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque', [$epargne->date_transaction, $epargne->banque]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }} au {{ $epargne->banque }}"><a href="{{ route('epargnes.date.banque', [$epargne->date_transaction, $epargne->banque]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'compte'))
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.compte', [$epargne->date_transaction, $epargne->compte]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }} placé sur le {{ $epargne->compte }}"><a href="{{ route('epargnes.date.compte', [$epargne->date_transaction, $epargne->compte]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
                                     @else
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date', [$epargne->date_transaction]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('epargnes.date', [$epargne->date_transaction]) }}" class="link">{{ strftime('%d %B %Y',strtotime($epargne->date_transaction)); }}</a></td>
                                     @endif
                                 @endif
                             @endif
                             
                             <!-- Montant de la transaction -->
-                            <td class="tableCell" title="">{{ number_format($epargne->montant_transaction, 2, ',', ' ') }} €</td>
+                            <td class="tableCell">{{ number_format($epargne->montant_transaction, 2, ',', ' ') }} €</td>
                             
                             <!-- Nom de la banque -->
                             @if (str_contains(strtolower(URL::current()), 'banque'))
-                                <td class="tableCell" title="">{{ $epargne->banque }}</td>
+                                <td class="tableCell">{{ $epargne->banque }}</td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'date'))
                                     @if (str_contains(strtolower(URL::current()), 'compte'))
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->banque }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }} placé sur le {{ $epargne->compte }} du {{ $epargne->banque }}"><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->banque }}</a></td>
                                     @else
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque', [$epargne->date_transaction, $epargne->banque]) }}" class="link">{{ $epargne->banque }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }} au {{ $epargne->banque }}"><a href="{{ route('epargnes.date.banque', [$epargne->date_transaction, $epargne->banque]) }}" class="link">{{ $epargne->banque }}</a></td>
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'compte'))
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.banque.compte', [$epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->banque }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes placé sur le {{ $epargne->compte }} du {{ $epargne->banque }}"><a href="{{ route('epargnes.banque.compte', [$epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->banque }}</a></td>
                                     @else
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.banque', $epargne->banque) }}" class="link">{{ $epargne->banque }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes placé sur {{ $epargne->banque }}"><a href="{{ route('epargnes.banque', $epargne->banque) }}" class="link">{{ $epargne->banque }}</a></td>
                                     @endif
                                 @endif
                             @endif
                             
                             <!-- Nom du compte -->
                             @if (str_contains(strtolower(URL::current()), 'compte'))
-                                <td class="tableCell" title="">{{ $epargne->compte }}</td>
+                                <td class="tableCell">{{ $epargne->compte }}</td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'banque'))
                                     @if (str_contains(strtolower(URL::current()), 'date'))
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }} placé sur le {{ $epargne->compte }} du {{ $epargne->banque }}"><a href="{{ route('epargnes.date.banque.compte', [$epargne->date_transaction, $epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
                                     @else
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.banque.compte', [$epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes placé sur le {{ $epargne->compte }} du {{ $epargne->banque }}"><a href="{{ route('epargnes.banque.compte', [$epargne->banque, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'date'))
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.date.compte', [$epargne->date_transaction, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }} placé sur le {{ $epargne->compte }}"><a href="{{ route('epargnes.date.compte', [$epargne->date_transaction, $epargne->compte]) }}" class="link">{{ $epargne->compte }}</a></td>
                                     @else
-                                        <td class="tableCell" title=""><a href="{{ route('epargnes.compte', $epargne->compte) }}" class="link">{{ $epargne->compte }}</a></td>
+                                        <td class="tableCell" title="Afficher les épargnes placé sur le {{ $epargne->compte }}"><a href="{{ route('epargnes.compte', $epargne->compte) }}" class="link">{{ $epargne->compte }}</a></td>
                                     @endif
                                 @endif
                             @endif
