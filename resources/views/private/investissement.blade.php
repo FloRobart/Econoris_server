@@ -61,10 +61,10 @@
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell" title="Trier les investissements par date                 @if ($order == 'asc') croissante   @else décroissante      @endif"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}" class="link">Date du virement</a></th>
-                    <th class="tableCell" title="Trier les investissements par nom                  @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=nom_actif'           . '&order=' . $order }}" class="link">Nom de l'actif</a></th>
-                    <th class="tableCell" title="Trier les investissements par montant              @if ($order == 'asc') croissant    @else décroissant       @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant investie</a></th>
-                    <th class="tableCell" title="Trier les investissements par frais de transaction @if ($order == 'asc') croissant    @else décroissant       @endif"><a href="{{ URL::current() . '?sort=frais_transaction'   . '&order=' . $order }}" class="link">Montant des frais</a></th>
+                    <th class="tableCell" title="Trier les investissements par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}" class="link">Date du virement</a></th>
+                    <th class="tableCell" title="Trier les investissements par nom @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=nom_actif'           . '&order=' . $order }}" class="link">Nom de l'actif</a></th>
+                    <th class="tableCell" title="Trier les investissements par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant investie</a></th>
+                    <th class="tableCell" title="Trier les investissements par frais de transaction @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=frais_transaction'   . '&order=' . $order }}" class="link">Montant des frais</a></th>
                     <th class="tableCell">Montant hors frais</th>
                     <th class="tableCell">Actions</th>
                 </tr>
@@ -82,22 +82,22 @@
                                 @if (str_contains(strtolower(URL::current()), 'type'))
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))
                                         @if (str_contains(strtolower(URL::current()), 'type/investissements'))
-                                            <td class="tableCell" title="Afficher tout les investissements dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.type.nom_actif', [$investissement->date_transaction, 'investissements', $investissement->nom_actif]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
+                                            <td class="tableCell" title="Afficher tout les investissements dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.type.nom_actif', [$investissement->date_transaction, 'investissements', $investissement->nom_actif]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
                                         @else
-                                            <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.type.nom_actif', [$investissement->date_transaction, $investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
+                                            <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.type.nom_actif', [$investissement->date_transaction, $investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
                                         @endif
                                     @else
                                         @if (str_contains(strtolower(URL::current()), 'type/investissements'))
-                                            <td class="tableCell" title="Afficher tout les investissements réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.type', [$investissement->date_transaction, 'investissements']) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
+                                            <td class="tableCell" title="Afficher tout les investissements réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.type', [$investissement->date_transaction, 'investissements']) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
                                         @else
-                                            <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.type', [$investissement->date_transaction, $investissement->type_investissement]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
+                                            <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.type', [$investissement->date_transaction, $investissement->type_investissement]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
                                         @endif
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))
-                                        <td class="tableCell" title="Afficher les investissements dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.nom_actif', [$investissement->date_transaction, $investissement->nom_actif]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
+                                        <td class="tableCell" title="Afficher les investissements dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.nom_actif', [$investissement->date_transaction, $investissement->nom_actif]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
                                     @else
-                                        <td class="tableCell" title="Afficher tout les investissements en réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date', [$investissement->date_transaction]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
+                                        <td class="tableCell" title="Afficher tout les investissements en réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date', [$investissement->date_transaction]) }}" class="link">{{ strftime('%d %B %Y',strtotime($investissement->date_transaction)); }}</a></td>
                                     @endif
                                 @endif
                             @endif
@@ -108,13 +108,13 @@
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'type'))
                                     @if (str_contains(strtolower(URL::current()), 'date'))
-                                        <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.type.nom_actif', [$investissement->date_transaction, $investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ $investissement->nom_actif }}</a></td>
+                                        <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.type.nom_actif', [$investissement->date_transaction, $investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ $investissement->nom_actif }}</a></td>
                                     @else
                                         <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} dans {{ $investissement->nom_actif }}"><a href="{{ route('investissements.type.nom_actif', [$investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ $investissement->nom_actif }}</a></td>
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'date'))
-                                        <td class="tableCell" title="Afficher les investissements dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.nom_actif', [$investissement->date_transaction, $investissement->nom_actif]) }}" class="link">{{ $investissement->nom_actif }}</a></td>
+                                        <td class="tableCell" title="Afficher les investissements dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.nom_actif', [$investissement->date_transaction, $investissement->nom_actif]) }}" class="link">{{ $investissement->nom_actif }}</a></td>
                                     @else
                                         <td class="tableCell" title="Afficher les investissements dans {{ $investissement->nom_actif }}"><a href="{{ route('investissements.nom_actif', $investissement->nom_actif) }}" class="link">{{ $investissement->nom_actif }}</a></td>
                                     @endif
@@ -123,13 +123,13 @@
 
                             <!-- Montant investie -->
                             @if (str_contains(strtolower(URL::current()), 'type'))
-                                <td class="tableCell"><a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
+                                <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }}"><a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'date'))
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))
-                                        <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.type.nom_actif', [$investissement->date_transaction, $investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
+                                        <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} dans {{ $investissement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.type.nom_actif', [$investissement->date_transaction, $investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
                                     @else
-                                        <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} réalisé au mois de {{ strftime('%B %Y', strtotime($epargne->date_transaction)) }}"><a href="{{ route('investissements.date.type', [$investissement->date_transaction, $investissement->type_investissement]) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
+                                        <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} réalisé au mois de {{ strftime('%B %Y', strtotime($investissement->date_transaction)) }}"><a href="{{ route('investissements.date.type', [$investissement->date_transaction, $investissement->type_investissement]) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
                                     @endif
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))

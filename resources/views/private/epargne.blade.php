@@ -51,8 +51,8 @@
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell" title="Trier les épargnes par date          @if ($order == 'asc') croissante   @else décroissante      @endif"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}">Date du virement</a></th>
-                    <th class="tableCell" title="Trier les épargnes par montant       @if ($order == 'asc') croissant    @else décroissant       @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}">Montant épargné </a></th>
+                    <th class="tableCell" title="Trier les épargnes par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}">Date du virement</a></th>
+                    <th class="tableCell" title="Trier les épargnes par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}">Montant épargné </a></th>
                     <th class="tableCell" title="Trier les épargnes par nom de banque @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=banque'              . '&order=' . $order }}">Nom de la banque</a></th>
                     <th class="tableCell" title="Trier les épargnes par nom de compte @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=compte'              . '&order=' . $order }}">Nom du compte   </a></th>
                     <th class="tableCell">Actions</th>
