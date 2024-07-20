@@ -50,10 +50,11 @@
             <!-- Entête du tableau -->
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
-                    <th class="tableCell">Date du virement</th>
-                    <th class="tableCell">Montant épargné</th>
-                    <th class="tableCell">Nom de la banque</th>
-                    <th class="tableCell">Nom du compte</th>
+                    @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}">Date du virement</a></th>
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}">Montant épargné</a></th>
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=banque'              . '&order=' . $order }}">Nom de la banque</a></th>
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=compte'              . '&order=' . $order }}">Nom du compte</a></th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>

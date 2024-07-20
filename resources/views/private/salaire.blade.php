@@ -56,8 +56,9 @@
             <!-- Entête du tableau -->
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
-                    <th class="tableCell">Date du virement</th>
-                    <th class="tableCell">Montant du salaire</th>
+                    @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}" class="link">Date du virement</a></th>
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant du salaire</a></th>
                     <th class="tableCell"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
                     <th class="tableCell"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
                     <th class="tableCell">Dépences possibles</th>
@@ -79,7 +80,7 @@
                             <!-- Montant épargné -->
                             @php $montantEpargne = 0; @endphp
                             @foreach ($epargnes as $epargne)
-                                @if (date("m",strtotime($epargne->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                @if (date("m",strtotime($epargne->date_transaction)) == date("m",strtotime($salaire->date_transaction)) && date("Y",strtotime($epargne->date_transaction)) == date("Y",strtotime($salaire->date_transaction)))
                                     @php $montantEpargne += $epargne->montant_transaction; @endphp
                                 @endif
                             @endforeach

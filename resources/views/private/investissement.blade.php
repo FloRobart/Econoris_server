@@ -60,10 +60,11 @@
             <!-- Entête du tableau -->
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
-                    <th class="tableCell">Date du virement</th>
-                    <th class="tableCell">Nom de l'actif</th>
-                    <th class="tableCell">Montant investie</th>
-                    <th class="tableCell">Montant des frais</th>
+                    @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}" class="link">Date du virement</a></th>
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=nom_actif'           . '&order=' . $order }}" class="link">Nom de l'actif</a></th>
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant investie</a></th>
+                    <th class="tableCell"><a href="{{ URL::current() . '?sort=frais_transaction'   . '&order=' . $order }}" class="link">Montant des frais</a></th>
                     <th class="tableCell">Montant hors frais</th>
                     <th class="tableCell">Actions</th>
                 </tr>

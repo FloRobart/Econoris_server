@@ -34,93 +34,89 @@ class PrivateController extends Controller
     /**
      * Affiche la page des salaires
      */
-    public function salaires()
+    public function salaires(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         /* Récupération des salaires */
-        $salaires = PrivateController::getSalaires('date_transaction');
-        $nombreSalaires = $salaires->count();
-        $montantSalaires = $salaires->sum('montant_transaction');
+        $salaires = PrivateController::getSalaires($sort, $order);
         
         /* Récupération des épargnes */
-        $epargnes = PrivateController::getEpargnes('date_transaction');
-        $montantEpargne = $epargnes->sum('montant_transaction');
+        $epargnes = PrivateController::getEpargnes($sort);
         
         /* Récupération des investissements */
-        $investissements = PrivateController::getInvestissements('date_transaction');
-        $montantInvestissement = $investissements->sum('montant_transaction');
+        $investissements = PrivateController::getInvestissements($sort);
 
-        return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements'));
     }
 
     /**
      * Affiche les salaires d'un même mois
      */
-    public function salairesDate(string $date)
+    public function salairesDate(Request $request, string $date)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         /* Récupération des salaires du mois */
-        $salaires = PrivateController::getSalairesDate($date, 'date_transaction');
-        $montantSalaires = $salaires->sum('montant_transaction');
-        $nombreSalaires = $salaires->count();
+        $salaires = PrivateController::getSalairesDate($date, $sort);
 
         /* Récupération des épargnes du mois */
-        $epargnes = PrivateController::getEpargnesDate($date, 'date_transaction');
-        $montantEpargne = $epargnes->sum('montant_transaction');
+        $epargnes = PrivateController::getEpargnesDate($date, $sort);
         
         /* Récupération des investissements du mois */
         $investissements = PrivateController::getInvestissementsDate($date, 'date_transaction');
-        $montantInvestissement = $investissements->sum('montant_transaction');
 
-        return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements'));
     }
 
     /**
      * Affiche les salaires d'un même employeur
      */
-    public function salairesEmployeur(string $employeur)
+    public function salairesEmployeur(Request $request, string $employeur)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         /* Récupération des salaires du mois */
-        $salaires = PrivateController::getSalairesEmployeur($employeur, 'date_transaction');
-        $montantSalaires = $salaires->sum('montant_transaction');
-        $nombreSalaires = $salaires->count();
+        $salaires = PrivateController::getSalairesEmployeur($employeur, $sort, $order);
 
         /* Récupération des épargnes du mois */
-        $epargnes = PrivateController::getEpargnes('date_transaction');
-        $montantEpargne = $epargnes->sum('montant_transaction');
+        $epargnes = PrivateController::getEpargnes($sort);
         
         /* Récupération des investissements du mois */
-        $investissements = PrivateController::getInvestissements('date_transaction');
-        $montantInvestissement = $investissements->sum('montant_transaction');
+        $investissements = PrivateController::getInvestissements($sort);
 
-        return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements'));
     }
 
     /**
      * Affiche les salaires d'un même mois et d'un même employeur
      */
-    public function salairesDateEmployeur(string $date, string $employeur)
+    public function salairesDateEmployeur(Request $request, string $date, string $employeur)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         /* Récupération des salaires du mois */
-        $salaires = PrivateController::getSalairesDateEmployeur($date, $employeur, 'date_transaction');
-        $montantSalaires = $salaires->sum('montant_transaction');
-        $nombreSalaires = $salaires->count();
+        $salaires = PrivateController::getSalairesDateEmployeur($date, $employeur, $sort);
 
         /* Récupération des épargnes du mois */
-        $epargnes = PrivateController::getEpargnesDate($date, 'date_transaction');
-        $montantEpargne = $epargnes->sum('montant_transaction');
+        $epargnes = PrivateController::getEpargnesDate($date, $sort);
         
         /* Récupération des investissements du mois */
-        $investissements = PrivateController::getInvestissementsDate($date, 'date_transaction');
-        $montantInvestissement = $investissements->sum('montant_transaction');
+        $investissements = PrivateController::getInvestissementsDate($date, $sort);
 
-        return view('private.salaire', compact('salaires', 'montantSalaires', 'nombreSalaires', 'montantEpargne', 'montantInvestissement', 'epargnes', 'investissements'));
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements'));
     }
 
 
@@ -254,88 +250,112 @@ class PrivateController extends Controller
     /**
      * Affiche la page des épargnes
      */
-    public function epargnes()
+    public function epargnes(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $epargnes = PrivateController::getEpargnes('date_transaction');
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $epargnes = PrivateController::getEpargnes($sort, $order);
         return view('private.epargne', compact('epargnes'));
     }
 
     /**
      * Affiche les épargnes d'un même mois
      */
-    public function epargnesDate(string $date)
+    public function epargnesDate(Request $request, string $date)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $epargnes = PrivateController::getEpargnesDate($date, 'date_transaction');
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $epargnes = PrivateController::getEpargnesDate($date, $sort, $order);
         return view('private.epargne', compact('epargnes'));
     }
 
     /**
      * Affiche les épargnes d'une même banque
      */
-    public function epargnesBanque(string $banque)
+    public function epargnesBanque(Request $request, string $banque)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $epargnes = PrivateController::getEpargnesBanque($banque, 'date_transaction');
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $epargnes = PrivateController::getEpargnesBanque($banque, $sort, $order);
         return view('private.epargne', compact('epargnes'));
     }
 
     /**
      * Affiche les épargnes d'un même compte
      */
-    public function epargnesCompte(string $compte)
+    public function epargnesCompte(Request $request, string $compte)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $epargnes = PrivateController::getEpargnesCompte($compte, 'date_transaction');
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $epargnes = PrivateController::getEpargnesCompte($compte, $sort, $order);
         return view('private.epargne', compact('epargnes'));
     }
 
     /**
      * Affiche les épargnes d'un même mois et d'une même banque
      */
-    public function epargnesDateBanque(string $date, string $banque)
+    public function epargnesDateBanque(Request $request, string $date, string $banque)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $epargnes = PrivateController::getEpargnesDateBanque($date, $banque, 'date_transaction');
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $epargnes = PrivateController::getEpargnesDateBanque($date, $banque, $sort, $order);
         return view('private.epargne', compact('epargnes'));
     }
 
     /**
      * Affiche les épargnes d'une même date et d'un même compte
      */
-    public function epargnesDateCompte(string $date, string $compte)
+    public function epargnesDateCompte(Request $request, string $date, string $compte)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $epargnes = PrivateController::getEpargnesDateCompte($date, $compte, 'date_transaction');
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $epargnes = PrivateController::getEpargnesDateCompte($date, $compte, $sort, $order);
         return view('private.epargne', compact('epargnes'));
     }
 
     /**
      * Affiche les épargnes d'une même banque et d'un même compte
      */
-    public function epargnesBanqueCompte(string $banque, string $compte)
+    public function epargnesBanqueCompte(Request $request, string $banque, string $compte)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $epargnes = PrivateController::getEpargnesBanqueCompte($banque, $compte, 'date_transaction');
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $epargnes = PrivateController::getEpargnesBanqueCompte($banque, $compte, $sort, $order);
         return view('private.epargne', compact('epargnes'));
     }
 
     /**
      * Récupère les épargnes d'une même date, d'une même banque et d'un même compte
      */
-    public function epargnesDateBanqueCompte(string $date, string $banque, string $compte)
+    public function epargnesDateBanqueCompte(Request $request, string $date, string $banque, string $compte)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $epargnes = PrivateController::getEpargnesDateBanqueCompte($date, $banque, $compte, 'date_transaction');
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $epargnes = PrivateController::getEpargnesDateBanqueCompte($date, $banque, $compte, $sort, $order);
         return view('private.epargne', compact('epargnes'));
     }
 
@@ -480,23 +500,29 @@ class PrivateController extends Controller
     /**
      * Affiche tous les investissements
      */
-    public function investissements()
+    public function investissements(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         /* Récupération des investissements */
         $type_investissement  = 'investissements';
-        $investissements      = PrivateController::getInvestissements('date_transaction');
+        $investissements      = PrivateController::getInvestissements($sort, $order);
 
         return view('private.investissement', compact('investissements', 'type_investissement'));
     }
 
-    public function investissementsDate(string $date)
+    public function investissementsDate(Request $request, string $date)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         $type_investissement  = 'investissements';
-        $investissements      = PrivateController::getInvestissementsDate($date, 'date_transaction');
+        $investissements      = PrivateController::getInvestissementsDate($date, $sort, $order);
 
         return view('private.investissement', compact('investissements', 'type_investissement'));
     }
@@ -504,19 +530,22 @@ class PrivateController extends Controller
     /**
      * Affiche tous les investissements d'un même type
      */
-    public function investissementsType(string $type)
+    public function investissementsType(Request $request, string $type)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
 
         if ($type == 'investissements')
         {
             $type_investissement  = 'investissements';
-            $investissements      = PrivateController::getInvestissements('date_transaction');
+            $investissements      = PrivateController::getInvestissements($sort, $order);
         }
         else
         {
             $type_investissement  = $type;
-            $investissements      = PrivateController::getInvestissementsType($type_investissement, 'date_transaction');
+            $investissements      = PrivateController::getInvestissementsType($type_investissement, $sort, $order);
         }
 
         return view('private.investissement', compact('investissements', 'type_investissement'));
@@ -525,12 +554,15 @@ class PrivateController extends Controller
     /**
      * Affiche tous les investissements d'un même nom d'actif
      */
-    public function investissementsNom(string $nom_actif)
+    public function investissementsNom(Request $request, string $nom_actif)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         $type_investissement  = 'investissements';
-        $investissements      = PrivateController::getInvestissementsNom($nom_actif, 'date_transaction');
+        $investissements      = PrivateController::getInvestissementsNom($nom_actif, $sort, $order);
 
         return view('private.investissement', compact('investissements', 'type_investissement'));
     }
@@ -538,19 +570,22 @@ class PrivateController extends Controller
     /**
      * Affiche les investissements d'une même date et d'un même type
      */
-    public function investissementsDateType(string $date, string $type)
+    public function investissementsDateType(Request $request, string $date, string $type)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
 
         if ($type == 'investissements')
         {
             $type_investissement  = 'investissements';
-            $investissements      = PrivateController::getInvestissementsDate($date, 'date_transaction');
+            $investissements      = PrivateController::getInvestissementsDate($date, $sort, $order);
         }
         else
         {
             $type_investissement  = $type;
-            $investissements      = PrivateController::getInvestissementsDateType($date, $type_investissement, 'date_transaction');
+            $investissements      = PrivateController::getInvestissementsDateType($date, $type_investissement, $sort, $order);
         }
 
         return view('private.investissement', compact('investissements', 'type_investissement'));
@@ -559,12 +594,15 @@ class PrivateController extends Controller
     /**
      * Affiche les investissements d'une même date et d'un même nom d'actif
      */
-    public function investissementsDateNom(string $date, string $nom_actif)
+    public function investissementsDateNom(Request $request, string $date, string $nom_actif)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         $type_investissement  = 'investissements';
-        $investissements      = PrivateController::getInvestissementsDateNom($date, $nom_actif, 'date_transaction');
+        $investissements      = PrivateController::getInvestissementsDateNom($date, $nom_actif, $sort, $order);
 
         return view('private.investissement', compact('investissements', 'type_investissement'));
     }
@@ -572,19 +610,22 @@ class PrivateController extends Controller
     /**
      * Affiche les investissements d'un même type et d'un même nom d'actif
      */
-    public function investissementsTypeNom(string $type, string $nom_actif)
+    public function investissementsTypeNom(Request $request, string $type, string $nom_actif)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
 
         if ($type == 'investissements')
         {
             $type_investissement  = 'investissements';
-            $investissements      = PrivateController::getInvestissementsNom($nom_actif, 'date_transaction');
+            $investissements      = PrivateController::getInvestissementsNom($nom_actif, $sort, $order);
         }
         else
         {
             $type_investissement  = $type;
-            $investissements      = PrivateController::getInvestissementsTypeNom($type_investissement, $nom_actif, 'date_transaction');
+            $investissements      = PrivateController::getInvestissementsTypeNom($type_investissement, $nom_actif, $sort, $order);
         }
 
         return view('private.investissement', compact('investissements', 'type_investissement'));
@@ -593,12 +634,15 @@ class PrivateController extends Controller
     /**
      * Affiche les détails d'un investissement d'un même mois et d'un même type
      */
-    public function investissementsDateTypeNom(string $date, string $type, string $nom_actif)
+    public function investissementsDateTypeNom(Request $request, string $date, string $type, string $nom_actif)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
         $type_investissement  = $type;
-        $investissements = PrivateController::getInvestissementsDateTypeNom($date, $type_investissement, $nom_actif, 'date_transaction');
+        $investissements = PrivateController::getInvestissementsDateTypeNom($date, $type_investissement, $nom_actif, $sort, $order);
 
         return view('private.investissement', compact('investissements', 'type_investissement'));
     }
@@ -782,42 +826,47 @@ class PrivateController extends Controller
     /**
      * Récupère tous les salaires
      */
-    public function getSalaires(string $sort)
+    public function getSalaires(string $sort = 'date_transaction', $order = 'desc')
     {
-        return Salaire::all()->where('user_id', auth()->user()->id)->sortByDesc($sort);
+        $salaires = Salaire::all()->where('user_id', auth()->user()->id);
+
+        return $order == 'asc' ? $salaires->sortBy($sort) : $salaires->sortByDesc($sort);
     }
 
     /**
      * Récupère les salaires d'une même date
      */
-    public function getSalairesDate(string $date, string $sort)
+    public function getSalairesDate(string $date, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Salaire::all()->where('user_id', auth()->user()->id)
-                             ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
-                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                             ->sortByDesc($sort);
+        $salaires = Salaire::all()->where('user_id', auth()->user()->id)
+                                  ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                  ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+
+        return $order == 'asc' ? $salaires->sortBy($sort) : $salaires->sortByDesc($sort);
     }
 
     /**
      * Récupère les salaires d'un même employeur
      */
-    public function getSalairesEmployeur(string $employeur, string $sort)
+    public function getSalairesEmployeur(string $employeur, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Salaire::all()->where('user_id', auth()->user()->id)
-                             ->where('employeur', $employeur)
-                             ->sortByDesc($sort);
+        $salaires = Salaire::all()->where('user_id', auth()->user()->id)
+                                  ->where('employeur', $employeur);
+
+        return $order == 'asc' ? $salaires->sortBy($sort) : $salaires->sortByDesc($sort);
     }
 
     /**
      * Récupère les salaires d'une même date et d'un même employeur
      */
-    public function getSalairesDateEmployeur(string $date, string $employeur, string $sort)
+    public function getSalairesDateEmployeur(string $date, string $employeur, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Salaire::all()->where('user_id', auth()->user()->id)
-                             ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
-                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                             ->where('employeur', $employeur)
-                             ->sortByDesc($sort);
+        $salaires = Salaire::all()->where('user_id', auth()->user()->id)
+                                  ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                  ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                                  ->where('employeur', $employeur);
+
+        return $order == 'asc' ? $salaires->sortBy($sort) : $salaires->sortByDesc($sort);
     }
 
 
@@ -828,88 +877,97 @@ class PrivateController extends Controller
     /**
      * Récupère toutes les épargnes
      */
-    public function getEpargnes(string $sort)
+    public function getEpargnes(string $sort = 'date_transaction', $order = 'desc')
     {
-        return Epargne::all()->where('user_id', auth()->user()->id)->sortByDesc($sort);
+        $epargnes = Epargne::all()->where('user_id', auth()->user()->id);
+
+        return $order == 'asc' ? $epargnes->sortBy($sort) : $epargnes->sortByDesc($sort);
     }
 
     /**
      * Récupère les épargnes d'une même date
      */
-    public function getEpargnesDate(string $date, string $sort)
+    public function getEpargnesDate(string $date, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Epargne::all()->where('user_id', auth()->user()->id)
+        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)
                              ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
-                             ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                             ->sortByDesc($sort);
+                             ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+
+        return $order == 'asc' ? $epargnes->sortBy($sort) : $epargnes->sortByDesc($sort);
     }
 
     /**
      * Récupère les épargnes d'une même banque
      */
-    public function getEpargnesBanque(string $banque, string $sort)
+    public function getEpargnesBanque(string $banque, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Epargne::all()->where('user_id', auth()->user()->id)
-                             ->where('banque', $banque)
-                             ->sortByDesc($sort);
+        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('banque', $banque);
+
+        return $order == 'asc' ? $epargnes->sortBy($sort) : $epargnes->sortByDesc($sort);
     }
 
     /**
      * Récupère les épargnes d'un même compte
      */
-    public function getEpargnesCompte(string $compte, string $sort)
+    public function getEpargnesCompte(string $compte, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Epargne::all()->where('user_id', auth()->user()->id)
-                             ->where('compte', $compte)
-                             ->sortByDesc($sort);
+        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)
+                             ->where('compte', $compte);
+
+        return $order == 'asc' ? $epargnes->sortBy($sort) : $epargnes->sortByDesc($sort);
     }
 
     /**
      * Récupère les épargnes d'une même date et d'une même banque
      */
-    public function getEpargnesDateBanque(string $date, string $banque, string $sort)
+    public function getEpargnesDateBanque(string $date, string $banque, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Epargne::all()->where('user_id', auth()->user()->id)
+        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)
                              ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                              ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                             ->where('banque', $banque)
-                             ->sortByDesc($sort);
+                             ->where('banque', $banque);
+
+        return $order == 'asc' ? $epargnes->sortBy($sort) : $epargnes->sortByDesc($sort);
     }
 
     /**
      * Récupère les épargnes d'une même date et d'un même compte
      */
-    public function getEpargnesDateCompte(string $date, string $compte, string $sort)
+    public function getEpargnesDateCompte(string $date, string $compte, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Epargne::all()->where('user_id', auth()->user()->id)
+        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)
                              ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                              ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                             ->where('compte', $compte)
-                             ->sortByDesc($sort);
+                             ->where('compte', $compte);
+
+        return $order == 'asc' ? $epargnes->sortBy($sort) : $epargnes->sortByDesc($sort);
     }
 
     /**
      * Récupère les épargnes d'une même banque et d'un même compte
      */
-    public function getEpargnesBanqueCompte(string $banque, string $compte, string $sort)
+    public function getEpargnesBanqueCompte(string $banque, string $compte, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Epargne::all()->where('user_id', auth()->user()->id)
+        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)
                              ->where('banque', $banque)
-                             ->where('compte', $compte)
-                             ->sortByDesc($sort);
+                             ->where('compte', $compte);
+
+        return $order == 'asc' ? $epargnes->sortBy($sort) : $epargnes->sortByDesc($sort);
     }
 
     /**
      * Récupère les épargnes d'une même date, d'une même banque et d'un même compte
      */
-    public function getEpargnesDateBanqueCompte(string $date, string $banque, string $compte, string $sort)
+    public function getEpargnesDateBanqueCompte(string $date, string $banque, string $compte, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Epargne::all()->where('user_id', auth()->user()->id)
+        $epargnes = Epargne::all()->where('user_id', auth()->user()->id)
                              ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                              ->where('date_transaction', '<=', PrivateController::getLastDay($date))
                              ->where('banque', $banque)
-                             ->where('compte', $compte)
-                             ->sortByDesc($sort);
+                             ->where('compte', $compte);
+
+        return $order == 'asc' ? $epargnes->sortBy($sort) : $epargnes->sortByDesc($sort);
     }
 
 
@@ -920,87 +978,96 @@ class PrivateController extends Controller
     /**
      * Récupère tous les investissements
      */
-    public function getInvestissements(string $sort)
+    public function getInvestissements(string $sort = 'date_transaction', $order = 'desc')
     {
-        return Investissement::all()->where('user_id', auth()->user()->id)->sortByDesc($sort);
+        $investissements = Investissement::all()->where('user_id', auth()->user()->id);
+
+        return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
     }
 
     /**
      * Récupère tous les investissements d'une même date
      */
-    public function getInvestissementsDate(string $date, string $sort)
+    public function getInvestissementsDate(string $date, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Investissement::all()->where('user_id', auth()->user()->id)
+        $investissements = Investissement::all()->where('user_id', auth()->user()->id)
                                     ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
-                                    ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                                    ->sortByDesc($sort);
+                                    ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+
+        return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
     }
 
     /**
      * Récupère tous les investissements d'un même type
      */
-    public function getInvestissementsType(string $type, string $sort)
+    public function getInvestissementsType(string $type, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Investissement::all()->where('user_id', auth()->user()->id)
-                                    ->where('type_investissement', $type)
-                                    ->sortByDesc($sort);
+        $investissements = Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('type_investissement', $type);
+
+        return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
     }
 
     /**
      * Récupère tous les investissements d'un même nom d'actif
      */
-    public function getInvestissementsNom(string $nom_actif, string $sort)
+    public function getInvestissementsNom(string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Investissement::all()->where('user_id', auth()->user()->id)
-                                    ->where('nom_actif', $nom_actif)
-                                    ->sortByDesc($sort);
+        $investissements = Investissement::all()->where('user_id', auth()->user()->id)
+                                    ->where('nom_actif', $nom_actif);
+
+        return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
     }
 
     /**
      * Récupère les investissements d'une même date et d'un même type
      */
-    public function getInvestissementsDateType(string $date, string $type, string $sort)
+    public function getInvestissementsDateType(string $date, string $type, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Investissement::all()->where('user_id', auth()->user()->id)
+        $investissements = Investissement::all()->where('user_id', auth()->user()->id)
                                     ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                                     ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                                    ->where('type_investissement', $type)
-                                    ->sortByDesc($sort);
+                                    ->where('type_investissement', $type);
+
+        return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
     }
 
     /**
      * Récupère les investissements d'une même date et d'un même nom d'actif
      */
-    public function getInvestissementsDateNom(string $date, string $nom_actif, string $sort)
+    public function getInvestissementsDateNom(string $date, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Investissement::all()->where('user_id', auth()->user()->id)
+        $investissements = Investissement::all()->where('user_id', auth()->user()->id)
                                     ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                                     ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                                    ->where('nom_actif', $nom_actif)
-                                    ->sortByDesc($sort);
+                                    ->where('nom_actif', $nom_actif);
+
+        return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
     }
 
     /**
      * Récupère les investissements d'un même type et d'un même nom d'actif
      */
-    public function getInvestissementsTypeNom(string $type, string $nom_actif, string $sort)
+    public function getInvestissementsTypeNom(string $type, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Investissement::all()->where('user_id', auth()->user()->id)
+        $investissements = Investissement::all()->where('user_id', auth()->user()->id)
                                     ->where('type_investissement', $type)
-                                    ->where('nom_actif', $nom_actif)
-                                    ->sortByDesc($sort);
+                                    ->where('nom_actif', $nom_actif);
+                                    
+        return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
     }
 
     /**
      * Récupère les investissements d'une même date, d'un même type et d'un même nom d'actif
      */
-    public function getInvestissementsDateTypeNom(string $date, string $type, string $nom_actif, string $sort)
+    public function getInvestissementsDateTypeNom(string $date, string $type, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
-        return Investissement::all()->where('user_id', auth()->user()->id)
+        $investissements = Investissement::all()->where('user_id', auth()->user()->id)
                                     ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                                     ->where('date_transaction', '<=', PrivateController::getLastDay($date))
                                     ->where('type_investissement', $type)
-                                    ->where('nom_actif', $nom_actif)
-                                    ->sortByDesc($sort);
+                                    ->where('nom_actif', $nom_actif);
+
+        return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
     }
 }
