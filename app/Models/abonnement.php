@@ -15,6 +15,6 @@ class abonnement extends Model
         'nom',
         'montant_transaction',
         'date_debut',
-        'date_fin',
+        'actif'
     ];
 }

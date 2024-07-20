@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('nom');
             $table->float('montant_transaction');
-            $table->date('date_debut');
-            $table->date('date_fin');
+            $table->date('date_debut')->default(now());
+            $table->boolean('actif')->default(true);
             $table->timestamps();
         });
     }

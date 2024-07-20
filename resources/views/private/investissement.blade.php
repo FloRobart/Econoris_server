@@ -27,7 +27,7 @@
 <section class="colCenterContainer space-y-12 mt-4 px-6 mb-32 bgPage">
     <!-- Information générale -->
     <div class="colCenterContainer">
-        <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale {{ parse_url(URL::current(), PHP_URL_QUERY) }}</h2>
+        <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
 
         <!-- Nombre de d'opérations d'investissement -->
         <div class="rowCenterContainer">
