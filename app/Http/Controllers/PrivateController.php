@@ -856,14 +856,14 @@ class PrivateController extends Controller
     /**
      * Affiche les abonnements actifs ou inactifs
      */
-    public function abonnementsActif(Request $request, string $actif)
+    public function abonnementsActif(Request $request, int $actif)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnements = PrivateController::getAbonnementsActif(filter_var($actif, FILTER_VALIDATE_BOOLEAN), $sort, $order);
+        $abonnements = PrivateController::getAbonnementsActif($actif, $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1362,10 +1362,10 @@ class PrivateController extends Controller
     /**
      * Récupère uniquement les abonnements actifs ou inactifs 
      */
-    public function getAbonnementsActif(bool $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
+    public function getAbonnementsActif(int $abonnement_actif = 1, string $sort = 'date_transaction', $order = 'desc')
     {
         $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
-                                    ->where('actif', $abonnement_actif);
+                                        ->where('abonnement_actif', $abonnement_actif);
 
         return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
     }

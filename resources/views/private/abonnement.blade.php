@@ -34,9 +34,19 @@
             <span class="normalText">Nombre d'abonnement : <span class="normalTextBleuLogo font-bold">{{ $abonnements->count() }}</span></span>
         </div>
 
+        <!-- Montant mensuel des abonnements actifs -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements->where('abonnement_actif', 1)->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant mensuel des abonnements inactifs -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant mensuel des abonnements inactifs : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements->where('abonnement_actif', 0)->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+        </div>
+
         <!-- Montant mensuel des abonnements -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel des abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant mensuel de tout les abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 
@@ -108,27 +118,29 @@
                             <!-- Abonnement actif -->
                             @if (str_contains(strtolower(URL::current()), 'abonnement_actif'))
                                 <td class="tableCell">
-                                    @if ($abonnement->abonnement_actif)
-                                        <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    @else
-                                        <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    @endif
+                                    <div class="smallRowCenterContainer">
+                                        @if ($abonnement->abonnement_actif)
+                                            <svg class="smallSizeIcons fontColorValid" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        @else
+                                            <svg class="smallSizeIcons fontColorError" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        @endif
+                                    </div>
                                 </td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'date'))
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))
                                         <td class="tableCell" title="Afficher les abonnements à {{ $abonnement->nom_actif }} toujours actif et souscrit au mois de {{ strftime('%B %Y', strtotime($abonnement->date_transaction)) }}">
-                                            <a href="{{ route('abonnements.date.nom_actif.abonnement_actif', [$abonnement->date_transaction, $abonnement->nom_actif, $abonnement->abonnement_actif]) }}" class="link @if ($abonnement->abonnement_actif) fontColorValid @else fontColorError @endif">
+                                            <a href="{{ route('abonnements.date.nom_actif.abonnement_actif', [$abonnement->date_transaction, $abonnement->nom_actif, $abonnement->abonnement_actif]) }}" class="smallRowCenterContainer link">
                                                 @if ($abonnement->abonnement_actif)
-                                                    <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <svg class="smallSizeIcons fontColorValid" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
                                                 @else
-                                                    <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <svg class="smallSizeIcons fontColorError" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
                                                 @endif
@@ -136,13 +148,13 @@
                                         </td>
                                     @else
                                         <td class="tableCell" title="Afficher les abonnements toujours actif souscrit au mois de {{ strftime('%B %Y', strtotime($abonnement->date_transaction)) }}">
-                                            <a href="{{ route('abonnements.date.abonnement_actif', [$abonnement->date_transaction, $abonnement->abonnement_actif]) }}" class="link @if ($abonnement->abonnement_actif) fontColorValid @else fontColorError @endif">
+                                            <a href="{{ route('abonnements.date.abonnement_actif', [$abonnement->date_transaction, $abonnement->abonnement_actif]) }}" class="smallRowCenterContainer link">
                                                 @if ($abonnement->abonnement_actif)
-                                                    <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <svg class="smallSizeIcons fontColorValid" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
                                                 @else
-                                                    <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <svg class="smallSizeIcons fontColorError" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
                                                 @endif
@@ -152,13 +164,13 @@
                                 @else
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))
                                         <td class="tableCell" title="Afficher les abonnements à {{ $abonnement->nom_actif }} toujours actif">
-                                            <a href="{{ route('abonnements.nom_actif.abonnement_actif', [$abonnement->nom_actif, $abonnement->abonnement_actif]) }}" class="link @if ($abonnement->abonnement_actif) fontColorValid @else fontColorError @endif">
+                                            <a href="{{ route('abonnements.nom_actif.abonnement_actif', [$abonnement->nom_actif, $abonnement->abonnement_actif]) }}" class="smallRowCenterContainer link">
                                                 @if ($abonnement->abonnement_actif)
-                                                    <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <svg class="smallSizeIcons fontColorValid" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
                                                 @else
-                                                    <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <svg class="smallSizeIcons fontColorError" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
                                                 @endif
@@ -168,11 +180,11 @@
                                         <td class="tableCell">
                                             <a href="{{ route('abonnements.abonnement_actif', $abonnement->abonnement_actif) }}" title="Afficher les abonnements @if ($abonnement->abonnement_actif) actif @else inactif @endif" class="smallRowCenterContainer link @if ($abonnement->abonnement_actif) fontColorValid @else fontColorError @endif">
                                                 @if ($abonnement->abonnement_actif)
-                                                    <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <svg class="smallSizeIcons fontColorValid" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
                                                 @else
-                                                    <svg class="smallSizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                    <svg class="smallSizeIcons fontColorError" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                                     </svg>
                                                 @endif
