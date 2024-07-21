@@ -1351,10 +1351,10 @@ class PrivateController extends Controller
     /**
      * Récupère les abonnements d'un même nom
      */
-    public function getAbonnementsNom(string $nom, string $sort = 'date_transaction', $order = 'desc')
+    public function getAbonnementsNom(string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
         $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
-                                    ->where('nom', $nom);
+                                    ->where('nom_actif', $nom_actif);
 
         return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
     }
@@ -1362,7 +1362,7 @@ class PrivateController extends Controller
     /**
      * Récupère uniquement les abonnements actifs ou inactifs 
      */
-    public function getAbonnementsActif(int $abonnement_actif = 1, string $sort = 'date_transaction', $order = 'desc')
+    public function getAbonnementsActif(bool $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
     {
         $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
                                         ->where('abonnement_actif', $abonnement_actif);
@@ -1373,12 +1373,12 @@ class PrivateController extends Controller
     /**
      * Récupère les abonnements d'une même date et d'un même nom
      */
-    public function getAbonnementsDateNom(string $date, string $nom, string $sort = 'date_transaction', $order = 'desc')
+    public function getAbonnementsDateNom(string $date, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
         $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
                                     ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                                     ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                                    ->where('nom', $nom);
+                                    ->where('nom_actif', $nom_actif);
 
         return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
     }
@@ -1391,7 +1391,7 @@ class PrivateController extends Controller
         $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
                                         ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                                         ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                                        ->where('actif', $abonnement_actif);
+                                        ->where('abonnement_actif', $abonnement_actif);
 
         return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
     }
@@ -1403,7 +1403,7 @@ class PrivateController extends Controller
     {
         $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
                                         ->where('nom', $nom)
-                                        ->where('actif', $abonnement_actif);
+                                        ->where('abonnement_actif', $abonnement_actif);
 
         return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
     }
@@ -1411,13 +1411,13 @@ class PrivateController extends Controller
     /**
      * Récupère les abonnements actif ou inactif d'une même date et d'un même nom
      */
-    public function getAbonnementsDateNomActif(string $date, string $nom, bool $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
+    public function getAbonnementsDateNomActif(string $date, string $nom_actif, bool $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
     {
         $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
                                         ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
                                         ->where('date_transaction', '<=', PrivateController::getLastDay($date))
-                                        ->where('nom', $nom)
-                                        ->where('actif', $abonnement_actif);
+                                        ->where('nom_actif', $nom_actif)
+                                        ->where('abonnement_actif', $abonnement_actif);
 
         return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
     }
