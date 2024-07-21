@@ -77,6 +77,25 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/investissement/add', [PrivateController::class, 'addInvestissement'])->name('investissement.add');
     Route::post('/investissement/edit', [PrivateController::class, 'editInvestissement'])->name('investissement.edit');
     Route::get('/investissement/remove/{id}', [PrivateController::class, 'removeInvestissement'])->name('investissement.remove');
+
+    /*-------------*/
+    /* Abonnements */
+    /*-------------*/
+    /* Affichage des abonnements */
+    Route::get('/abonnements', [PrivateController::class, 'abonnements'])->name('abonnements');
+    Route::get('/abonnements/date/{date}', [PrivateController::class, 'abonnementsDate'])->name('abonnements.date');
+    Route::get('/abonnements/nom_actif/{nom_actif}', [PrivateController::class, 'abonnementsNom'])->name('abonnements.nom_actif');
+    Route::get('/abonnements/abonnement_actif/{abonnement_actif}', [PrivateController::class, 'abonnementsActif'])->name('abonnements.abonnement_actif');
+    Route::get('/abonnements/date/{date}/nom_actif/{nom_actif}', [PrivateController::class, 'abonnementsDateNom'])->name('abonnements.date.nom_actif');
+    Route::get('/abonnements/date/{date}/abonnement_actif/{abonnement_actif}', [PrivateController::class, 'abonnementsDateActif'])->name('abonnements.date.abonnement_actif');
+    Route::get('/abonnements/nom_actif/{nom_actif}/abonnement_actif/{abonnement_actif}', [PrivateController::class, 'abonnementsNomActif'])->name('abonnements.nom_actif.abonnement_actif');
+    Route::get('/abonnements/date/{date}/nom_actif/{nom_actif}/abonnement_actif/{abonnement_actif}', [PrivateController::class, 'abonnementsDateNomActif'])->name('abonnements.date.nom_actif.abonnement_actif');
+
+
+    /* Édition des abonnements */
+    Route::post('/abonnement/add', [PrivateController::class, 'addAbonnement'])->name('abonnement.add');
+    Route::post('/abonnement/edit', [PrivateController::class, 'editAbonnement'])->name('abonnement.edit');
+    Route::get('/abonnement/remove/{id}', [PrivateController::class, 'removeAbonnement'])->name('abonnement.remove');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

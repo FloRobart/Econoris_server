@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('emprunts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('nom');
+            $table->string('nom_actif');
             $table->float('montant_transaction');
             $table->float('taux_interet_annuel');
             $table->date('date_debut');

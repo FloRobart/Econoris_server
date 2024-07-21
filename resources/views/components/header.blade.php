@@ -57,15 +57,24 @@
             if ($urlPath !== null)
             {
                 $breadcrumb = [
-                    'salaire' => route('salaires'),
-                    'epargne' => route('epargnes'),
+                    /* Niveau 1 */
+                    'salaires' => route('salaires'),
+                    'epargnes' => route('epargnes'),
                     'investissements' => route('investissements'),
+                    'abonnements' => route('abonnements'),
+
+                    /* Niveau 2 */
                     'date' => parseUrl($urlPath, 'date'),
+
+                    /* Niveau 3 */
                     'employeur' => parseUrl($urlPath, 'employeur'),
                     'banque' => parseUrl($urlPath, 'banque'),
                     'compte' => parseUrl($urlPath, 'compte'),
                     'type' => parseUrl($urlPath, 'type'),
                     'nom_actif' => parseUrl($urlPath, 'nom_actif'),
+
+                    /* Niveau 4 */
+                    'abonnement_actif' => parseUrl($urlPath, 'abonnement_actif'),
                 ];
             }
 

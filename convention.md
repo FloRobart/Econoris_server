@@ -11,6 +11,7 @@
     - [Salaires](#salaires)
     - [Épargnes](#épargnes)
     - [Investissements](#investissements)
+    - [Abonnements](#abonnements)
 
 ## Convention de nommage générale des routes
 
@@ -48,3 +49,9 @@
 - date
 - type (type_investissement)
 - nom_actif
+
+### Abonnements
+
+- date
+- nom
+- actif

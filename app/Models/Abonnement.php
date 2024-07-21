@@ -5,16 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class abonnement extends Model
+class Abonnement extends Model
 {
     use HasFactory;
+
+    protected $connection = 'finance_dashboard' ;
+    protected $table = 'abonnements' ;
 
     protected $fillable = [
         'id',
         'user_id',
-        'nom',
+        'nom_actif',
         'montant_transaction',
-        'date_debut',
-        'actif'
+        'date_transaction',
+        'abonnement_actif'
     ];
 }

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('abonnement_histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('nom');
+            $table->string('nom_actif');
             $table->float('montant_transaction');
             $table->date('date_transaction');
             $table->timestamps();

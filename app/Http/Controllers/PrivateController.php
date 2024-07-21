@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Models\Salaire;
 use App\Models\Epargne;
 use App\Models\Investissement;
+use App\Models\Abonnement;
+use App\Models\Emprunt;
 
 
 class PrivateController extends Controller
@@ -30,7 +32,7 @@ class PrivateController extends Controller
     /*----------*/
     /* Salaires */
     /*----------*/
-    /* Affiche des salaires */
+    /* Affichage des salaires */
     /**
      * Affiche la page des salaires
      */
@@ -246,7 +248,7 @@ class PrivateController extends Controller
     /*----------*/
     /* Épargnes */
     /*----------*/
-    /* Affiche des épargnes */
+    /* Affichage des épargnes */
     /**
      * Affiche la page des épargnes
      */
@@ -496,7 +498,7 @@ class PrivateController extends Controller
     /*-----------------*/
     /* Investissements */
     /*-----------------*/
-    /* Affiche des investissements */
+    /* Affichage des investissements */
     /**
      * Affiche tous les investissements
      */
@@ -801,6 +803,254 @@ class PrivateController extends Controller
 
 
 
+    /*-------------*/
+    /* Abonnements */
+    /*-------------*/
+    /* Affiche des abonnements */
+    /**
+     * Affiche tous les abonnements
+     */
+    public function abonnements(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        /* Récupération des abonnements */
+        $abonnements = PrivateController::getAbonnements($sort, $order);
+
+        return view('private.abonnement', compact('abonnements'));
+    }
+
+    /**
+     * Affiche les abonnements d'un même mois
+     */
+    public function abonnementsDate(Request $request, string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnements = PrivateController::getAbonnementsDate($date, $sort, $order);
+
+        return view('private.abonnement', compact('abonnements'));
+    }
+
+    /**
+     * Affiche les abonnements d'un même nom
+     */
+    public function abonnementsNom(Request $request, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnements = PrivateController::getAbonnementsNom($nom_actif, $sort, $order);
+
+        return view('private.abonnement', compact('abonnements'));
+    }
+
+    /**
+     * Affiche les abonnements actifs ou inactifs
+     */
+    public function abonnementsActif(Request $request, string $actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnements = PrivateController::getAbonnementsActif(filter_var($actif, FILTER_VALIDATE_BOOLEAN), $sort, $order);
+
+        return view('private.abonnement', compact('abonnements'));
+    }
+
+    /**
+     * Affiche les abonnements d'un même mois et d'un même nom
+     */
+    public function abonnementsDateNom(Request $request, string $date, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnements = PrivateController::getAbonnementsDateNom($date, $nom_actif, $sort, $order);
+
+        return view('private.abonnement', compact('abonnements'));
+    }
+
+    /**
+     * Affiche les abonnements d'un même mois et d'un même état
+     */
+    public function abonnementsDateActif(Request $request, string $date, string $actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnements = PrivateController::getAbonnementsDateActif($date, filter_var($actif, FILTER_VALIDATE_BOOLEAN), $sort, $order);
+
+        return view('private.abonnement', compact('abonnements'));
+    }
+
+    /**
+     * Affiche les abonnements d'un même nom et d'un même état
+     */
+    public function abonnementsNomActif(Request $request, string $nom_actif, string $actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnements = PrivateController::getAbonnementsNomActif($nom_actif, filter_var($actif, FILTER_VALIDATE_BOOLEAN), $sort, $order);
+
+        return view('private.abonnement', compact('abonnements'));
+    }
+
+    /**
+     * Affiche les abonnements d'un même mois, d'un même nom et d'un même état
+     */
+    public function abonnementsDateNomActif(Request $request, string $date, string $nom_actif, string $actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnements = PrivateController::getAbonnementsDateNomActif($date, $nom_actif, filter_var($actif, FILTER_VALIDATE_BOOLEAN), $sort, $order);
+
+        return view('private.abonnement', compact('abonnements'));
+    }
+
+
+    /* Édition des abonnements */
+    /**
+     * Ajoute un abonnement
+     */
+    public function addAbonnement(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'date_transaction' => 'required|date|before:tomorrow',
+            'nom_actif' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0',
+            'abonnement_actif' => 'required'
+        ], [
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
+            'abonnement_actif.required' => 'L\'état est obligatoire.'
+        ]);
+
+        /* Message de confirmation */
+        if (Abonnement::where('date_transaction', $request->date_transaction)->where('nom_actif', $request->nom_actif)->where('montant_transaction', $request->montant_transaction)->where('abonnement_actif', $request->abonnement_actif)->first()) {
+            $message = 'Attention, un abonnement similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Ajout de l'abonnement */
+        $abonnement = new Abonnement();
+        $abonnement->user_id             = auth()->user()->id;
+        $abonnement->date_transaction    = $request->date_transaction;
+        $abonnement->nom_actif           = $request->nom_actif;
+        $abonnement->montant_transaction = $request->montant_transaction;
+        $abonnement->abonnement_actif    = filter_var($request->abonnement_actif, FILTER_VALIDATE_BOOLEAN);
+
+        if ($abonnement->save()) {
+            return back()->with('success', 'L\'abonnement a bien été ajouté 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de l\'ajout de l\'abonnement ❌.');
+        }
+    }
+
+    /**
+     * Modifie un abonnement
+     */
+    public function editAbonnement(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.abonnements,id',
+            'date_transaction' => 'required|date|before:tomorrow',
+            'nom_actif' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0',
+            'abonnement_actif' => 'required'
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
+            'abonnement_actif.required' => 'L\'état est obligatoire.'
+        ]);
+
+        /* Ajout de l'abonnement */
+        $abonnement = Abonnement::find($request->id);
+        if ($abonnement->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
+
+        $abonnement->date_transaction    = $request->date_transaction;
+        $abonnement->nom_actif           = $request->nom_actif;
+        $abonnement->montant_transaction = $request->montant_transaction;
+        $abonnement->abonnement_actif    = filter_var($request->abonnement_actif, FILTER_VALIDATE_BOOLEAN);
+
+        if ($abonnement->save()) {
+            return back()->with('success', 'L\'abonnement a bien été modifié 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de l\'abonnement ❌.');
+        }
+    }
+
+    /**
+     * Supprime un abonnement
+     */
+    public function removeAbonnement(string $id)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        if ($id == null) { back()->with('error', 'l\'id est null ❌.'); }
+        if (!is_numeric($id)) { back()->with('error', 'l\'id n\'est pas un nombre ❌.'); }
+        if ($id <= 0) { back()->with('error', 'l\'id est inférieur ou égal à 0 ❌.'); }
+
+        $abonnement = Abonnement::find($id);
+        if (!$abonnement) { back()->with('error', 'L\'abonnement n\'existe pas ❌.'); }
+        if ($abonnement->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
+
+        /* Suppression de l'abonnement */
+        if ($abonnement->delete()) {
+            return back()->with('success', 'L\'abonnement a bien été supprimé 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la suppression de l\'abonnement ❌.');
+        }
+    }
+
+
+
 
     /*======================*/
     /* Fonction Utilitaires */
@@ -1069,5 +1319,106 @@ class PrivateController extends Controller
                                     ->where('nom_actif', $nom_actif);
 
         return $order == 'asc' ? $investissements->sortBy($sort) : $investissements->sortByDesc($sort);
+    }
+
+
+
+    /*-------------*/
+    /* Abonnements */
+    /*-------------*/
+    /**
+     * Récupère tous les abonnements
+     */
+    public function getAbonnements(string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement::all()->where('user_id', auth()->user()->id);
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les abonnements d'une même date
+     */
+    public function getAbonnementsDate(string $date, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
+                                    ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                    ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les abonnements d'un même nom
+     */
+    public function getAbonnementsNom(string $nom, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
+                                    ->where('nom', $nom);
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère uniquement les abonnements actifs ou inactifs 
+     */
+    public function getAbonnementsActif(bool $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
+                                    ->where('actif', $abonnement_actif);
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les abonnements d'une même date et d'un même nom
+     */
+    public function getAbonnementsDateNom(string $date, string $nom, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
+                                    ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                    ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                                    ->where('nom', $nom);
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les abonnements actif ou inactif d'une même date
+     */
+    public function getAbonnementsDateActif(string $date, bool $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
+                                        ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                        ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                                        ->where('actif', $abonnement_actif);
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les abonnements actif ou inactif d'un même nom
+     */
+    public function getAbonnementsNomActif(string $nom, bool $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
+                                        ->where('nom', $nom)
+                                        ->where('actif', $abonnement_actif);
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
+    }
+
+    /**
+     * Récupère les abonnements actif ou inactif d'une même date et d'un même nom
+     */
+    public function getAbonnementsDateNomActif(string $date, string $nom, bool $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement::all()->where('user_id', auth()->user()->id)
+                                        ->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                        ->where('date_transaction', '<=', PrivateController::getLastDay($date))
+                                        ->where('nom', $nom)
+                                        ->where('actif', $abonnement_actif);
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
     }
 }
