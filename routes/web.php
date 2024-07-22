@@ -78,6 +78,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/investissement/edit', [PrivateController::class, 'editInvestissement'])->name('investissement.edit');
     Route::get('/investissement/remove/{id}', [PrivateController::class, 'removeInvestissement'])->name('investissement.remove');
 
+    /* Ajout de type d'investissement */
+    Route::post('/investissement/type/add', [PrivateController::class, 'addTypeInvestissement'])->name('investissement.type.add');
+
     /*-------------*/
     /* Abonnements */
     /*-------------*/

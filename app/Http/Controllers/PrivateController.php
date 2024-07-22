@@ -20,7 +20,11 @@ class PrivateController extends Controller
     public function accueil()
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
-        return view('private.accueil');
+
+        /* Récupération des différents type d'investissements */
+        $investissements = Investissement::select('type_investissement')->distinct()->get();
+
+        return view('private.accueil', compact('investissements'));
     }
 
 
@@ -242,6 +246,7 @@ class PrivateController extends Controller
             return back()->with('error', 'Une erreur est survenue lors de la suppression du salaire ❌.');
         }
     }
+
 
 
 
@@ -801,6 +806,37 @@ class PrivateController extends Controller
         }
     }
 
+
+    /* Ajout de type d'investissement */
+    /**
+     * Ajoute un type d'investissement
+     */
+    public function addTypeInvestissement(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'new_type' => 'required|string|min:1|max:255',
+        ], [
+            'new_type.required' => 'Le type d\'investissement est obligatoire.',
+            'new_type.string' => 'Le type d\'investissement doit être une chaîne de caractères.',
+            'new_type.min' => 'Le type d\'investissement doit contenir au moins 1 caractère.',
+            'new_type.max' => 'Le type d\'investissement ne doit pas dépasser 255 caractères.'
+        ]);
+
+        /* Récupération des investissements */
+        $type_investissement = $request->new_type;
+
+        /* Message de confirmation */
+        if (Investissement::where('type_investissement', $type_investissement)->first()) {
+            $message = 'Attention, le type d\'investissement ' . $type_investissement . ' existe déjà. 🤔';
+        } else {
+            $message = 'Les investissemnts en ' . $type_investissement . ' seront définitivement ajoutés une fois que vous aurez ajouté un investissement sur cette page 👍.';
+        }
+
+        return redirect()->route('investissements.type', ['type' => $type_investissement])->with('message', $message);
+    }
 
 
     /*-------------*/

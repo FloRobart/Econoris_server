@@ -31,8 +31,41 @@
 
     <h1 class="titleText">Investissements</h1>
     <a href="{{ route('investissements') }}" class="buttonForm">Tous les investissements</a>
-    <a href="{{ route('investissements.type', 'crypto') }}" class="buttonForm">Crypto-monnaies</a>
-    <a href="{{ route('investissements.type', 'bourse') }}" class="buttonForm">Bourse</a>
-    <a href="{{ route('investissements.type', 'immobilier') }}" class="buttonForm">Immobilier</a>
+
+    @if (isset($investissements))
+        @foreach ($investissements as $investissement)
+            <a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="buttonForm">{{ $investissement->type_investissement }}</a>
+        @endforeach
+    @endif
+
+    <form id="addInvestissementTypeForm" action="{{ route('investissement.type.add') }}" method="POST" class="w-9/12 sm:w-6/12 colCenterContainer gap-y-4 hidden">
+        @csrf
+        <label for="new_type" class="normalText text-center">Nom du nouveau type d'investissement</label>
+        <input type="text" name="new_type" id="new_type" class="inputForm" minlength="1" maxlength="255" placeholder="Nom du type d'investissement" required>
+        <div class="rowCenterContainer gap-x-4">
+            <button type="button" onclick="hideAddInvestissementTypeForm()" class="buttonForm bgError">Annuler</button>
+            <button type="submit" class="buttonForm">Ajouter</button>
+        </div>
+    </form>
+
+    <button onclick="showAddInvestissementTypeForm()" id="addInvestissementTypeButton" class="buttonForm">+ Ajoutez un investissement</button>
 </section>
 @endsection
+
+@section('scripts')
+<script>
+    // Fonction pour fermer les messages d'erreur et de succès
+    function showAddInvestissementTypeForm()
+    {
+        /* Affiche le formulaire d'ajout d'un type d'investissement */
+        document.getElementById('addInvestissementTypeForm').classList.remove('hidden');
+        document.getElementById('addInvestissementTypeButton').classList.add('hidden');
+    }
+
+    function hideAddInvestissementTypeForm()
+    {
+        /* Cache le formulaire d'ajout d'un type d'investissement */
+        document.getElementById('addInvestissementTypeForm').classList.add('hidden');
+        document.getElementById('addInvestissementTypeButton').classList.remove('hidden');
+    }
+</script>

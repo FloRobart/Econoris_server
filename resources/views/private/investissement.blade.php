@@ -123,7 +123,7 @@
 
                             <!-- Montant investie -->
                             @if (str_contains(strtolower(URL::current()), 'type'))
-                                <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }}"><a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
+                                <td class="tableCell" title="Afficher uniquement les investissements en {{ $investissement->type_investissement }}"><a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
                             @else
                                 @if (str_contains(strtolower(URL::current()), 'date'))
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))
@@ -135,7 +135,7 @@
                                     @if (str_contains(strtolower(URL::current()), 'nom_actif'))
                                         <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }} dans {{ $investissement->nom_actif }}"><a href="{{ route('investissements.type.nom_actif', [$investissement->type_investissement, $investissement->nom_actif]) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
                                     @else
-                                        <td class="tableCell" title="Afficher les investissements en {{ $investissement->type_investissement }}"><a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
+                                        <td class="tableCell" title="Afficher uniquement les investissements en {{ $investissement->type_investissement }}"><a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="link">{{ number_format($investissement->montant_transaction, 2, ',', ' ') }} €</a></td>
                                     @endif
                                 @endif
                             @endif

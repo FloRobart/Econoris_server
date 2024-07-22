@@ -34,6 +34,11 @@
             <span class="normalText">Nombre d'abonnement : <span class="normalTextBleuLogo font-bold">{{ $abonnements->count() }}</span></span>
         </div>
 
+        <!-- Nombre d'abonnements actifs -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Nombre d'abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ $abonnements->where('abonnement_actif', 1)->count() }}</span></span>
+        </div>
+
         <!-- Montant mensuel des abonnements actifs -->
         <div class="rowCenterContainer">
             <span class="normalText">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements->where('abonnement_actif', 1)->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
