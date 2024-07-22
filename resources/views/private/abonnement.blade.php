@@ -99,23 +99,7 @@
                             @endif
 
                             <!-- Nom de l'actif -->
-                            @if (str_contains(strtolower(URL::current()), 'nom_actif'))
-                                <td class="tableCell">{{ $abonnement->nom_actif }}</td>
-                            @else
-                                @if (str_contains(strtolower(URL::current()), 'abonnement_actif'))
-                                    @if (str_contains(strtolower(URL::current()), 'date'))
-                                        <td class="tableCell" title="Afficher les abonnements à {{ $abonnement->nom_actif }} toujours actif et souscrit au mois de {{ strftime('%B %Y', strtotime($abonnement->date_transaction)) }}"><a href="{{ route('abonnements.date.nom_actif.abonnement_actif', [$abonnement->date_transaction, $abonnement->nom_actif, $abonnement->abonnement_actif]) }}" class="link">{{ $abonnement->nom_actif }}</a></td>
-                                    @else
-                                        <td class="tableCell" title="Afficher les abonnements à {{ $abonnement->nom_actif }} dans {{ $abonnement->nom_actif }}"><a href="{{ route('abonnements.nom_actif.abonnement_actif', [$abonnement->nom_actif, $abonnement->abonnement_actif]) }}" class="link">{{ $abonnement->nom_actif }}</a></td>
-                                    @endif
-                                @else
-                                    @if (str_contains(strtolower(URL::current()), 'date'))
-                                        <td class="tableCell" title="Afficher les abonnements à {{ $abonnement->nom_actif }} réalisé au mois de {{ strftime('%B %Y', strtotime($abonnement->date_transaction)) }}"><a href="{{ route('abonnements.date.nom_actif', [$abonnement->date_transaction, $abonnement->nom_actif]) }}" class="link">{{ $abonnement->nom_actif }}</a></td>
-                                    @else
-                                        <td class="tableCell" title="Afficher les abonnements à {{ $abonnement->nom_actif }}"><a href="{{ route('abonnements.nom_actif', $abonnement->nom_actif) }}" class="link">{{ $abonnement->nom_actif }}</a></td>
-                                    @endif
-                                @endif
-                            @endif
+                            <td class="tableCell" title="Afficher l'historique des transaction de {{ $abonnement->nom_actif }}"><a href="{{ route('abonnements_histories.nom_actif', $abonnement->nom_actif) }}" class="link">{{ $abonnement->nom_actif }}</a></td>
 
                             <!-- Montant investie -->
                             <td class="tableCell" title="Montant mensuel de l'abonnement">{{ number_format($abonnement->montant_transaction, 2, ',', ' ') }} €</td>
@@ -202,7 +186,7 @@
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
                                 <!-- Modifier -->
-                                <button onclick="editAbonnement('{{ strftime('%Y-%m-%d', strtotime($abonnement->date_abonnement)) }}', '{{ $abonnement->nom_actif }}', '{{ $abonnement->montant_transaction }}', '{{ $abonnement->abonnement_actif }}', '{{ $abonnement->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
+                                <button onclick="editAbonnement('{{ strftime('%Y-%m-%d', strtotime($abonnement->date_transaction)) }}', '{{ $abonnement->nom_actif }}', '{{ $abonnement->montant_transaction }}', '{{ $abonnement->abonnement_actif }}', '{{ $abonnement->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>

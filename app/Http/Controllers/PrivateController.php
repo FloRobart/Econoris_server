@@ -6,6 +6,7 @@ use App\Models\Salaire;
 use App\Models\Epargne;
 use App\Models\Investissement;
 use App\Models\Abonnement;
+use App\Models\Abonnement_history;
 use App\Models\Emprunt;
 
 
@@ -56,7 +57,10 @@ class PrivateController extends Controller
         /* Récupération des investissements */
         $investissements = PrivateController::getInvestissements('', '', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements'));
+        /* Récupération de l'historique des abonnements */
+        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories'));
     }
 
     /**
@@ -78,7 +82,10 @@ class PrivateController extends Controller
         /* Récupération des investissements du mois */
         $investissements = PrivateController::getInvestissements($date, '', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements'));
+        /* Récupération de l'historique des abonnements */
+        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories'));
     }
 
     /**
@@ -100,7 +107,10 @@ class PrivateController extends Controller
         /* Récupération des investissements du mois */
         $investissements = PrivateController::getInvestissements('', '', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements'));
+        /* Récupération de l'historique des abonnements */
+        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories'));
     }
 
     /**
@@ -122,7 +132,10 @@ class PrivateController extends Controller
         /* Récupération des investissements du mois */
         $investissements = PrivateController::getInvestissements($date, '', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements'));
+        /* Récupération de l'historique des abonnements */
+        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories'));
     }
 
 
@@ -163,7 +176,7 @@ class PrivateController extends Controller
         $salaire->user_id = auth()->user()->id;
         $salaire->date_transaction = $request->date_transaction;
         $salaire->montant_transaction = $request->montant_transaction;
-        $salaire->employeur = $request->employeur;
+        $salaire->employeur = ucfirst($request->employeur);
         
         if ($salaire->save()) {
             return back()->with('success', 'Le salaire a bien été ajouté 👍.')->with('message', $message);
@@ -214,7 +227,7 @@ class PrivateController extends Controller
 
         $salaire->date_transaction = $request->date_transaction;
         $salaire->montant_transaction = $request->montant_transaction;
-        $salaire->employeur = $request->employeur;
+        $salaire->employeur = ucfirst($request->employeur);
 
         if ($salaire->save()) {
             return back()->with('success', 'Le salaire a bien été modifié 👍.')->with('message', $message);
@@ -408,8 +421,8 @@ class PrivateController extends Controller
         $epargne->user_id = auth()->user()->id;
         $epargne->date_transaction = $request->date_transaction;
         $epargne->montant_transaction = $request->montant_transaction;
-        $epargne->banque = $request->banque;
-        $epargne->compte = $request->compte;
+        $epargne->banque = ucfirst($request->banque);
+        $epargne->compte = ucfirst($request->compte);
         
         if ($epargne->save()) {
             return back()->with('success', 'L\'épargne a bien été ajoutée 👍.')->with('message', $message);
@@ -464,8 +477,8 @@ class PrivateController extends Controller
 
         $epargne->date_transaction = $request->date_transaction;
         $epargne->montant_transaction = $request->montant_transaction;
-        $epargne->banque = $request->banque;
-        $epargne->compte = $request->compte;
+        $epargne->banque = ucfirst($request->banque);
+        $epargne->compte = ucfirst($request->compte);
 
         if ($epargne->save()) {
             return back()->with('success', 'L\'épargne a bien été modifiée 👍.')->with('message', $message);
@@ -709,8 +722,8 @@ class PrivateController extends Controller
         $investissement = new Investissement();
         $investissement->user_id             = auth()->user()->id;
         $investissement->date_transaction    = $request->date_transaction;
-        $investissement->type_investissement = $type_investissement;
-        $investissement->nom_actif           = $request->nom_actif;
+        $investissement->type_investissement = ucfirst($type_investissement);
+        $investissement->nom_actif           = ucfirst($request->nom_actif);
         $investissement->montant_transaction = $request->montant_transaction;
         $investissement->frais_transaction   = $request->frais_transaction;
 
@@ -770,8 +783,8 @@ class PrivateController extends Controller
         if ($investissement->user_id != auth()->user()->id) { back()->with('error', 'L\'investissement ne vous appartient pas ❌.'); }
 
         $investissement->date_transaction    = $request->date_transaction;
-        $investissement->type_investissement = $request->type_investissement;
-        $investissement->nom_actif           = $request->nom_actif;
+        $investissement->type_investissement = ucfirst($request->type_investissement);
+        $investissement->nom_actif           = ucfirst($request->nom_actif);
         $investissement->montant_transaction = $request->montant_transaction;
         $investissement->frais_transaction   = $request->frais_transaction;
 
@@ -826,7 +839,7 @@ class PrivateController extends Controller
         ]);
 
         /* Récupération des investissements */
-        $type_investissement = $request->new_type;
+        $type_investissement = ucfirst($request->new_type);
 
         /* Message de confirmation */
         if (Investissement::where('type_investissement', $type_investissement)->first()) {
@@ -1003,7 +1016,7 @@ class PrivateController extends Controller
         $abonnement = new Abonnement();
         $abonnement->user_id             = auth()->user()->id;
         $abonnement->date_transaction    = $request->date_transaction;
-        $abonnement->nom_actif           = $request->nom_actif;
+        $abonnement->nom_actif           = ucfirst($request->nom_actif);
         $abonnement->montant_transaction = $request->montant_transaction;
         $abonnement->abonnement_actif    = filter_var($request->abonnement_actif, FILTER_VALIDATE_BOOLEAN);
 
@@ -1050,7 +1063,7 @@ class PrivateController extends Controller
         if ($abonnement->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
 
         $abonnement->date_transaction    = $request->date_transaction;
-        $abonnement->nom_actif           = $request->nom_actif;
+        $abonnement->nom_actif           = ucfirst($request->nom_actif);
         $abonnement->montant_transaction = $request->montant_transaction;
         $abonnement->abonnement_actif    = filter_var($request->abonnement_actif, FILTER_VALIDATE_BOOLEAN);
 
@@ -1085,6 +1098,190 @@ class PrivateController extends Controller
         }
     }
 
+
+
+    /*------------------------------------------------*/
+    /* Historique des transaction lié aux abonnements */
+    /*------------------------------------------------*/
+    /* Affichage des abonnements */
+    /**
+     * Affiche tous les abonnements
+     */
+    public function abonnementsHistories(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        /* Récupération d'un abonnement aléatoire */
+        $abonnement = Abonnement::inRandomOrder()->first();
+        $abonnements_histories = PrivateController::getAbonnementsHistories('', '', $sort, $order);
+
+        return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
+    }
+
+    /**
+     * Affiche les abonnements d'une même date
+     */
+    public function abonnementsHistoriesDate(Request $request, string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnement = Abonnement::inRandomOrder()->where('date_transaction', $date)->first();
+        $abonnements_histories = PrivateController::getAbonnementsHistories($date, '', $sort, $order);
+
+        return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
+    }
+
+    /**
+     * Affiche les abonnements d'un même nom d'actif
+     */
+    public function abonnementsHistoriesNom(Request $request, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnement = Abonnement::inRandomOrder()->where('nom_actif', $nom_actif)->first();
+        $abonnements_histories = PrivateController::getAbonnementsHistories('', $nom_actif, $sort, $order);
+
+        return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
+    }
+
+    /**
+     * Affiche les abonnements d'une même date et d'un même nom d'actif
+     */
+    public function abonnementsHistoriesDateNom(Request $request, string $date, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $abonnement = Abonnement::inRandomOrder()->where('date_transaction', $date)->where('nom_actif', $nom_actif)->first();
+        $abonnements_histories = PrivateController::getAbonnementsHistories($date, $nom_actif, $sort, $order);
+
+        return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
+    }
+
+    /* Édition des abonnements */
+    /**
+     * Ajoute un abonnement
+     */
+    public function addAbonnementHistory(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'date_transaction' => 'required|date|before:tomorrow',
+            'nom_actif' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0'
+        ], [
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Message de confirmation */
+        if (Abonnement_history::where('date_transaction', $request->date_transaction)->where('nom_actif', $request->nom_actif)->first()) {
+            $message = 'Attention, un abonnement similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Ajout de l'abonnement */
+        $abonnement_history = new Abonnement_history();
+        $abonnement_history->user_id             = auth()->user()->id;
+        $abonnement_history->date_transaction    = $request->date_transaction;
+        $abonnement_history->nom_actif           = ucfirst($request->nom_actif);
+        $abonnement_history->montant_transaction = $request->montant_transaction;
+
+        if ($abonnement_history->save()) {
+            return back()->with('success', 'L\'abonnement a bien été ajouté 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de l\'ajout de la transaction l\'abonnement ❌.');
+        }
+    }
+
+    /**
+     * Modifie un abonnement
+     */
+    public function editAbonnementHistory(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.abonnements_histories,id',
+            'date_transaction' => 'required|date|before:tomorrow',
+            'nom_actif' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0'
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être antérieure à la date du jour.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Modification de l'abonnement */
+        $abonnement_history = Abonnement_history::find($request->id);
+        if ($abonnement_history->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
+
+        $abonnement_history->date_transaction    = $request->date_transaction;
+        $abonnement_history->nom_actif           = ucfirst($request->nom_actif);
+        $abonnement_history->montant_transaction = $request->montant_transaction;
+
+        if ($abonnement_history->save()) {
+            return back()->with('success', 'L\'abonnement a bien été modifié 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de l\'abonnement ❌.');
+        }
+    }
+
+    /**
+     * Supprime un abonnement
+     */
+    public function removeAbonnementHistory(string $id)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        if ($id == null) { back()->with('error', 'l\'id est null ❌.'); }
+        if (!is_numeric($id)) { back()->with('error', 'l\'id n\'est pas un nombre ❌.'); }
+        if ($id <= 0) { back()->with('error', 'l\'id est inférieur ou égal à 0 ❌.'); }
+
+        $abonnement_history = Abonnement_history::find($id);
+        if (!$abonnement_history) { back()->with('error', 'L\'abonnement n\'existe pas ❌.'); }
+        if ($abonnement_history->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
+
+        /* Suppression de l'abonnement */
+        if ($abonnement_history->delete()) {
+            return back()->with('success', 'L\'abonnement a bien été supprimé 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la suppression de l\'abonnement ❌.');
+        }
+    }
 
 
 
@@ -1226,6 +1423,34 @@ class PrivateController extends Controller
 
         if ($abonnement_actif != '') {
             $abonnements = $abonnements->where('abonnement_actif', filter_var($abonnement_actif, FILTER_VALIDATE_BOOLEAN));
+        }
+
+        return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
+    }
+
+
+
+    /*------------------------------------------------*/
+    /* Historique des transaction lié aux abonnements */
+    /*------------------------------------------------*/
+    /**
+     * Récupère les abonnements
+     * @param string $date
+     * @param string $nom_actif
+     * @param string $sort
+     * @param string $order
+     */
+    public function getAbonnementsHistories(string $date, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $abonnements = Abonnement_history::all()->where('user_id', auth()->user()->id);
+
+        if ($date != '') {
+            $abonnements = $abonnements->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                       ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+        }
+
+        if ($nom_actif != '') {
+            $abonnements = $abonnements->where('nom_actif', $nom_actif);
         }
 
         return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);

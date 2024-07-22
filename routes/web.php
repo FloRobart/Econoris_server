@@ -12,6 +12,7 @@ Route::middleware(['auth'])->group(function () {
     /*=========*/
     /* Accueil */
     /*=========*/
+    /* Route vers l'accueil du dashboard */
     Route::get('/', [PrivateController::class, 'accueil'])->name('accueil');
     Route::get('/accueil', [PrivateController::class, 'accueil'])->name('accueil');
 
@@ -23,6 +24,7 @@ Route::middleware(['auth'])->group(function () {
     /* Profil */
     /*--------*/
     Route::get('/profil', function () { return redirect('http://192.168.1.250:2000/profil'); })->name('profil');
+
 
 
     /*===========*/
@@ -42,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/salaire/edit', [PrivateController::class, 'editSalaire'])->name('salaire.edit');
     Route::get('/salaire/remove/{id}', [PrivateController::class, 'removeSalaire'])->name('salaire.remove');
 
+
     /*----------*/
     /* Épargnes */
     /*----------*/
@@ -59,6 +62,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/epargne/add', [PrivateController::class, 'addEpargne'])->name('epargne.add');
     Route::post('/epargne/edit', [PrivateController::class, 'editEpargne'])->name('epargne.edit');
     Route::get('/epargne/remove/{id}', [PrivateController::class, 'removeEpargne'])->name('epargne.remove');
+
 
     /*-----------------*/
     /* Investissements */
@@ -81,6 +85,7 @@ Route::middleware(['auth'])->group(function () {
     /* Ajout de type d'investissement */
     Route::post('/investissement/type/add', [PrivateController::class, 'addTypeInvestissement'])->name('investissement.type.add');
 
+
     /*-------------*/
     /* Abonnements */
     /*-------------*/
@@ -94,11 +99,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/abonnements/nom_actif/{nom_actif}/abonnement_actif/{abonnement_actif}', [PrivateController::class, 'abonnementsNomActif'])->name('abonnements.nom_actif.abonnement_actif');
     Route::get('/abonnements/date/{date}/nom_actif/{nom_actif}/abonnement_actif/{abonnement_actif}', [PrivateController::class, 'abonnementsDateNomActif'])->name('abonnements.date.nom_actif.abonnement_actif');
 
-
     /* Édition des abonnements */
     Route::post('/abonnement/add', [PrivateController::class, 'addAbonnement'])->name('abonnement.add');
     Route::post('/abonnement/edit', [PrivateController::class, 'editAbonnement'])->name('abonnement.edit');
     Route::get('/abonnement/remove/{id}', [PrivateController::class, 'removeAbonnement'])->name('abonnement.remove');
+
+
+    /*------------------------------------------------*/
+    /* Historique des transaction lié aux abonnements */
+    /*------------------------------------------------*/
+    /* Affichage des abonnements */
+    Route::get('/abonnements_histories', [PrivateController::class, 'abonnementsHistories'])->name('abonnements_histories');
+    Route::get('/abonnements_histories/date/{date}', [PrivateController::class, 'abonnementsHistoriesDate'])->name('abonnements_histories.date');
+    Route::get('/abonnements_histories/nom_actif/{nom_actif}', [PrivateController::class, 'abonnementsHistoriesNom'])->name('abonnements_histories.nom_actif');
+    Route::get('/abonnements_histories/date/{date}/nom_actif/{nom_actif}', [PrivateController::class, 'abonnementsHistoriesDateNom'])->name('abonnements_histories.date.nom_actif');
+
+    /* Édition des abonnements */
+    Route::post('/abonnements_history/add', [PrivateController::class, 'addAbonnementHistory'])->name('abonnement_history.add');
+    Route::post('/abonnements_history/edit', [PrivateController::class, 'editAbonnementHistory'])->name('abonnement_history.edit');
+    Route::get('/abonnements_history/remove/{id}', [PrivateController::class, 'removeAbonnementHistory'])->name('abonnement_history.remove');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

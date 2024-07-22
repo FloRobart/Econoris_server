@@ -98,6 +98,9 @@
                             <!-- Montant des dépences -->
                             @php
                                 $montantDepences = $salaire->montant_transaction - $montantEpargne - $montantInvestissement;
+                                $abonnementsHistories->where('date_transaction', '>=', date("Y-m-01",strtotime($salaire->date_transaction)))->where('date_transaction', '<=', date("Y-m-t",strtotime($salaire->date_transaction)))->each(function ($abonnement) use (&$montantDepences) {
+                                    $montantDepences -= $abonnement->montant_transaction;
+                                });
                             @endphp
                             <td class="tableCell @if ($montantDepences < 0) fontColorError @endif">{{ number_format($montantDepences, 2, ',', ' ') }} €</td>
 
