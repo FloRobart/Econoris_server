@@ -34,7 +34,7 @@
 
     @if (isset($investissements))
         @foreach ($investissements as $investissement)
-            <a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="buttonForm">{{ $investissement->type_investissement }}</a>
+            <a href="{{ route('investissements.type', $investissement->type_investissement) }}" class="buttonForm">{{ ucfirst($investissement->type_investissement) }}</a>
         @endforeach
     @endif
 
@@ -69,3 +69,4 @@
         document.getElementById('addInvestissementTypeButton').classList.remove('hidden');
     }
 </script>
+@endsection

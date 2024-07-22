@@ -1131,7 +1131,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnement = Abonnement::inRandomOrder()->where('date_transaction', $date)->first();
+        $abonnement = Abonnement::inRandomOrder()->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories($date, '', $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1163,7 +1163,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnement = Abonnement::inRandomOrder()->where('date_transaction', $date)->where('nom_actif', $nom_actif)->first();
+        $abonnement = Abonnement::inRandomOrder()->where('nom_actif', $nom_actif)->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories($date, $nom_actif, $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
