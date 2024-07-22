@@ -105,9 +105,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/abonnement/remove/{id}', [PrivateController::class, 'removeAbonnement'])->name('abonnement.remove');
 
 
-    /*------------------------------------------------*/
-    /* Historique des transaction lié aux abonnements */
-    /*------------------------------------------------*/
+    /*-------------------------------------------------*/
+    /* Historique des transactions lié aux abonnements */
+    /*-------------------------------------------------*/
     /* Affichage des abonnements */
     Route::get('/abonnements_histories', [PrivateController::class, 'abonnementsHistories'])->name('abonnements_histories');
     Route::get('/abonnements_histories/date/{date}', [PrivateController::class, 'abonnementsHistoriesDate'])->name('abonnements_histories.date');
@@ -118,6 +118,32 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/abonnements_history/add', [PrivateController::class, 'addAbonnementHistory'])->name('abonnement_history.add');
     Route::post('/abonnements_history/edit', [PrivateController::class, 'editAbonnementHistory'])->name('abonnement_history.edit');
     Route::get('/abonnements_history/remove/{id}', [PrivateController::class, 'removeAbonnementHistory'])->name('abonnement_history.remove');
+
+
+    /*----------*/
+    /* Emprunts */
+    /*----------*/
+    /* Affichage des emprunts */
+    Route::get('/emprunts', [PrivateController::class, 'emprunts'])->name('emprunts');
+    Route::get('/emprunts/banque/{banque}', [PrivateController::class, 'empruntsBanque'])->name('emprunts.banque');
+
+    /* Édition des emprunts */
+    Route::post('/emprunt/add', [PrivateController::class, 'addEmprunt'])->name('emprunt.add');
+    Route::post('/emprunt/edit', [PrivateController::class, 'editEmprunt'])->name('emprunt.edit');
+    Route::get('/emprunt/remove/{id}', [PrivateController::class, 'removeEmprunt'])->name('emprunt.remove');
+
+
+    /*----------------------------------------------*/
+    /* Historique des transactions lié aux emprunts */
+    /*----------------------------------------------*/
+    /* Affichage des emprunts */
+    Route::get('/emprunts_histories', [PrivateController::class, 'empruntsHistories'])->name('emprunts_histories');
+    Route::get('/emprunts_histories/banque/{banque}', [PrivateController::class, 'empruntsHistoriesBanque'])->name('emprunts_histories.banque');
+
+    /* Édition des emprunts */
+    Route::post('/emprunts_history/add', [PrivateController::class, 'addEmpruntHistory'])->name('emprunt_history.add');
+    Route::post('/emprunts_history/edit', [PrivateController::class, 'editEmpruntHistory'])->name('emprunt_history.edit');
+    Route::get('/emprunts_history/remove/{id}', [PrivateController::class, 'removeEmpruntHistory'])->name('emprunt_history.remove');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

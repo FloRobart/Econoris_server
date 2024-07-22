@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('date_debut');
             $table->date('date_fin');
             $table->float('mensualite');
+            $table->string('banque');
             $table->timestamps();
         });
     }

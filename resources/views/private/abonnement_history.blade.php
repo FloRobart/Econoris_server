@@ -1,12 +1,12 @@
 <!-- Page d'accueil -->
 @extends('layouts.page_template')
 @section('title')
-    Abonnements historique
+    Abonnements historiques
 @endsection
 
 @section('content')
 <!-- Titre de la page -->
-<livewire:page-title :title="'Abonnements'" />
+<livewire:page-title :title="'Abonnements historiques'" />
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">

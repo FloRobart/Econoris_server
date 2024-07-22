@@ -62,9 +62,11 @@
                     'epargnes' => route('epargnes'),
                     'investissements' => route('investissements'),
                     'abonnements' => route('abonnements'),
-                    'abonnements_histories' => route('abonnements_histories'),
-
+                    'emprunts' => route('emprunts'),
+                    
                     /* Niveau 2 */
+                    'abonnements_histories' => route('abonnements_histories'),
+                    'emprunts_histories' => route('emprunts_histories'),
                     'date' => parseUrl($urlPath, 'date'),
 
                     /* Niveau 3 */

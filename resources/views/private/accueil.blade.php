@@ -28,6 +28,7 @@
     <a href="{{ route('salaires') }}" class="buttonForm">Salaires</a>
     <a href="{{ route('epargnes') }}" class="buttonForm">Épargnes</a>
     <a href="{{ route('abonnements') }}" class="buttonForm">Abonnements</a>
+    <a href="{{ route('emprunts') }}" class="buttonForm">Emprunts</a>
 
     <h1 class="titleText">Investissements</h1>
     <a href="{{ route('investissements') }}" class="buttonForm">Tous les investissements</a>

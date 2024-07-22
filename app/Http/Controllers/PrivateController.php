@@ -1100,9 +1100,9 @@ class PrivateController extends Controller
 
 
 
-    /*------------------------------------------------*/
-    /* Historique des transaction lié aux abonnements */
-    /*------------------------------------------------*/
+    /*-------------------------------------------------*/
+    /* Historique des transactions lié aux abonnements */
+    /*-------------------------------------------------*/
     /* Affichage des abonnements */
     /**
      * Affiche tous les abonnements
@@ -1285,6 +1285,219 @@ class PrivateController extends Controller
 
 
 
+    /*----------*/
+    /* Emprunts */
+    /*----------*/
+    /* Affichage des emprunts */
+    /**
+     * Affiche tous les emprunts
+     */
+    public function emprunts(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_emprunt';
+        $order = $request->query('order') ?? 'desc';
+
+        $emprunts = PrivateController::getEmprunts('', $sort, $order);
+
+        return view('private.emprunt', compact('emprunts'));
+    }
+
+    /**
+     * Affiche les emprunts réalisé auprès d'une même banque
+     */
+    public function empruntsBanque(Request $request, string $banque)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_emprunt';
+        $order = $request->query('order') ?? 'desc';
+
+        $emprunts = PrivateController::getEmprunts($banque, $sort, $order);
+
+        return view('private.emprunt', compact('emprunts'));
+    }
+
+
+    /* Édition des emprunts */
+    /**
+     * Ajoute un emprunt
+     */
+    public function addEmprunt(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'date_debut' => 'required|date',
+            'date_fin' => 'required|date|after:date_debut',
+            'nom_actif' => 'required|string|max:255',
+            'banque' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0',
+            'mensualite' => 'required|numeric|min:0',
+            'taux_interet_annuel' => 'required|numeric|min:0',
+        ], [
+            'date_debut.required' => 'La date de début est obligatoire.',
+            'date_debut.date' => 'La date de début doit être une date.',
+            'date_fin.required' => 'La date de fin est obligatoire.',
+            'date_fin.date' => 'La date de fin doit être une date.',
+            'date_fin.after' => 'La date de fin doit être postérieure à la date de début.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'banque.required' => 'La banque est obligatoire.',
+            'banque.string' => 'La banque doit être une chaîne de caractères.',
+            'banque.max' => 'La banque ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
+            'mensualite.required' => 'La mensualité est obligatoire.',
+            'mensualite.numeric' => 'La mensualité doit être un nombre.',
+            'mensualite.min' => 'La mensualité doit être supérieure ou égale à 0.',
+            'taux_interet_annuel.required' => 'Le taux d\'intérêt annuel est obligatoire.',
+            'taux_interet_annuel.numeric' => 'Le taux d\'intérêt annuel doit être un nombre.',
+            'taux_interet_annuel.min' => 'Le taux d\'intérêt annuel doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Message de confirmation */
+        if (Emprunt::where('date_debut', $request->date_debut)->where('date_fin', $request->date_fin)->where('nom_actif', $request->nom_actif)->where('banque', $request->banque)->first()) {
+            $message = 'Attention, un emprunt similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Ajout de l'emprunt */
+        $emprunt = new Emprunt();
+        $emprunt->user_id             = auth()->user()->id;
+        $emprunt->date_debut          = $request->date_debut;
+        $emprunt->date_fin            = $request->date_fin;
+        $emprunt->nom_actif           = ucfirst($request->nom_actif);
+        $emprunt->banque              = ucfirst($request->banque);
+        $emprunt->montant_transaction = $request->montant_transaction;
+        $emprunt->mensualite          = $request->mensualite;
+        $emprunt->taux_interet_annuel = $request->taux_interet_annuel;
+
+        if ($emprunt->save()) {
+            return back()->with('success', 'L\'emprunt a bien été ajouté 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de l\'ajout de l\'emprunt ❌.');
+        }
+    }
+
+    /**
+     * Modifie un emprunt
+     */
+    public function editEmprunt(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.emprunts,id',
+            'date_debut' => 'required|date',
+            'date_fin' => 'required|date|after:date_debut',
+            'nom_actif' => 'required|string|max:255',
+            'banque' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0',
+            'mensualite' => 'required|numeric|min:0',
+            'taux_interet_annuel' => 'required|numeric|min:0',
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_debut.required' => 'La date de début est obligatoire.',
+            'date_debut.date' => 'La date de début doit être une date.',
+            'date_fin.required' => 'La date de fin est obligatoire.',
+            'date_fin.date' => 'La date de fin doit être une date.',
+            'date_fin.after' => 'La date de fin doit être postérieure à la date de début.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'banque.required' => 'La banque est obligatoire.',
+            'banque.string' => 'La banque doit être une chaîne de caractères.',
+            'banque.max' => 'La banque ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
+            'mensualite.required' => 'La mensualité est obligatoire.',
+            'mensualite.numeric' => 'La mensualité doit être un nombre.',
+            'mensualite.min' => 'La mensualité doit être supérieure ou égale à 0.',
+            'taux_interet_annuel.required' => 'Le taux d\'intérêt annuel est obligatoire.',
+            'taux_interet_annuel.numeric' => 'Le taux d\'intérêt annuel doit être un nombre.',
+            'taux_interet_annuel.min' => 'Le taux d\'intérêt annuel doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Modification de l'emprunt */
+        $emprunt = Emprunt::find($request->id);
+        if ($emprunt->user_id != auth()->user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
+
+        $emprunt->date_debut          = $request->date_debut;
+        $emprunt->date_fin            = $request->date_fin;
+        $emprunt->nom_actif           = ucfirst($request->nom_actif);
+        $emprunt->banque              = ucfirst($request->banque);
+        $emprunt->montant_transaction = $request->montant_transaction;
+        $emprunt->mensualite          = $request->mensualite;
+        $emprunt->taux_interet_annuel = $request->taux_interet_annuel;
+
+        if ($emprunt->save()) {
+            return back()->with('success', 'L\'emprunt a bien été modifié 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de l\'emprunt ❌.');
+        }
+    }
+
+    /**
+     * Supprime un emprunt
+     */
+    public function removeEmprunt(string $id)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        if ($id == null) { back()->with('error', 'l\'id est null ❌.'); }
+        if (!is_numeric($id)) { back()->with('error', 'l\'id n\'est pas un nombre ❌.'); }
+        if ($id <= 0) { back()->with('error', 'l\'id est inférieur ou égal à 0 ❌.'); }
+
+        $emprunt = Emprunt::find($id);
+        if (!$emprunt) { back()->with('error', 'L\'emprunt n\'existe pas ❌.'); }
+        if ($emprunt->user_id != auth()->user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
+
+        /* Suppression de l'emprunt */
+        if ($emprunt->delete()) {
+            return back()->with('success', 'L\'emprunt a bien été supprimé 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la suppression de l\'emprunt ❌.');
+        }
+    }
+
+
+
+    /*----------------------------------------------*/
+    /* Historique des transactions lié aux emprunts */
+    /*----------------------------------------------*/
+    /* Affichage des emprunts */
+    /**
+     * Affiche tous les emprunts
+     */
+    public function empruntsHistories(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_emprunt';
+        $order = $request->query('order') ?? 'desc';
+
+        /* Récupération d'un emprunt aléatoire */
+        $emprunt = Emprunt::inRandomOrder()->first();
+        $emprunts_histories = PrivateController::getEmpruntsHistories('', $sort, $order);
+
+        return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
+    }
+
+
+
+
     /*======================*/
     /* Fonction Utilitaires */
     /*======================*/
@@ -1430,9 +1643,9 @@ class PrivateController extends Controller
 
 
 
-    /*------------------------------------------------*/
-    /* Historique des transaction lié aux abonnements */
-    /*------------------------------------------------*/
+    /*-------------------------------------------------*/
+    /* Historique des transactions lié aux abonnements */
+    /*-------------------------------------------------*/
     /**
      * Récupère les abonnements
      * @param string $date
@@ -1455,4 +1668,47 @@ class PrivateController extends Controller
 
         return $order == 'asc' ? $abonnements->sortBy($sort) : $abonnements->sortByDesc($sort);
     }
+
+
+
+    /*----------*/
+    /* Emprunts */
+    /*----------*/
+    /**
+     * Récupère les emprunts
+     * @param string $banque
+     * @param string $sort
+     * @param string $order
+     */
+    public function getEmprunts(string $banque, string $sort = 'date_debut', $order = 'desc')
+    {
+        $emprunts = Emprunt::all()->where('user_id', auth()->user()->id);
+
+        if ($banque != '') {
+            $emprunts = $emprunts->where('banque', $banque);
+        }
+
+        return $order == 'asc' ? $emprunts->sortBy($sort) : $emprunts->sortByDesc($sort);
+    }
+
+
+
+    /*----------------------------------------------*/
+    /* Historique des transactions lié aux emprunts */
+    /*----------------------------------------------*/
+    /**
+     * Récupère les emprunts
+     * @param string $banque
+     * @param string $sort
+     * @param string $order
+     */
+    public function getEmpruntsHistories(string $banque, string $sort = 'date_debut', $order = 'desc')
+    {
+        $emprunts = Emprunt_history::all()->where('user_id', auth()->user()->id);
+
+        if ($banque != '') {
+            $emprunts = $emprunts->where('banque', $banque);
+        }
+
+        return $order == 'asc' ? $emprunts->sortBy($sort) : $emprunts->sortByDesc($sort);
 }

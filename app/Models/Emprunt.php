@@ -20,6 +20,7 @@ class Emprunt extends Model
         'taux_interet_annuel',
         'date_debut',
         'date_fin',
-        'mensualite'
+        'mensualite',
+        'banque',
     ];
 }

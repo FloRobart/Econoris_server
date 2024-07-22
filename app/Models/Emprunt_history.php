@@ -15,8 +15,6 @@ class Emprunt_history extends Model
     protected $fillable = [
         'id',
         'user_id',
-        'nom_actif',
-        'montant_transaction',
-        'date_transaction'
+        'emprunt_id',
     ];
 }
