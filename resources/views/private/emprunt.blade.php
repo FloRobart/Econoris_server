@@ -49,7 +49,7 @@
     <livewire:horizontal-separation />
 
     <!-- Détails des emprunt mois par mois -->
-    <div class="colCenterContainer">
+    <div class="colCenterContainer overflow-scroll">
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Liste de mes emprunts</h2>
         <table class="w-full mt-2">
             <!-- Entête du tableau -->
@@ -79,13 +79,13 @@
                             <td class="tableCell">{{ strftime('%A %d %B %Y', strtotime($emprunt->date_fin)) }}</td>
 
                             <!-- Nom de l'actif -->
-                            <td class="tableCell"><a href="{{ route('emprunts_histories') }}" class="link">{{ $emprunt->nom_actif }}</a></td>
+                            <td class="tableCell" title="Afficher l'historique des transactions de l'emprunt {{ $emprunt->nom_actif }}"><a href="{{ route('emprunts_histories') }}" class="link">{{ $emprunt->nom_actif }}</a></td>
 
                             <!-- Banque -->
                             @if (str_contains(strtolower(URL::current()), 'banque'))
                                 <td class="tableCell">{{ $emprunt->banque }}</td>
                             @else
-                                <td class="tableCell"><a href="{{ route('emprunts.banque', $emprunt->banque) }}" class="link">{{ $emprunt->banque }}</a></td>
+                                <td class="tableCell" title="Afficher les emprunts souscrit auprès de la banque {{ $emprunt->banque }}"><a href="{{ route('emprunts.banque', $emprunt->banque) }}" class="link">{{ $emprunt->banque }}</a></td>
                             @endif
 
                             <!-- Montant emprunté -->

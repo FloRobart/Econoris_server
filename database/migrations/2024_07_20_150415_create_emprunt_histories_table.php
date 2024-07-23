@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('emprunt_histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->foreignId('emprunt_id')->constrained('emprunts');
+            $table->date('date_transaction');
+            $table->string('nom_actif');
+            $table->float('montant_transaction');
+            $table->string('banque');
             $table->timestamps();
         });
     }

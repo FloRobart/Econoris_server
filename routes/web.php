@@ -138,7 +138,9 @@ Route::middleware(['auth'])->group(function () {
     /*----------------------------------------------*/
     /* Affichage des emprunts */
     Route::get('/emprunts_histories', [PrivateController::class, 'empruntsHistories'])->name('emprunts_histories');
+    Route::get('/emprunts_histories/nom_actif/{nom_actif}', [PrivateController::class, 'empruntsHistoriesNom'])->name('emprunts_histories.nom_actif');
     Route::get('/emprunts_histories/banque/{banque}', [PrivateController::class, 'empruntsHistoriesBanque'])->name('emprunts_histories.banque');
+    Route::get('/emprunts_histories/nom_actif/{nom_actif}/banque/{banque}', [PrivateController::class, 'empruntsHistoriesNomBanque'])->name('emprunts_histories.nom_actif.banque');
 
     /* Édition des emprunts */
     Route::post('/emprunts_history/add', [PrivateController::class, 'addEmpruntHistory'])->name('emprunt_history.add');

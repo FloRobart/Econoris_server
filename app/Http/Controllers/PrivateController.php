@@ -8,6 +8,7 @@ use App\Models\Investissement;
 use App\Models\Abonnement;
 use App\Models\Abonnement_history;
 use App\Models\Emprunt;
+use App\Models\Emprunt_history;
 
 
 class PrivateController extends Controller
@@ -1103,9 +1104,9 @@ class PrivateController extends Controller
     /*-------------------------------------------------*/
     /* Historique des transactions lié aux abonnements */
     /*-------------------------------------------------*/
-    /* Affichage des abonnements */
+    /* Affichage des historiques d'abonnements */
     /**
-     * Affiche tous les abonnements
+     * Affiche tous les historiques d'abonnements
      */
     public function abonnementsHistories(Request $request)
     {
@@ -1122,7 +1123,7 @@ class PrivateController extends Controller
     }
 
     /**
-     * Affiche les abonnements d'une même date
+     * Affiche les historiques d'abonnements d'une même date
      */
     public function abonnementsHistoriesDate(Request $request, string $date)
     {
@@ -1138,7 +1139,7 @@ class PrivateController extends Controller
     }
 
     /**
-     * Affiche les abonnements d'un même nom d'actif
+     * Affiche les historiques d'abonnements d'un même nom d'actif
      */
     public function abonnementsHistoriesNom(Request $request, string $nom_actif)
     {
@@ -1154,7 +1155,7 @@ class PrivateController extends Controller
     }
 
     /**
-     * Affiche les abonnements d'une même date et d'un même nom d'actif
+     * Affiche les historiques d'abonnements d'une même date et d'un même nom d'actif
      */
     public function abonnementsHistoriesDateNom(Request $request, string $date, string $nom_actif)
     {
@@ -1169,9 +1170,9 @@ class PrivateController extends Controller
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
     }
 
-    /* Édition des abonnements */
+    /* Édition des historiques d'abonnements */
     /**
-     * Ajoute un abonnement
+     * Ajoute un historiques d'abonnement
      */
     public function addAbonnementHistory(Request $request)
     {
@@ -1216,7 +1217,7 @@ class PrivateController extends Controller
     }
 
     /**
-     * Modifie un abonnement
+     * Modifie un historiques d'abonnement
      */
     public function editAbonnementHistory(Request $request)
     {
@@ -1260,7 +1261,7 @@ class PrivateController extends Controller
     }
 
     /**
-     * Supprime un abonnement
+     * Supprime un historiques d'abonnement
      */
     public function removeAbonnementHistory(string $id)
     {
@@ -1477,9 +1478,9 @@ class PrivateController extends Controller
     /*----------------------------------------------*/
     /* Historique des transactions lié aux emprunts */
     /*----------------------------------------------*/
-    /* Affichage des emprunts */
+    /* Affichage des historiques d'emprunts */
     /**
-     * Affiche tous les emprunts
+     * Affiche tous les historiques d'emprunts
      */
     public function empruntsHistories(Request $request)
     {
@@ -1490,9 +1491,83 @@ class PrivateController extends Controller
 
         /* Récupération d'un emprunt aléatoire */
         $emprunt = Emprunt::inRandomOrder()->first();
-        $emprunts_histories = PrivateController::getEmpruntsHistories('', $sort, $order);
+        $emprunts_histories = PrivateController::getEmpruntsHistories('', '', $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
+    }
+
+    /**
+     * Affiche les historiques d'emprunts d'un même nom d'actif
+     */
+    public function empruntsHistoriesNom(Request $request, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_emprunt';
+        $order = $request->query('order') ?? 'desc';
+
+        $emprunt = Emprunt::inRandomOrder()->where('nom_actif', $nom_actif)->first();
+        $emprunts_histories = PrivateController::getEmpruntsHistories($nom_actif, '', $sort, $order);
+
+        return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
+    }
+
+    /**
+     * Affiche les historiques d'emprunts réalisé auprès d'une même banque
+     */
+    public function empruntsHistoriesBanque(Request $request, string $banque)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_emprunt';
+        $order = $request->query('order') ?? 'desc';
+
+        $emprunt = Emprunt::inRandomOrder()->where('banque', $banque)->first();
+        $emprunts_histories = PrivateController::getEmpruntsHistories('', $banque, $sort, $order);
+
+        return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
+    }
+
+    /**
+     * Affiche les historiques d'emprunts d'un même nom d'actif et d'une même banque
+     */
+    public function empruntsHistoriesNomBanque(Request $request, string $nom_actif, string $banque)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_emprunt';
+        $order = $request->query('order') ?? 'desc';
+
+        $emprunt = Emprunt::inRandomOrder()->where('nom_actif', $nom_actif)->where('banque', $banque)->first();
+        $emprunts_histories = PrivateController::getEmpruntsHistories($nom_actif, $banque, $sort, $order);
+
+        return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
+    }
+
+
+    /* Édition des historiques d'emprunts */
+    /**
+     * Ajoute un historiques d'emprunt
+     */
+    public function addEmpruntHistory(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+    }
+
+    /**
+     * Modifie un historiques d'emprunt
+     */
+    public function editEmpruntHistory(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+    }
+
+    /**
+     * Supprime un historiques d'emprunt
+     */
+    public function removeEmpruntHistory(string $id)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
     }
 
 
@@ -1698,17 +1773,23 @@ class PrivateController extends Controller
     /*----------------------------------------------*/
     /**
      * Récupère les emprunts
+     * @param string $nom_actif
      * @param string $banque
      * @param string $sort
      * @param string $order
      */
-    public function getEmpruntsHistories(string $banque, string $sort = 'date_debut', $order = 'desc')
+    public function getEmpruntsHistories(string $nom_actif, string $banque, string $sort = 'date_debut', $order = 'desc')
     {
         $emprunts = Emprunt_history::all()->where('user_id', auth()->user()->id);
+
+        if ($nom_actif != '') {
+            $emprunts = $emprunts->where('nom_actif', $nom_actif);
+        }
 
         if ($banque != '') {
             $emprunts = $emprunts->where('banque', $banque);
         }
 
         return $order == 'asc' ? $emprunts->sortBy($sort) : $emprunts->sortByDesc($sort);
+    }
 }
