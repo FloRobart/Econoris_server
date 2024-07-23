@@ -58,7 +58,7 @@
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
                     <th class="tableCell" title="Trier les emprunts par date de souscription"        ><a href="{{ URL::current() . '?sort=date_debut' . '&order=' . $order }}" class="link">Date d'emprunt</a></th>
                     <th class="tableCell" title="Trier les emprunts par date de fun de remboursement"><a href="{{ URL::current() . '?sort=date_fin' . '&order=' . $order }}" class="link">Date de fin d'emprunt</a></th>
-                    <th class="tableCell" title="Trier les emprunts par nom d'actif"                 ><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de l'actif</a></th>
+                    <th class="tableCell" title="Trier les emprunts par nom d'actif"                 ><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de l'emprunt</a></th>
                     <th class="tableCell" title="Trier les emprunts par nom de banque"               ><a href="{{ URL::current() . '?sort=banque' . '&order=' . $order }}" class="link">Banque</a></th>
                     <th class="tableCell" title="Trier les emprunts par montant emprunté"            ><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant emprunté</a></th>
                     <th class="tableCell" title="Trier les emprunts par montant des mensualités"     ><a href="{{ URL::current() . '?sort=mensualite' . '&order=' . $order }}" class="link">Mensualité</a></th>
