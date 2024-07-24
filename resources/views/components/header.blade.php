@@ -63,6 +63,7 @@
                     'investissements' => route('investissements'),
                     'abonnements' => route('abonnements'),
                     'emprunts' => route('emprunts'),
+                    'depenses' => route('depenses'),
                     
                     /* Niveau 2 */
                     'abonnements_histories' => route('abonnements_histories'),

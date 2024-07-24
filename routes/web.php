@@ -146,6 +146,21 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/emprunts_history/add', [PrivateController::class, 'addEmpruntHistory'])->name('emprunt_history.add');
     Route::post('/emprunts_history/edit', [PrivateController::class, 'editEmpruntHistory'])->name('emprunt_history.edit');
     Route::get('/emprunts_history/remove/{id}', [PrivateController::class, 'removeEmpruntHistory'])->name('emprunt_history.remove');
+
+
+    /*----------*/
+    /* Dépenses */
+    /*----------*/
+    /* Affichage des dépenses */
+    Route::get('/depenses', [PrivateController::class, 'depenses'])->name('depenses');
+    Route::get('/depenses/date/{date}', [PrivateController::class, 'depensesDate'])->name('depenses.date');
+    Route::get('/depenses/nom_actif/{nom_actif}', [PrivateController::class, 'depensesNom'])->name('depenses.nom_actif');
+    Route::get('/depenses/date/{date}/nom_actif/{nom_actif}', [PrivateController::class, 'depensesDateNom'])->name('depenses.date.nom_actif');
+
+    /* Édition des dépenses */
+    Route::post('/depense/add', [PrivateController::class, 'addDepense'])->name('depense.add');
+    Route::post('/depense/edit', [PrivateController::class, 'editDepense'])->name('depense.edit');
+    Route::get('/depense/remove/{id}', [PrivateController::class, 'removeDepense'])->name('depense.remove');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

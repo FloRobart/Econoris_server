@@ -9,6 +9,7 @@ use App\Models\Abonnement;
 use App\Models\Abonnement_history;
 use App\Models\Emprunt;
 use App\Models\Emprunt_history;
+use App\Models\Depense;
 
 
 class PrivateController extends Controller
@@ -1667,6 +1668,183 @@ class PrivateController extends Controller
 
 
 
+    /*----------*/
+    /* Dépenses */
+    /*----------*/
+    /* Affichage des dépenses */
+    /**
+     * Affiche toutes les dépenses
+     */
+    public function depenses(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $depenses = PrivateController::getDepenses('', '', $sort, $order);
+
+        return view('private.depense', compact('depenses'));
+    }
+
+    /**
+     * Affiche les dépenses réalisé à une même date
+     */
+    public function depensesDate(Request $request, string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $depenses = PrivateController::getDepenses($date, '', $sort, $order);
+
+        return view('private.depense', compact('depenses'));
+    }
+
+    /**
+     * Affiche les dépenses réalisé auprès d'un même nom
+     */
+    public function depensesBeneficiaire(Request $request, string $nom_actif)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $depenses = PrivateController::getDepenses('', $nom_actif, $sort, $order);
+
+        return view('private.depense', compact('depenses'));
+    }
+
+    /**
+     * Affiche les dépenses réalisé auprès d'un même nom et à une même date
+     */
+    public function depensesBeneficiaireDate(Request $request, string $nom_actif, string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $depenses = PrivateController::getDepenses($date, $nom_actif, $sort, $order);
+
+        return view('private.depense', compact('depenses'));
+    }
+
+
+    /* Édition des dépenses */
+    /**
+     * Ajoute une dépense
+     */
+    public function addDepense(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'date_transaction' => 'required|date',
+            'nom_actif' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0'
+        ], [
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Message de confirmation */
+        if (Depense::where('date_transaction', $request->date_transaction)->where('nom_actif', $request->nom_actif)->first()) {
+            $message = 'Attention, une transaction similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Ajout de la dépense */
+        $depense = new Depense();
+        $depense->user_id             = auth()->user()->id;
+        $depense->date_transaction    = $request->date_transaction;
+        $depense->nom_actif           = ucfirst($request->nom_actif);
+        $depense->montant_transaction = $request->montant_transaction;
+
+        if ($depense->save()) {
+            return back()->with('success', 'La dépense a bien été ajoutée 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de l\'ajout de la transaction la dépense ❌.');
+        }
+    }
+
+    /**
+     * Modifie une dépense
+     */
+    public function editDepense(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.depenses,id',
+            'date_transaction' => 'required|date',
+            'nom_actif' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0'
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Modification de la dépense */
+        $depense = Depense::find($request->id);
+        if ($depense->user_id != auth()->user()->id) { back()->with('error', 'La dépense ne vous appartient pas ❌.'); }
+
+        $depense->date_transaction    = $request->date_transaction;
+        $depense->nom_actif           = ucfirst($request->nom_actif);
+        $depense->montant_transaction = $request->montant_transaction;
+
+        if ($depense->save()) {
+            return back()->with('success', 'La dépense a bien été modifiée 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de la dépense ❌.');
+        }
+    }
+
+    /**
+     * Supprime une dépense
+     */
+    public function removeDepense(string $id)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        if ($id == null) { back()->with('error', 'l\'id est null ❌.'); }
+        if (!is_numeric($id)) { back()->with('error', 'l\'id n\'est pas un nombre ❌.'); }
+        if ($id <= 0) { back()->with('error', 'l\'id est inférieur ou égal à 0 ❌.'); }
+
+        $depense = Depense::find($id);
+        if (!$depense) { back()->with('error', 'La dépense n\'existe pas ❌.'); }
+        if ($depense->user_id != auth()->user()->id) { back()->with('error', 'La dépense ne vous appartient pas ❌.'); }
+
+        /* Suppression de la dépense */
+        if ($depense->delete()) {
+            return back()->with('success', 'La dépense a bien été supprimée 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la suppression de la dépense ❌.');
+        }
+    }
+
+
+
 
     /*======================*/
     /* Fonction Utilitaires */
@@ -1886,5 +2064,33 @@ class PrivateController extends Controller
         }
 
         return $order == 'asc' ? $emprunts->sortBy($sort) : $emprunts->sortByDesc($sort);
+    }
+
+
+
+    /*----------*/
+    /* Dépenses */
+    /*----------*/
+    /**
+     * Récupère les dépenses
+     * @param string $date
+     * @param string $nom_actif
+     * @param string $sort
+     * @param string $order
+     */
+    public function getDepenses(string $date, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $depenses = Depense::all()->where('user_id', auth()->user()->id);
+
+        if ($date != '') {
+            $depenses = $depenses->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                 ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+        }
+
+        if ($nom_actif != '') {
+            $depenses = $depenses->where('nom_actif', $nom_actif);
+        }
+
+        return $order == 'asc' ? $depenses->sortBy($sort) : $depenses->sortByDesc($sort);
     }
 }

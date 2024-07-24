@@ -107,9 +107,9 @@
 
                             <!-- Montant des dépences -->
                             @php
-                                $montantDepences = $salaire->montant_transaction - $montantEpargne - $montantInvestissement - $montantAbonnements;
+                                $montantdepenses = $salaire->montant_transaction - $montantEpargne - $montantInvestissement - $montantAbonnements;
                             @endphp
-                            <td class="tableCell @if ($montantDepences < 0) fontColorError @endif">{{ number_format($montantDepences, 2, ',', ' ') }} €</td>
+                            <td class="tableCell @if ($montantdepenses < 0) fontColorError @endif">{{ number_format($montantdepenses, 2, ',', ' ') }} €</td>
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
