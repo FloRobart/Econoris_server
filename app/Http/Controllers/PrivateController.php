@@ -1552,6 +1552,46 @@ class PrivateController extends Controller
     public function addEmpruntHistory(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'date_transaction' => 'required|date',
+            'nom_actif' => 'required|string|max:255',
+            'banque' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0'
+        ], [
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'banque.required' => 'La banque est obligatoire.',
+            'banque.string' => 'La banque doit être une chaîne de caractères.',
+            'banque.max' => 'La banque ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Message de confirmation */
+        if (Emprunt_history::where('date_transaction', $request->date_transaction)->where('nom_actif', $request->nom_actif)->where('banque', $request->banque)->first()) {
+            $message = 'Attention, une transaction similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Ajout de l'emprunt */
+        $emprunt_history = new Emprunt_history();
+        $emprunt_history->user_id             = auth()->user()->id;
+        $emprunt_history->date_transaction    = $request->date_transaction;
+        $emprunt_history->nom_actif           = ucfirst($request->nom_actif);
+        $emprunt_history->banque              = ucfirst($request->banque);
+        $emprunt_history->montant_transaction = $request->montant_transaction;
+
+        if ($emprunt_history->save()) {
+            return back()->with('success', 'L\'emprunt a bien été ajouté 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de l\'ajout de la transaction l\'emprunt ❌.');
+        }
     }
 
     /**
@@ -1560,6 +1600,45 @@ class PrivateController extends Controller
     public function editEmpruntHistory(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.emprunts_histories,id',
+            'date_transaction' => 'required|date',
+            'nom_actif' => 'required|string|max:255',
+            'banque' => 'required|string|max:255',
+            'montant_transaction' => 'required|numeric|min:0'
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'nom_actif.required' => 'Le nom de l\'actif est obligatoire.',
+            'nom_actif.string' => 'Le nom de l\'actif doit être une chaîne de caractères.',
+            'nom_actif.max' => 'Le nom de l\'actif ne doit pas dépasser 255 caractères.',
+            'banque.required' => 'La banque est obligatoire.',
+            'banque.string' => 'La banque doit être une chaîne de caractères.',
+            'banque.max' => 'La banque ne doit pas dépasser 255 caractères.',
+            'montant_transaction.required' => 'Le montant est obligatoire.',
+            'montant_transaction.numeric' => 'Le montant doit être un nombre.',
+            'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.'
+        ]);
+
+        /* Modification de l'emprunt */
+        $emprunt_history = Emprunt_history::find($request->id);
+        if ($emprunt_history->user_id != auth()->user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
+
+        $emprunt_history->date_transaction    = $request->date_transaction;
+        $emprunt_history->nom_actif           = ucfirst($request->nom_actif);
+        $emprunt_history->banque              = ucfirst($request->banque);
+        $emprunt_history->montant_transaction = $request->montant_transaction;
+
+        if ($emprunt_history->save()) {
+            return back()->with('success', 'L\'emprunt a bien été modifié 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de l\'emprunt ❌.');
+        }
     }
 
     /**
@@ -1568,6 +1647,22 @@ class PrivateController extends Controller
     public function removeEmpruntHistory(string $id)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        if ($id == null) { back()->with('error', 'l\'id est null ❌.'); }
+        if (!is_numeric($id)) { back()->with('error', 'l\'id n\'est pas un nombre ❌.'); }
+        if ($id <= 0) { back()->with('error', 'l\'id est inférieur ou égal à 0 ❌.'); }
+
+        $emprunt_history = Emprunt_history::find($id);
+        if (!$emprunt_history) { back()->with('error', 'L\'emprunt n\'existe pas ❌.'); }
+        if ($emprunt_history->user_id != auth()->user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
+
+        /* Suppression de l'emprunt */
+        if ($emprunt_history->delete()) {
+            return back()->with('success', 'L\'emprunt a bien été supprimé 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la suppression de l\'emprunt ❌.');
+        }
     }
 
 

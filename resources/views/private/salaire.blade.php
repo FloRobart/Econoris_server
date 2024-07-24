@@ -61,6 +61,7 @@
                     <th class="tableCell" title="Trier les salaires par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant du salaire</a></th>
                     <th class="tableCell" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
                     <th class="tableCell" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
+                    <th class="tableCell" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Montant des abonnements</a></th>
                     <th class="tableCell">Dépences possibles</th>
                     <th class="tableCell max-[460px]:hidden">Actions</th>
                 </tr>
@@ -95,19 +96,25 @@
                             @endforeach
                             <td class="tableCell" title="Afficher les investissements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
 
+                            <!-- Montant des abonnements -->
+                            @php $montantAbonnements = 0; @endphp
+                            @foreach ($abonnementsHistories as $abonnement)
+                                @if (date("m",strtotime($abonnement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @php $montantAbonnements += $abonnement->montant_transaction; @endphp
+                                @endif
+                            @endforeach
+                            <td class="tableCell" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
+
                             <!-- Montant des dépences -->
                             @php
-                                $montantDepences = $salaire->montant_transaction - $montantEpargne - $montantInvestissement;
-                                $abonnementsHistories->where('date_transaction', '>=', date("Y-m-01",strtotime($salaire->date_transaction)))->where('date_transaction', '<=', date("Y-m-t",strtotime($salaire->date_transaction)))->each(function ($abonnement) use (&$montantDepences) {
-                                    $montantDepences -= $abonnement->montant_transaction;
-                                });
+                                $montantDepences = $salaire->montant_transaction - $montantEpargne - $montantInvestissement - $montantAbonnements;
                             @endphp
                             <td class="tableCell @if ($montantDepences < 0) fontColorError @endif">{{ number_format($montantDepences, 2, ',', ' ') }} €</td>
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
                                 <!-- Modifier -->
-                                <button onclick="editSalaire('{{ strftime('%Y-%m-%d', strtotime($salaire->date_transaction)) }}', '{{ $salaire->montant_transaction }}', '{{ $salaire->employeur }}','{{ $salaire->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
+                                <button onclick="editSalaire('{{ strftime('%Y-%m-%d', strtotime($salaire->date_transaction)) }}', '{{ $salaire->montant_transaction }}', '{{ str_replace('\'', '\\\'', $salaire->employeur) }}','{{ $salaire->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>
