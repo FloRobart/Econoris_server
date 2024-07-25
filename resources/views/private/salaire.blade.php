@@ -44,6 +44,21 @@
         <div class="rowCenterContainer">
             <span class="normalText">Montant total investie : <span class="normalTextBleuLogo font-bold">{{ number_format($investissements->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
+
+        <!-- Montant total emprunté -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant total des emprunts : <span class="normalTextBleuLogo font-bold">{{ number_format($totalEmprunte, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant total des abonnements -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant total des transactions lié aux abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnementsHistories->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant total des dépences -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant total des dépences : <span class="normalTextBleuLogo font-bold">{{ number_format($depenses->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+        </div>
     </div>
 
     <!-- Barre de séparation -->
@@ -62,6 +77,7 @@
                     <th class="tableCell" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
                     <th class="tableCell" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
                     <th class="tableCell" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Montant des abonnements</a></th>
+                    <th class="tableCell" title="Afficher toutes les dépences"><a href="{{ route('depenses') }}" class="link">Montant des dépences</a></th>
                     <th class="tableCell">Dépences possibles</th>
                     <th class="tableCell max-[460px]:hidden">Actions</th>
                 </tr>
@@ -103,13 +119,36 @@
                                     @php $montantAbonnements += $abonnement->montant_transaction; @endphp
                                 @endif
                             @endforeach
-                            <td class="tableCell" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences -->
+                            @php $montantDepenses = 0; @endphp
+                            @foreach ($depenses as $depense)
+                                @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @php $montantDepenses += $depense->montant_transaction; @endphp
+                                @endif
+                            @endforeach
+                            <td class="tableCell" title="Afficher les dépences du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
+
+                            <!-- Montant des dépences possible -->
                             @php
-                                $montantdepenses = $salaire->montant_transaction - $montantEpargne - $montantInvestissement - $montantAbonnements;
+                                $montantEmprunt = 0;
+                                $montantDepenses = 0;
                             @endphp
-                            <td class="tableCell @if ($montantdepenses < 0) fontColorError @endif">{{ number_format($montantdepenses, 2, ',', ' ') }} €</td>
+                            @foreach ($empruntsHistories as $emprunt)
+                                @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @php $montantEmprunt += $emprunt->montant_transaction; @endphp
+                                @endif
+                            @endforeach
+                            @foreach ($depenses as $depense)
+                                @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @php $montantDepenses += $depense->montant_transaction; @endphp
+                                @endif
+                            @endforeach
+                            @php
+                                $montantDepensesPossible = $salaire->montant_transaction - $montantEpargne - $montantInvestissement - $montantAbonnements - $montantEmprunt - $montantDepenses;
+                            @endphp
+                            <td class="tableCell @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($montantDepensesPossible, 2, ',', ' ') }} €</td>
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
