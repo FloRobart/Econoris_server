@@ -24,7 +24,7 @@
 
 
 <!-- Affichage des différents profils -->
-<section class="colCenterContainer gap-y-10 bgPage mb-[21rem] min-[400px]:mb-68 md:mb-[30rem] lg:mb-[21rem] xl:mb-52">
+<section class="colCenterContainer gap-y-10 bgPage mb-[21rem] min-[400px]:mb-68 md:mb-[30rem] lg:mb-[21rem] xl:mb-52 mt-6">
     <!-- Informations diverses -->
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-center">
         <a href="{{ route('salaires') }}"    class="buttonForm">Revenue    </a>
