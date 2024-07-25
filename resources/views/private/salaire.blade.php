@@ -1,12 +1,12 @@
 <!-- Page d'accueil -->
 @extends('layouts.page_template')
 @section('title')
-    Salaires
+    Revenus
 @endsection
 
 @section('content')
 <!-- Titre de la page -->
-<livewire:page-title :title="'Salaires'" />
+<livewire:page-title :title="'Revenus'" />
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">
@@ -27,14 +27,14 @@
 <section class="colCenterContainer space-y-12 mt-4 px-6 mb-32 bgPage">
     <!-- Information générale -->
     <div class="colCenterContainer">
-        <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
+        <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale @if (isset($salaires) && str_contains(strtolower(URL::current()), 'date')) {{ 'du mois de ' . strftime('%B %Y', strtotime($salaires->first()->date_transaction)) }} @endif</h2>
         <!-- Nombre de salaires reçus -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de salaires reçus : <span class="normalTextBleuLogo font-bold">{{ $salaires->count() }}</span></span>
+            <span class="normalText">Nombre de revenus reçus : <span class="normalTextBleuLogo font-bold">{{ $salaires->count() }}</span></span>
         </div>
         <!-- Montant total des salaires reçus -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des salaires reçus : <span class="normalTextBleuLogo font-bold">{{ number_format($salaires->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total des revenus reçus : <span class="normalTextBleuLogo font-bold">{{ number_format($salaires->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
         <!-- Montant total épargné -->
         <div class="rowCenterContainer">
@@ -65,7 +65,7 @@
     <livewire:horizontal-separation />
 
     <!-- Détails des salaires mois par mois -->
-    <h2 class="w-full bigTextBleuLogo text-center">Détails des salaires mois par mois</h2>
+    <h2 class="w-full bigTextBleuLogo text-center">Détails des Revenus</h2>
     <div class="colCenterContainer">
         <table class="w-full">
             <!-- Entête du tableau -->
@@ -189,7 +189,7 @@
         </form>
 
         <!-- Bouton pour ajouter un salaire -->
-        <button onclick="showForm('Ajouter un salaire', 'Ajouter', '{{ route('salaire.add') }}')" id="button" class="buttonForm mt-8">Ajouter un salaire</a>
+        <button onclick="showForm('Ajouter un revenu', 'Ajouter', '{{ route('salaire.add') }}')" id="button" class="buttonForm mt-8">Ajouter un salaire</a>
     </div>
 </section>
 @endsection
@@ -203,7 +203,7 @@
         /* Affichage du formulaire */
         hidden = document.getElementById('form').classList.contains('hidden');
         if (hidden || oldId == id) {
-            showForm('Ajouter un salaire', 'Modifier', '{{ route('salaire.edit') }}');
+            showForm('Ajouter un revenu', 'Modifier', '{{ route('salaire.edit') }}');
         } else {
             document.getElementById('formButton').innerText = 'Modifier';
             document.getElementById('form').action = '{{ route('salaire.edit') }}';

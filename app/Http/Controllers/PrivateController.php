@@ -64,10 +64,10 @@ class PrivateController extends Controller
         $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
 
         /* Récupération de l'historique des emprunts */
-        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', $sort);
+        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', '', $sort);
 
         /* Récupération du montant total emprunté */
-        $totalEmprunte = Emprunt::where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $totalEmprunte = PrivateController::getEmprunts('', '', $sort)->sum('montant_transaction');
 
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses('', '', $sort);
@@ -98,19 +98,19 @@ class PrivateController extends Controller
         $investissements = PrivateController::getInvestissements($date, '', '', $sort);
 
         /* Récupération de l'historique des abonnements */
-        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
+        $abonnementsHistories = PrivateController::getAbonnementsHistories($date, '', '', $sort);
 
         /* Récupération de l'historique des emprunts */
-        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', $sort);
+        $empruntsHistories = PrivateController::getEmpruntsHistories($date, '', '', $sort);
 
         /* Récupération du montant total emprunté */
-        $totalEmprunte = Emprunt::where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $totalEmprunte = PrivateController::getEmprunts($date, '', $sort)->sum('montant_transaction');
 
         /* Récupération des dépenses */
-        $depenses = PrivateController::getDepenses('', '', $sort);
+        $depenses = PrivateController::getDepenses($date, '', $sort);
 
         /* Récupération des prêts */
-        $prets = PrivateController::getPrets('', '', $sort);
+        $prets = PrivateController::getPrets($date, '', $sort);
 
         return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
@@ -138,10 +138,10 @@ class PrivateController extends Controller
         $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
 
         /* Récupération de l'historique des emprunts */
-        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', $sort);
+        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', '', $sort);
 
         /* Récupération du montant total emprunté */
-        $totalEmprunte = Emprunt::where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $totalEmprunte = PrivateController::getEmprunts('', '', $sort)->sum('montant_transaction');
 
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses('', '', $sort);
@@ -172,19 +172,19 @@ class PrivateController extends Controller
         $investissements = PrivateController::getInvestissements($date, '', '', $sort);
 
         /* Récupération de l'historique des abonnements */
-        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
+        $abonnementsHistories = PrivateController::getAbonnementsHistories($date, '', '', $sort);
 
         /* Récupération de l'historique des emprunts */
-        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', $sort);
+        $empruntsHistories = PrivateController::getEmpruntsHistories($date, '', '', $sort);
 
         /* Récupération du montant total emprunté */
-        $totalEmprunte = Emprunt::where('user_id', auth()->user()->id)->sum('montant_transaction');
+        $totalEmprunte = PrivateController::getEmprunts($date, '', $sort)->sum('montant_transaction');
 
         /* Récupération des dépenses */
-        $depenses = PrivateController::getDepenses('', '', $sort);
+        $depenses = PrivateController::getDepenses($date, '', $sort);
 
         /* Récupération des prêts */
-        $prets = PrivateController::getPrets('', '', $sort);
+        $prets = PrivateController::getPrets($date, '', $sort);
 
         return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
@@ -265,13 +265,6 @@ class PrivateController extends Controller
             'employeur.max' => 'L\'employeur ne doit pas dépasser 255 caractères.'
         ]);
 
-        /* Message de confirmation */
-        if (Salaire::where('date_transaction', $request->date_transaction)->first()) {
-            $message = 'Attention, un salaire similaire a déjà été ajouté pour cette date. 🤔';
-        } else {
-            $message = '';
-        }
-
         /* Modification du salaire */
         $salaire = Salaire::find($request->id);
         if ($salaire->user_id != auth()->user()->id) { back()->with('error', 'Le salaire ne vous appartient pas ❌.'); }
@@ -281,7 +274,7 @@ class PrivateController extends Controller
         $salaire->employeur = ucfirst($request->employeur);
 
         if ($salaire->save()) {
-            return back()->with('success', 'Le salaire a bien été modifié 👍.')->with('message', $message);
+            return back()->with('success', 'Le salaire a bien été modifié 👍.');
         } else {
             return back()->with('error', 'Une erreur est sur venue lors de la modification du salaire ❌.');
         }
@@ -1350,7 +1343,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_emprunt';
         $order = $request->query('order') ?? 'desc';
 
-        $emprunts = PrivateController::getEmprunts('', $sort, $order);
+        $emprunts = PrivateController::getEmprunts('', '', $sort, $order);
 
         return view('private.emprunt', compact('emprunts'));
     }
@@ -1365,7 +1358,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_emprunt';
         $order = $request->query('order') ?? 'desc';
 
-        $emprunts = PrivateController::getEmprunts($banque, $sort, $order);
+        $emprunts = PrivateController::getEmprunts('', $banque, $sort, $order);
 
         return view('private.emprunt', compact('emprunts'));
     }
@@ -1541,7 +1534,7 @@ class PrivateController extends Controller
 
         /* Récupération d'un emprunt aléatoire */
         $emprunt = Emprunt::inRandomOrder()->first();
-        $emprunts_histories = PrivateController::getEmpruntsHistories('', '', $sort, $order);
+        $emprunts_histories = PrivateController::getEmpruntsHistories('', '', '', $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
     }
@@ -1557,7 +1550,7 @@ class PrivateController extends Controller
         $order = $request->query('order') ?? 'desc';
 
         $emprunt = Emprunt::inRandomOrder()->where('nom_actif', $nom_actif)->first();
-        $emprunts_histories = PrivateController::getEmpruntsHistories($nom_actif, '', $sort, $order);
+        $emprunts_histories = PrivateController::getEmpruntsHistories('', $nom_actif, '', $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
     }
@@ -1573,7 +1566,7 @@ class PrivateController extends Controller
         $order = $request->query('order') ?? 'desc';
 
         $emprunt = Emprunt::inRandomOrder()->where('banque', $banque)->first();
-        $emprunts_histories = PrivateController::getEmpruntsHistories('', $banque, $sort, $order);
+        $emprunts_histories = PrivateController::getEmpruntsHistories('', '', $banque, $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
     }
@@ -1589,7 +1582,7 @@ class PrivateController extends Controller
         $order = $request->query('order') ?? 'desc';
 
         $emprunt = Emprunt::inRandomOrder()->where('nom_actif', $nom_actif)->where('banque', $banque)->first();
-        $emprunts_histories = PrivateController::getEmpruntsHistories($nom_actif, $banque, $sort, $order);
+        $emprunts_histories = PrivateController::getEmpruntsHistories('', $nom_actif, $banque, $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
     }
@@ -2272,13 +2265,19 @@ class PrivateController extends Controller
     /*----------*/
     /**
      * Récupère les emprunts
+     * @param string $date
      * @param string $banque
      * @param string $sort
      * @param string $order
      */
-    public function getEmprunts(string $banque, string $sort = 'date_debut', $order = 'desc')
+    public function getEmprunts(string $date, string $banque, string $sort = 'date_debut', $order = 'desc')
     {
         $emprunts = Emprunt::all()->where('user_id', auth()->user()->id);
+
+        if ($date != '') {
+            $emprunts = $emprunts->where('date_debut', '>=', PrivateController::getFirstDay($date))
+                                 ->where('date_debut', '<=', PrivateController::getLastDay($date));
+        }
 
         if ($banque != '') {
             $emprunts = $emprunts->where('banque', $banque);
@@ -2294,14 +2293,20 @@ class PrivateController extends Controller
     /*----------------------------------------------*/
     /**
      * Récupère les emprunts
+     * @param string $date
      * @param string $nom_actif
      * @param string $banque
      * @param string $sort
      * @param string $order
      */
-    public function getEmpruntsHistories(string $nom_actif, string $banque, string $sort = 'date_debut', $order = 'desc')
+    public function getEmpruntsHistories(string $date, string $nom_actif, string $banque, string $sort = 'date_debut', $order = 'desc')
     {
         $emprunts = Emprunt_history::all()->where('user_id', auth()->user()->id);
+
+        if ($date != '') {
+            $emprunts = $emprunts->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                 ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+        }
 
         if ($nom_actif != '') {
             $emprunts = $emprunts->where('nom_actif', $nom_actif);
