@@ -10,6 +10,7 @@ use App\Models\Abonnement_history;
 use App\Models\Emprunt;
 use App\Models\Emprunt_history;
 use App\Models\Depense;
+use App\Models\Pret;
 
 
 class PrivateController extends Controller
@@ -1881,6 +1882,205 @@ class PrivateController extends Controller
 
 
 
+    /*-------*/
+    /* prêts */
+    /*-------*/
+    /* Affichage des prêts */
+    /**
+     * Affiche tous les prêts
+     */
+    public function prets(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $prets = PrivateController::getPrets('', '', $sort, $order);
+
+        return view('private.pret', compact('prets'));
+    }
+
+    /**
+     * Affiche les prêts réalisé à une même date
+     */
+    public function pretsDate(Request $request, string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $prets = PrivateController::getPrets($date, '', $sort, $order);
+
+        return view('private.pret', compact('prets'));
+    }
+
+    /**
+     * Affiche les prêts réalisé auprès d'un même nom
+     */
+    public function pretsNom(Request $request, string $nom_emprunteur)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $prets = PrivateController::getPrets('', $nom_emprunteur, $sort, $order);
+
+        return view('private.pret', compact('prets'));
+    }
+
+    /**
+     * Affiche les prêts réalisé auprès d'un même nom et à une même date
+     */
+    public function pretsDateNom(Request $request, string $date, string $nom_emprunteur)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $prets = PrivateController::getPrets($date, $nom_emprunteur, $sort, $order);
+
+        return view('private.pret', compact('prets'));
+    }
+
+
+    /* Édition des prêts */
+    /**
+     * Ajoute un prêt
+     */
+    public function addPret(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'date_transaction' => 'required|date|before:tomorrow',
+            'nom_emprunteur' => 'required|string|max:255',
+            'montant_pret' => 'required|string|max:255',
+            'montant_rembourse' => 'required|numeric|min:0',
+            'raison_pret' => 'required|string|max:255'
+        ], [
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être inférieure à la date d\'aujourd\'hui.',
+            'nom_emprunteur.required' => 'Le nom de l\'emprunteur est obligatoire.',
+            'nom_emprunteur.string' => 'Le nom de l\'emprunteur doit être une chaîne de caractères.',
+            'nom_emprunteur.max' => 'Le nom de l\'emprunteur ne doit pas dépasser 255 caractères.',
+            'montant_pret.required' => 'Le montant emprunté est obligatoire.',
+            'montant_pret.string' => 'Le montant emprunté doit être une chaîne de caractères.',
+            'montant_pret.max' => 'Le montant emprunté ne doit pas dépasser 255 caractères.',
+            'montant_rembourse.required' => 'Le montant remboursé est obligatoire.',
+            'montant_rembourse.numeric' => 'Le montant remboursé doit être un nombre.',
+            'montant_rembourse.min' => 'Le montant remboursé doit être supérieur ou égal à 0.',
+            'raison_pret.required' => 'La raison du prêt est obligatoire.',
+            'raison_pret.string' => 'La raison du prêt doit être une chaîne de caractères.',
+            'raison_pret.max' => 'La raison du prêt ne doit pas dépasser 255 caractères.'
+        ]);
+
+        /* Message de confirmation */
+        if (Pret::where('date_transaction', $request->date_transaction)->where('nom_emprunteur', $request->nom_emprunteur)->where('montant_pret', $request->montant_pret)->first()) {
+            $message = 'Attention, une transaction similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Ajout du prêt */
+        $pret = new Pret();
+        $pret->user_id           = auth()->user()->id;
+        $pret->date_transaction  = $request->date_transaction;
+        $pret->nom_emprunteur    = ucfirst($request->nom_emprunteur);
+        $pret->montant_pret      = $request->montant_pret;
+        $pret->montant_rembourse = $request->montant_rembourse;
+        $pret->raison_pret       = ucfirst($request->raison_pret);
+
+        if ($pret->save()) {
+            return back()->with('success', 'Le prêt a bien été ajouté 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de l\'ajout de la transaction le prêt ❌.');
+        }
+    }
+
+    /**
+     * Modifie un prêt
+     */
+    public function editPret(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.prets,id',
+            'date_transaction' => 'required|date|before:tomorrow',
+            'nom_emprunteur' => 'required|string|max:255',
+            'montant_pret' => 'required|string|max:255',
+            'montant_rembourse' => 'required|numeric|min:0',
+            'raison_pret' => 'required|string|max:255'
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'date_transaction.before' => 'La date doit être inférieure à la date d\'aujourd\'hui.',
+            'nom_emprunteur.required' => 'Le nom de l\'emprunteur est obligatoire.',
+            'nom_emprunteur.string' => 'Le nom de l\'emprunteur doit être une chaîne de caractères.',
+            'nom_emprunteur.max' => 'Le nom de l\'emprunteur ne doit pas dépasser 255 caractères.',
+            'montant_pret.required' => 'Le montant emprunté est obligatoire.',
+            'montant_pret.string' => 'Le montant emprunté doit être une chaîne de caractères.',
+            'montant_pret.max' => 'Le montant emprunté ne doit pas dépasser 255 caractères.',
+            'montant_rembourse.required' => 'Le montant remboursé est obligatoire.',
+            'montant_rembourse.numeric' => 'Le montant remboursé doit être un nombre.',
+            'montant_rembourse.min' => 'Le montant remboursé doit être supérieur ou égal à 0.',
+            'raison_pret.required' => 'La raison du prêt est obligatoire.',
+            'raison_pret.string' => 'La raison du prêt doit être une chaîne de caractères.',
+            'raison_pret.max' => 'La raison du prêt ne doit pas dépasser 255 caractères.'
+        ]);
+
+        /* Modification du prêt */
+        $pret = Pret::find($request->id);
+        if ($pret->user_id != auth()->user()->id) { back()->with('error', 'Le prêt ne vous appartient pas ❌.'); }
+
+        $pret->date_transaction  = $request->date_transaction;
+        $pret->nom_emprunteur    = ucfirst($request->nom_emprunteur);
+        $pret->montant_pret      = $request->montant_pret;
+        $pret->montant_rembourse = $request->montant_rembourse;
+        $pret->raison_pret       = ucfirst($request->raison_pret);
+
+        if ($pret->save()) {
+            return back()->with('success', 'Le prêt a bien été modifié 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification du prêt ❌.');
+        }
+    }
+
+    /**
+     * Supprime un prêt
+     */
+    public function removePret(string $id)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        if ($id == null) { back()->with('error', 'l\'id est null ❌.'); }
+        if (!is_numeric($id)) { back()->with('error', 'l\'id n\'est pas un nombre ❌.'); }
+        if ($id <= 0) { back()->with('error', 'l\'id est inférieur ou égal à 0 ❌.'); }
+
+        $pret = Pret::find($id);
+        if (!$pret) { back()->with('error', 'Le prêt n\'existe pas ❌.'); }
+        if ($pret->user_id != auth()->user()->id) { back()->with('error', 'Le prêt ne vous appartient pas ❌.'); }
+
+        /* Suppression du prêt */
+        if ($pret->delete()) {
+            return back()->with('success', 'Le prêt a bien été supprimé 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la suppression du prêt ❌.');
+        }
+    }
+
+
+
 
     /*======================*/
     /* Fonction Utilitaires */
@@ -2128,5 +2328,33 @@ class PrivateController extends Controller
         }
 
         return $order == 'asc' ? $depenses->sortBy($sort) : $depenses->sortByDesc($sort);
+    }
+
+
+
+    /*-------*/
+    /* Prêts */
+    /*-------*/
+    /**
+     * Récupère les prêts
+     * @param string $date
+     * @param string $nom_emprunteur
+     * @param string $sort
+     * @param string $order
+     */
+    public function getPrets(string $date, string $nom_emprunteur, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $prets = Pret::all()->where('user_id', auth()->user()->id);
+
+        if ($date != '') {
+            $prets = $prets->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                           ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+        }
+
+        if ($nom_emprunteur != '') {
+            $prets = $prets->where('nom_emprunteur', $nom_emprunteur);
+        }
+
+        return $order == 'asc' ? $prets->sortBy($sort) : $prets->sortByDesc($sort);
     }
 }

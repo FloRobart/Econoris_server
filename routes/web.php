@@ -161,6 +161,21 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/depense/add', [PrivateController::class, 'addDepense'])->name('depense.add');
     Route::post('/depense/edit', [PrivateController::class, 'editDepense'])->name('depense.edit');
     Route::get('/depense/remove/{id}', [PrivateController::class, 'removeDepense'])->name('depense.remove');
+
+
+    /*-------*/
+    /* Prêts */
+    /*-------*/
+    /* Affichage des prêts */
+    Route::get('/prets', [PrivateController::class, 'prets'])->name('prets');
+    Route::get('/prets/date/{date}', [PrivateController::class, 'pretsDate'])->name('prets.date');
+    Route::get('/prets/nom_emprunteur/{nom_emprunteur}', [PrivateController::class, 'pretsNom'])->name('prets.nom_emprunteur');
+    Route::get('/prets/date/{date}/nom_emprunteur/{nom_emprunteur}', [PrivateController::class, 'pretsDateNom'])->name('prets.date.nom_emprunteur');
+
+    /* Édition des prêts */
+    Route::post('/pret/add', [PrivateController::class, 'addPret'])->name('pret.add');
+    Route::post('/pret/edit', [PrivateController::class, 'editPret'])->name('pret.edit');
+    Route::get('/pret/remove/{id}', [PrivateController::class, 'removePret'])->name('pret.remove');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */
