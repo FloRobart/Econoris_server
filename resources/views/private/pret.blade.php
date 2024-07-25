@@ -64,7 +64,7 @@
                     <th class="tableCell" title="Trier les prêts par nom"><a href="{{ URL::current() . '?sort=nom_emprunteur' . '&order=' . $order }}" class="link">Nom de l'emprunteur</a></th>
                     <th class="tableCell" title="Trier les prêts par montant prêté @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_pret' . '&order=' . $order }}" class="link">Montant prêté</a></th>
                     <th class="tableCell" title="Trier les prêts par montant remboursé @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_rembourse' . '&order=' . $order }}" class="link">Montant remboursé</a></th>
-                    <th class="tableCell" title="Trier les prêts par raison_pret"><a href="{{ URL::current() . '?sort=raison_pret' . '&order=' . $order }}" class="link">Raison du prêt</a></th>
+                    <th class="tableCell max-sm:hidden" title="Trier les prêts par raison_pret"><a href="{{ URL::current() . '?sort=raison_pret' . '&order=' . $order }}" class="link">Raison du prêt</a></th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
@@ -87,7 +87,7 @@
                             <td class="tableCell">{{ number_format($pret->montant_rembourse, 2, ',', ' ') }} €</td>
 
                             <!-- Raison du prêt -->
-                            <td class="tableCell">{{ $pret->raison_pret }}</td>
+                            <td class="tableCell max-sm:hidden">{{ $pret->raison_pret }}</td>
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
@@ -115,7 +115,7 @@
         <form id="form" action="{{ route('pret.add') }}" method="POST" class="rowStartContainer hidden">
             @csrf
             <div class="colCenterContainer">
-                <div class="colStartContainer sm:rowStartContainer">
+                <div class="colStartContainer md:rowStartContainer">
                     <input id="date_transaction"  name="date_transaction"  required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"   class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="nom_emprunteur"    name="nom_emprunteur"    required type="text"                       placeholder="Nom de l'emprunteur" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="montant_pret"      name="montant_pret"      required type="number" step="0.01" min="0" placeholder="Montant du prêt"     class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">

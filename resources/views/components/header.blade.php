@@ -64,6 +64,7 @@
                     'abonnements' => route('abonnements'),
                     'emprunts' => route('emprunts'),
                     'depenses' => route('depenses'),
+                    'prets' => route('prets'),
                     
                     /* Niveau 2 */
                     'abonnements_histories' => route('abonnements_histories'),
@@ -76,6 +77,7 @@
                     'compte' => parseUrl($urlPath, 'compte'),
                     'type' => parseUrl($urlPath, 'type'),
                     'nom_actif' => parseUrl($urlPath, 'nom_actif'),
+                    'nom_emprunteur' => parseUrl($urlPath, 'nom_emprunteur'),
 
                     /* Niveau 4 */
                     'abonnement_actif' => parseUrl($urlPath, 'abonnement_actif'),
