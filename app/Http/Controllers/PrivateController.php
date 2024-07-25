@@ -62,7 +62,16 @@ class PrivateController extends Controller
         /* Récupération de l'historique des abonnements */
         $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories'));
+        /* Récupération de l'historique des emprunts */
+        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', $sort);
+
+        /* Récupération du montant total emprunté */
+        $totalEmprunte = Emprunt::where('user_id', auth()->user()->id)->sum('montant_transaction');
+
+        /* Récupération des dépenses */
+        $depenses = PrivateController::getDepenses('', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses'));
     }
 
     /**
@@ -87,7 +96,16 @@ class PrivateController extends Controller
         /* Récupération de l'historique des abonnements */
         $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories'));
+        /* Récupération de l'historique des emprunts */
+        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', $sort);
+
+        /* Récupération du montant total emprunté */
+        $totalEmprunte = Emprunt::where('user_id', auth()->user()->id)->sum('montant_transaction');
+
+        /* Récupération des dépenses */
+        $depenses = PrivateController::getDepenses('', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses'));
     }
 
     /**
@@ -112,7 +130,16 @@ class PrivateController extends Controller
         /* Récupération de l'historique des abonnements */
         $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories'));
+        /* Récupération de l'historique des emprunts */
+        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', $sort);
+
+        /* Récupération du montant total emprunté */
+        $totalEmprunte = Emprunt::where('user_id', auth()->user()->id)->sum('montant_transaction');
+
+        /* Récupération des dépenses */
+        $depenses = PrivateController::getDepenses('', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses'));
     }
 
     /**
@@ -137,7 +164,16 @@ class PrivateController extends Controller
         /* Récupération de l'historique des abonnements */
         $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories'));
+        /* Récupération de l'historique des emprunts */
+        $empruntsHistories = PrivateController::getEmpruntsHistories('', '', $sort);
+
+        /* Récupération du montant total emprunté */
+        $totalEmprunte = Emprunt::where('user_id', auth()->user()->id)->sum('montant_transaction');
+
+        /* Récupération des dépenses */
+        $depenses = PrivateController::getDepenses('', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses'));
     }
 
 
@@ -1705,7 +1741,7 @@ class PrivateController extends Controller
     /**
      * Affiche les dépenses réalisé auprès d'un même nom
      */
-    public function depensesBeneficiaire(Request $request, string $nom_actif)
+    public function depensesNom(Request $request, string $nom_actif)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -1720,7 +1756,7 @@ class PrivateController extends Controller
     /**
      * Affiche les dépenses réalisé auprès d'un même nom et à une même date
      */
-    public function depensesBeneficiaireDate(Request $request, string $nom_actif, string $date)
+    public function depensesDateNom(Request $request, string $date, string $nom_actif)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 

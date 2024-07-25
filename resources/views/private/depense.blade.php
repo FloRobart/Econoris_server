@@ -51,7 +51,7 @@
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
                     <th class="tableCell" title="Trier les dépences par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date d'achat</a></th>
-                    <th class="tableCell" title="Trier les dépences par nom"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Nom de la dépence</a></th>
+                    <th class="tableCell" title="Trier les dépences par nom"><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de la dépence</a></th>
                     <th class="tableCell" title="Trier les dépences par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant dépencé</a></th>
                     <th class="tableCell max-[460px]:hidden">Actions</th>
                 </tr>
@@ -63,13 +63,13 @@
                     @foreach ($depenses as $depense)
                         <tr class="tableRow smallText text-center">
                             <!-- Date du virement -->
-                            <td class="tableCell" title="Afficher les dépences du mois de {{ strftime('%B %Y', strtotime($depense->date_transaction)) }}"><a href="" class="link">{{ strftime('%d %B %Y',strtotime($depense->date_transaction)); }}</a></td>
+                            <td class="tableCell" title="Afficher les dépences du mois de {{ strftime('%B %Y', strtotime($depense->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'nom_actif')) {{ route('depenses.date.nom_actif', [$depense->date_transaction, $depense->nom_actif]) }}  @else {{ route('depenses.date', [$depense->date_transaction]) }}  @endif" class="link">{{ strftime('%d %B %Y',strtotime($depense->date_transaction)); }}</a></td>
                             
                             <!-- Nom de la dépence -->
-                            <td class="tableCell" title="Afficher les dépences à {{ $depense->nom_actif }}"><a href="" class="link">{{ $depense->nom_actif }}</a></td>
+                            <td class="tableCell" title="Afficher les dépences à {{ $depense->nom_actif }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('depenses.date.nom_actif', [$depense->date_transaction, $depense->nom_actif]) }}  @else {{ route('depenses.nom_actif', [$depense->nom_actif]) }}  @endif" class="link">{{ $depense->nom_actif }}</a></td>
 
                             <!-- Montant dépencé -->
-                            <td class="tableCell" title=""><a href="" class="link">{{ number_format($depense->montant_transaction, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell">{{ number_format($depense->montant_transaction, 2, ',', ' ') }} €</td>
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
@@ -101,8 +101,8 @@
                     <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de la dépense"                        class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant du depense" min="0" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 </div>
+                <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
             </div>
         </form>
