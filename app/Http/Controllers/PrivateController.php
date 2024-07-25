@@ -72,7 +72,10 @@ class PrivateController extends Controller
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses('', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses'));
+        /* Récupération des prêts */
+        $prets = PrivateController::getPrets('', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
 
     /**
@@ -106,7 +109,10 @@ class PrivateController extends Controller
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses('', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses'));
+        /* Récupération des prêts */
+        $prets = PrivateController::getPrets('', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
 
     /**
@@ -140,7 +146,10 @@ class PrivateController extends Controller
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses('', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses'));
+        /* Récupération des prêts */
+        $prets = PrivateController::getPrets('', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
 
     /**
@@ -174,7 +183,10 @@ class PrivateController extends Controller
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses('', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses'));
+        /* Récupération des prêts */
+        $prets = PrivateController::getPrets('', '', $sort);
+
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
 
 

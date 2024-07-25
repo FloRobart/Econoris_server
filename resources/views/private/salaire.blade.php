@@ -131,7 +131,7 @@
                             <td class="tableCell" title="Afficher les dépences du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences possible -->
-                            @php $montantEmprunt = 0; $totalSalairesMentuel = 0; @endphp
+                            @php $montantEmprunt = 0; $totalSalairesMentuel = 0; $montantPret = 0; @endphp
                             @foreach ($empruntsHistories as $emprunt)
                                 @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
                                     @php $montantEmprunt += $emprunt->montant_transaction; @endphp
@@ -142,8 +142,13 @@
                                     @php $totalSalairesMentuel += $salaireMensuel->montant_transaction; @endphp
                                 @endif
                             @endforeach
+                            @foreach ($prets as $pret)
+                                @if (date("m",strtotime($pret->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @php $montantPret += $pret->montant_pret - $pret->montant_rembourse; @endphp
+                                @endif
+                            @endforeach
                             @php
-                                $montantDepensesPossible = $totalSalairesMentuel - $montantEpargne - $montantInvestissement - $montantAbonnements - $montantEmprunt - $montantDepenses;
+                                $montantDepensesPossible = $totalSalairesMentuel - $montantEpargne - $montantInvestissement - $montantAbonnements - $montantEmprunt - $montantDepenses - $montantPret;
                             @endphp
                             <td class="tableCell @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($montantDepensesPossible, 2, ',', ' ') }} €</td>
 
