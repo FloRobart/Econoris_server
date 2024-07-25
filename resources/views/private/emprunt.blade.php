@@ -49,20 +49,20 @@
     <livewire:horizontal-separation />
 
     <!-- Détails des emprunt mois par mois -->
-    <div class="colCenterContainer overflow-scroll">
+    <div class="colCenterContainer">
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Liste de mes emprunts</h2>
         <table class="w-full mt-2">
             <!-- Entête du tableau -->
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell" title="Trier les emprunts par date de souscription"        ><a href="{{ URL::current() . '?sort=date_debut' . '&order=' . $order }}" class="link">Date d'emprunt</a></th>
-                    <th class="tableCell" title="Trier les emprunts par date de fun de remboursement"><a href="{{ URL::current() . '?sort=date_fin' . '&order=' . $order }}" class="link">Date de fin d'emprunt</a></th>
-                    <th class="tableCell" title="Trier les emprunts par nom d'emprunt"               ><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de l'emprunt</a></th>
-                    <th class="tableCell" title="Trier les emprunts par nom de banque"               ><a href="{{ URL::current() . '?sort=banque' . '&order=' . $order }}" class="link">Banque</a></th>
-                    <th class="tableCell" title="Trier les emprunts par montant emprunté"            ><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant emprunté</a></th>
-                    <th class="tableCell" title="Trier les emprunts par montant des mensualités"     ><a href="{{ URL::current() . '?sort=mensualite' . '&order=' . $order }}" class="link">Mensualité</a></th>
-                    <th class="tableCell" title="Trier les emprunts par taux d'intéret annuel"       ><a href="{{ URL::current() . '?sort=taux_interet_annuel' . '&order=' . $order }}" class="link">Taux d'intéret annuel</a></th>
+                    <th class="tableCell" title="Trier les emprunts par date de souscription"><a href="{{ URL::current() . '?sort=date_debut' . '&order=' . $order }}" class="link">Date d'emprunt</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Trier les emprunts par date de fun de remboursement"><a href="{{ URL::current() . '?sort=date_fin' . '&order=' . $order }}" class="link">Date de fin d'emprunt</a></th>
+                    <th class="tableCell" title="Trier les emprunts par nom d'emprunt"><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de l'emprunt</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Trier les emprunts par nom de banque"><a href="{{ URL::current() . '?sort=banque' . '&order=' . $order }}" class="link">Banque</a></th>
+                    <th class="tableCell" title="Trier les emprunts par montant emprunté"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant emprunté</a></th>
+                    <th class="tableCell" title="Trier les emprunts par montant des mensualités"><a href="{{ URL::current() . '?sort=mensualite' . '&order=' . $order }}" class="link">Mensualité</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Trier les emprunts par taux d'intéret annuel"><a href="{{ URL::current() . '?sort=taux_interet_annuel' . '&order=' . $order }}" class="link">Taux d'intéret annuel</a></th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
@@ -76,16 +76,16 @@
                             <td class="tableCell">{{ strftime('%d %B %Y', strtotime($emprunt->date_debut)) }}</td>
 
                             <!-- Date de fin de l'emprunt -->
-                            <td class="tableCell">{{ strftime('%d %B %Y', strtotime($emprunt->date_fin)) }}</td>
+                            <td class="tableCell max-[850px]:hidden">{{ strftime('%d %B %Y', strtotime($emprunt->date_fin)) }}</td>
 
                             <!-- Nom de l'actif -->
                             <td class="tableCell" title="Afficher l'historique des transactions de l'emprunt {{ $emprunt->nom_actif }}"><a href="{{ route('emprunts_histories') }}" class="link">{{ $emprunt->nom_actif }}</a></td>
 
                             <!-- Banque -->
                             @if (str_contains(strtolower(URL::current()), 'banque'))
-                                <td class="tableCell">{{ $emprunt->banque }}</td>
+                                <td class="tableCell max-[850px]:hidden">{{ $emprunt->banque }}</td>
                             @else
-                                <td class="tableCell" title="Afficher les emprunts souscrit auprès de la banque {{ $emprunt->banque }}"><a href="{{ route('emprunts.banque', $emprunt->banque) }}" class="link">{{ $emprunt->banque }}</a></td>
+                                <td class="tableCell max-[850px]:hidden" title="Afficher les emprunts souscrit auprès de la banque {{ $emprunt->banque }}"><a href="{{ route('emprunts.banque', $emprunt->banque) }}" class="link">{{ $emprunt->banque }}</a></td>
                             @endif
 
                             <!-- Montant emprunté -->
@@ -95,7 +95,7 @@
                             <td class="tableCell">{{ number_format($emprunt->mensualite, 2, ',', ' ') }} €</td>
 
                             <!-- Taux d'intérêt annuel -->
-                            <td class="tableCell">{{ number_format($emprunt->taux_interet_annuel, 2, ',', ' ') }} %</td>
+                            <td class="tableCell max-[850px]:hidden">{{ number_format($emprunt->taux_interet_annuel, 2, ',', ' ') }} %</td>
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
@@ -123,14 +123,14 @@
         <form id="form" action="{{ route('emprunt.add') }}" method="POST" class="rowStartContainer hidden">
             @csrf
             <div class="colCenterContainer">
-                <div class="colStartContainer sm:rowStartContainer">
-                    <input id="date_debut"          name="date_debut"          required type="date" value="{{ date('Y-m-d') }}"                                 class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="date_fin"            name="date_fin"            required type="date"                                                             class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'emprunt"                              class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="banque"              name="banque"              required type="text" placeholder="Nom de la banque"                              class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant de l'emprunt" min="0"    class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="mensualite"          name="mensualite"          required type="number" step="0.01" placeholder="Mensualité" min="0"              class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="taux_interet_annuel" name="taux_interet_annuel" required type="number" step="0.01" placeholder="Taux d'intérêt annuel" min="0"   class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                <div class="colStartContainer xl:rowStartContainer">
+                    <input id="date_debut"          name="date_debut"          required type="date" value="{{ date('Y-m-d') }}"                                 class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="date_fin"            name="date_fin"            required type="date"                                                             class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'emprunt"                              class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="banque"              name="banque"              required type="text" placeholder="Nom de la banque"                              class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant de l'emprunt" min="0"    class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="mensualite"          name="mensualite"          required type="number" step="0.01" placeholder="Mensualité" min="0"              class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="taux_interet_annuel" name="taux_interet_annuel" required type="number" step="0.01" placeholder="Taux d'intérêt annuel" min="0"   class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>
                 <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>

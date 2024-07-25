@@ -172,7 +172,7 @@
         <form id="form" action="{{ route('investissement.add') }}" method="POST" class="rowStartContainer hidden">
             @csrf
             <div class="colCenterContainer">
-                <div class="colStartContainer sm:rowStartContainer">
+                <div class="colStartContainer md:rowStartContainer">
                     <input id="type_investissement" name="type_investissement" required type="hidden" value="{{ $type_investissement }}">
                     <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'actif"                          class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">

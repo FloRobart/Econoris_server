@@ -209,11 +209,11 @@
         <form id="form" action="{{ route('abonnement.add') }}" method="POST" class="rowStartContainer hidden">
             @csrf
             <div class="colCenterContainer">
-                <div class="colStartContainer sm:rowStartContainer">
-                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"       class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'abonnement"                           class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant de l'abonnement" min="0" class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <div class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                <div class="colStartContainer lg:rowStartContainer">
+                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"       class="w-[65%] min-[350px]:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'abonnement"                           class="w-[65%] min-[350px]:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant de l'abonnement" min="0" class="w-[65%] min-[350px]:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <div class="w-[65%] min-[350px]:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                         <input type="radio" id="abonnement_actif" name="abonnement_actif" value="1" checked class="mr-1">
                         <label for="abonnement_actif" class="mr-2">Actif</label>
                         <input type="radio" id="abonnement_inactif" name="abonnement_actif" value="0" class="mr-1">

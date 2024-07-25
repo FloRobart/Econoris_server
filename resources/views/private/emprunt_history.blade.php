@@ -107,10 +107,10 @@
             @csrf
             <div class="colCenterContainer">
                 <div class="colStartContainer sm:rowStartContainer">
-                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}"                                 class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'emprunt"                              class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="banque"              name="banque"              required type="text" placeholder="Nom de la banque"                              class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant de l'emprunt" min="0"    class="w-[55%] sm:w-4/12 mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}"                                 class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'emprunt"                              class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="banque"              name="banque"              required type="text" placeholder="Nom de la banque"                              class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant de l'emprunt" min="0"    class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>
                 <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
