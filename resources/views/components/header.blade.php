@@ -16,8 +16,8 @@
 
             <div class="smallRowCenterContainer">
                 <!-- Icône du profil -->
-                @if (auth()->check() && $profil->image_extention !== null)
-                    <img class="normalIcons rounded-full" src="{{ asset('storage/profil_image/profil_image_' . $profil->id . '.' . $profil->image_extention) }}" alt="Image de profil">
+                @if (auth()->check() && auth()->user()->image_extention !== null)
+                    <img class="normalIcons rounded-full" src="{{ asset('storage/profil_image/profil_image_' . auth()->user()->id . '.' . auth()->user()->image_extention) }}" alt="Image de profil">
                 @else
                     @if (auth()->check())
                         <svg class="normalIcons colorFontBleuLogo" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
