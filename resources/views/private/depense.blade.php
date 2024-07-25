@@ -53,7 +53,7 @@
                     <th class="tableCell" title="Trier les dépences par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date d'achat</a></th>
                     <th class="tableCell" title="Trier les dépences par nom"><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de la dépence</a></th>
                     <th class="tableCell" title="Trier les dépences par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant dépencé</a></th>
-                    <th class="tableCell max-[460px]:hidden">Actions</th>
+                    <th class="tableCell">Actions</th>
                 </tr>
             </thead>
 

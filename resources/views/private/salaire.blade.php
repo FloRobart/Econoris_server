@@ -65,21 +65,21 @@
     <livewire:horizontal-separation />
 
     <!-- Détails des salaires mois par mois -->
+    <h2 class="w-full bigTextBleuLogo text-center">Détails des salaires mois par mois</h2>
     <div class="colCenterContainer">
-        <h2 class="w-full bigTextBleuLogo text-center mb-3">Détails des salaires mois par mois</h2>
-        <table class="w-full mt-2">
+        <table class="w-full">
             <!-- Entête du tableau -->
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
                     <th class="tableCell" title="Trier les salaires par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date du virement</a></th>
                     <th class="tableCell" title="Trier les salaires par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant du salaire</a></th>
-                    <th class="tableCell" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
-                    <th class="tableCell" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
-                    <th class="tableCell" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Montant des abonnements</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Montant des abonnements</a></th>
                     <th class="tableCell" title="Afficher toutes les dépences"><a href="{{ route('depenses') }}" class="link">Montant des dépences</a></th>
                     <th class="tableCell">Dépences possibles</th>
-                    <th class="tableCell max-[460px]:hidden">Actions</th>
+                    <th class="tableCell">Actions</th>
                 </tr>
             </thead>
 
@@ -101,7 +101,7 @@
                                     @php $montantEpargne += $epargne->montant_transaction; @endphp
                                 @endif
                             @endforeach
-                            <td class="tableCell" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell max-[850px]:hidden" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant investie -->
                             @php $montantInvestissement = 0; @endphp
@@ -110,7 +110,7 @@
                                     @php $montantInvestissement += $investissement->montant_transaction; @endphp
                                 @endif
                             @endforeach
-                            <td class="tableCell" title="Afficher les investissements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell max-[850px]:hidden" title="Afficher les investissements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des abonnements -->
                             @php $montantAbonnements = 0; @endphp
@@ -119,7 +119,7 @@
                                     @php $montantAbonnements += $abonnement->montant_transaction; @endphp
                                 @endif
                             @endforeach
-                            <td class="tableCell" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell max-[850px]:hidden" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences -->
                             @php $montantDepenses = 0; @endphp
@@ -131,18 +131,10 @@
                             <td class="tableCell" title="Afficher les dépences du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences possible -->
-                            @php
-                                $montantEmprunt = 0;
-                                $montantDepenses = 0;
-                            @endphp
+                            @php $montantEmprunt = 0; @endphp
                             @foreach ($empruntsHistories as $emprunt)
                                 @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
                                     @php $montantEmprunt += $emprunt->montant_transaction; @endphp
-                                @endif
-                            @endforeach
-                            @foreach ($depenses as $depense)
-                                @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                    @php $montantDepenses += $depense->montant_transaction; @endphp
                                 @endif
                             @endforeach
                             @php
@@ -176,12 +168,12 @@
         <form id="form" action="{{ route('salaire.add') }}" method="POST" class="rowStartContainer hidden">
             @csrf
             <div class="colCenterContainer">
-                <div class="colStartContainer min-[450px]:rowStartContainer">
+                <div class="colStartContainer sm:rowStartContainer">
                     <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"  class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant du salaire" min="0" class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     <input id="employeur"           name="employeur"           required type="text" placeholder="Nom de l'employeur"                       class="w-[55%] min-[450px]:w-[28%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 </div>
+                <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
             </div>
         </form>
