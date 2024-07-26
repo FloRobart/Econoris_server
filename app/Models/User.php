@@ -1,6 +1,11 @@
 <?php
 namespace App\Models;
 
+/*
+ * Ce fichier fait partie du projet Finance Dashboard
+ * Copyright (C) 2024 Floris Robart <florisrobart.pro@gmail.com>
+ */
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
