@@ -169,23 +169,25 @@
         </table>
 
         <!-- Formulaire pour ajouter un investissement -->
-        <form id="form" action="{{ route('investissement.add') }}" method="POST" class="rowStartContainer hidden">
-            @csrf
-            <div class="colCenterContainer">
-                <div class="colStartContainer md:rowStartContainer">
-                    <input id="type_investissement" name="type_investissement" required type="hidden" value="{{ $type_investissement }}">
-                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'actif"                          class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText" @if (str_contains(strtolower(URL::current()), 'nom_actif')) value="{{ $investissements->first()->nom_actif }}" @endif>
-                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant investie" min="0"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="frais_transaction"   name="frais_transaction"   required type="number" step="0.01" placeholder="Montant des frais" min="0" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+        @if (!str_contains(strtolower(URL::current()), 'type/investissements'))
+            <form id="form" action="{{ route('investissement.add') }}" method="POST" class="rowStartContainer hidden">
+                @csrf
+                <div class="colCenterContainer">
+                    <div class="colStartContainer md:rowStartContainer">
+                        <input id="type_investissement" name="type_investissement" required type="hidden" value="{{ $type_investissement }}">
+                        <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                        <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'actif"                          class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText" @if (str_contains(strtolower(URL::current()), 'nom_actif')) value="{{ $investissements->first()->nom_actif }}" @endif>
+                        <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant investie" min="0"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                        <input id="frais_transaction"   name="frais_transaction"   required type="number" step="0.01" placeholder="Montant des frais" min="0" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    </div>
+                    <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
+                    <div class="w-full tableRowTop"></div>
                 </div>
-                <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
-                <div class="w-full tableRowTop"></div>
-            </div>
-        </form>
+            </form>
 
-        <!-- Bouton pour ajouter un investissement -->
-        <button onclick="showForm('Ajouter un investissement', 'Ajouter', '{{ route('investissement.add') }}')" id="button" class="buttonForm mt-8">Ajouter un investissement</a>
+            <!-- Bouton pour ajouter un investissement -->
+            <button onclick="showForm('Ajouter un investissement', 'Ajouter', '{{ route('investissement.add') }}')" id="button" class="buttonForm mt-8">Ajouter un investissement</a>
+        @endif
     </div>
 </section>
 @endsection
