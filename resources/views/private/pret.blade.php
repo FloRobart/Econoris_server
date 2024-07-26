@@ -159,6 +159,7 @@
             document.getElementById('id').remove();
         }
         document.getElementById('form').insertAdjacentHTML('beforeend', '<input type="hidden" id="id" name="id" value="' + id + '">');
+        document.getElementById('form').scrollIntoView();
 
         oldId = id;
     }
