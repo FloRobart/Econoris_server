@@ -65,7 +65,6 @@ Pour installer **Finance dashboard** sur votre serveur, vous devez avoir les pr�
 - [Lancer Home Server Maison]()
 - [Installer Finance dashboard]()
 - Copier le fichier `.env.example` dans le fichier `.env`
-- Remplacer `<nom_de_la_base_de_données>` par le nom que vous voulez donner à la base de données de **Finance dashboard**.
   - Vous pouvez modifier le nom de la base de données, le nom d'utilisateur et le mot de passe dans le fichier `.env` pour s'adapter à votre configuration. Si vous avez laissé les valeurs par défaut lors de l'installation de XAMPP, vous n'avez pas besoin de modifier le fichier `.env`.
 - Créer les base de données
 
