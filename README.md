@@ -131,9 +131,9 @@ Finance dashboard à été conçue pour être utilisé par plusieurs personnes, 
 Pour installer **Finance dashboard** sur votre serveur, vous avez deux options :
 
 1. [L'installé avec son écosystème complet](#installation-complète)
-  - Finance dashboard à été conçu pour être intégré à un autre projet qui s'appelle **[Home Server Maison](https://github.com/FloRobart/HomeServerMaison)** qui gère tout le système de gestion de compte utilisateur et de connexion, ainsi qu'une page d'accueil qui regroupe toutes les applications qui sont installées sur le serveur. Si vous voulez installer **Finance dashboard** avec son écosystème complet, vous devez dabord installer **[Home Server Maison](https://github.com/FloRobart/HomeServerMaison)** et ensuite suivre les instructions d'installation de **Finance dashboard**.
+    - Finance dashboard à été conçu pour être intégré à un autre projet qui s'appelle **[Home Server Maison](https://github.com/FloRobart/HomeServerMaison)** qui gère tout le système de gestion de compte utilisateur et de connexion, ainsi qu'une page d'accueil qui regroupe toutes les applications qui sont installées sur le serveur. Si vous voulez installer **Finance dashboard** avec son écosystème complet, vous devez dabord installer **[Home Server Maison](https://github.com/FloRobart/HomeServerMaison)** et ensuite suivre les instructions d'installation de **Finance dashboard**.
 2. [L'installé seul](#installation-seule)
-  - J'ai également prévu une version de **Finance dashboard** qui peut être installée seule, sans **[Home Server Maison](https://github.com/FloRobart/HomeServerMaison)**. Si vous installez la version autonome de **Finance dashboard**, vous devrez quand même créer un compte utilisateur pour pouvoir vous connecter à l'application.
+    - J'ai également prévu une version de **Finance dashboard** qui peut être installée seule, sans **[Home Server Maison](https://github.com/FloRobart/HomeServerMaison)**. Si vous installez la version autonome de **Finance dashboard**, vous devrez quand même créer un compte utilisateur pour pouvoir vous connecter à l'application.
 
 ### Prérequis
 
