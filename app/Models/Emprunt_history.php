@@ -13,8 +13,8 @@ class Emprunt_history extends Model
 {
     use HasFactory;
 
-    protected $connection = 'finance_dashboard' ;
-    protected $table = 'emprunt_histories' ;
+    protected $connection = 'finance_dashboard';
+    protected $table = 'emprunt_histories';
 
     protected $fillable = [
         'id',

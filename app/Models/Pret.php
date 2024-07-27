@@ -13,8 +13,8 @@ class Pret extends Model
 {
     use HasFactory;
 
-    protected $connection = 'finance_dashboard' ;
-    protected $table = 'prets' ;
+    protected $connection = 'finance_dashboard';
+    protected $table = 'prets';
 
     protected $fillable = [
         'user_id',

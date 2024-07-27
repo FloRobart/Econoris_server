@@ -13,8 +13,8 @@ class Epargne extends Model
 {
     use HasFactory;
 
-    protected $connection = 'finance_dashboard' ;
-    protected $table = 'epargnes' ;
+    protected $connection = 'finance_dashboard';
+    protected $table = 'epargnes';
 
     protected $fillable = [
         'id',

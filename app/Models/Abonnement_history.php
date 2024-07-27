@@ -13,8 +13,8 @@ class Abonnement_history extends Model
 {
     use HasFactory;
 
-    protected $connection = 'finance_dashboard' ;
-    protected $table = 'abonnement_histories' ;
+    protected $connection = 'finance_dashboard';
+    protected $table = 'abonnement_histories';
 
     protected $fillable = [
         'id',

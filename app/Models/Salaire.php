@@ -13,8 +13,8 @@ class Salaire extends Model
 {
     use HasFactory;
 
-    protected $connection = 'finance_dashboard' ;
-    protected $table = 'salaires' ;
+    protected $connection = 'finance_dashboard';
+    protected $table = 'salaires';
 
     protected $fillable = [
         'id',

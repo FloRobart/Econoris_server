@@ -13,8 +13,8 @@ class Investissement extends Model
 {
     use HasFactory;
 
-    protected $connection = 'finance_dashboard' ;
-    protected $table = 'investissements' ;
+    protected $connection = 'finance_dashboard';
+    protected $table = 'investissements';
 
     protected $fillable = [
         'id',

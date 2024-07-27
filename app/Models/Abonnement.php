@@ -13,8 +13,8 @@ class Abonnement extends Model
 {
     use HasFactory;
 
-    protected $connection = 'finance_dashboard' ;
-    protected $table = 'abonnements' ;
+    protected $connection = 'finance_dashboard';
+    protected $table = 'abonnements';
 
     protected $fillable = [
         'id',
