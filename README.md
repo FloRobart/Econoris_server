@@ -6,6 +6,9 @@
   - [Table des matières](#table-des-matières)
   - [Présentation](#présentation)
   - [Fonctionnalités](#fonctionnalités)
+  - [Images](#images)
+    - [Format mobile](#format-mobile)
+    - [Format ordinateur](#format-ordinateur)
   - [Technologies utilisées](#technologies-utilisées)
   - [Installation](#installation)
     - [Prérequis](#prérequis)
@@ -41,6 +44,64 @@ Finance dashboard à été conçue pour être utilisé par plusieurs personnes, 
   - En se qui concerne les investissements le logiciel vous permet de créer des catégories d'investissements et donc de suivre vos investissements dans chaque catégorie même les plus inatendus.
 
 **Finance dashboard** est une application web open-source, elle est donc gratuite et libre d'utilisation. Vous pouvez l'utiliser, la modifier, la distribuer, la partager, etc. comme bon vous semble. Par contre, vous ne pouvez pas la vendre, ni la commercialiser, ni la distribuer sans en donner l'accès gratuit.
+
+## Images
+
+### Format mobile
+
+<h4 style="text-align: center;">Page du Home Serveur Maison (en cas d'installation complète de l'écosystème)</h4>
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/mobile/connexion.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+  <img src="./documentation/img/mobile/connexion_password.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/mobile/home_accueil.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+  <img src="./documentation/img/mobile/profil.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+<h4 style="text-align: center;">Page du Finance dashboard</h4>
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/mobile/finance_dashboard.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+  <img src="./documentation/img/mobile/crypto.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/mobile/revenu_delete.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+  <img src="./documentation/img/mobile/revenue.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/mobile/abonnement.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+### Format ordinateur
+
+<h4 style="text-align: center;">Page du Home Serveur Maison (en cas d'installation complète de l'écosystème)</h4>
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/desktop/connexion.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+  <img src="./documentation/img/desktop/connexion_password.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/desktop/home_accueil.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+  <img src="./documentation/img/desktop/profil.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+<h4 style="text-align: center;">Page du Finance dashboard</h4>
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/desktop/finance_dashboard.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+  <img src="./documentation/img/desktop/crypto.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/desktop/revenu_delete.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+  <img src="./documentation/img/desktop/revenue.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
+
+<div style="display: flex; justify-content: space-between;">
+  <img src="./documentation/img/desktop/abonnement.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
+</div>
 
 ## Technologies utilisées
 
