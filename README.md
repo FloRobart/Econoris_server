@@ -1,5 +1,24 @@
 # Finance dashboard
 
+## Table des matières
+
+- [Finance dashboard](#finance-dashboard)
+  - [Table des matières](#table-des-matières)
+  - [Présentation](#présentation)
+  - [Fonctionnalités](#fonctionnalités)
+  - [Technologies utilisées](#technologies-utilisées)
+  - [Installation](#installation)
+    - [Prérequis](#prérequis)
+    - [Installation complète](#installation-complète)
+    - [Lancer Finance dashboard](#lancer-finance-dashboard)
+    - [Installation seule](#installation-seule)
+    - [Lancer Finance dashboard seul](#lancer-finance-dashboard-seul)
+  - [Autheur](#autheur)
+  - [Report de bug et suggestions](#report-de-bug-et-suggestions)
+  - [License](#license)
+
+## Présentation
+
 **Finance dashboard** est une application web de gestion de finances personnelles. Elle permet de suivre ses dépenses, ses revenus, ses investissements et bien d'autre chose.
 
 Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de comptabilité professionel ni même l'application de votre banque. Elle est plutôt déstinée à vous aider à mieux gérer vos finances personnelles, à suivre vos dépenses, vos revenus, vos abonnements, vos investissements et autres.
@@ -7,6 +26,8 @@ Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de c
 Finance dashboard à été conçue pour être utilisé par plusieurs personnes, c'est pourquoi elle permet de créer plusieurs comptes utilisateurs. Chaque utilisateur peut donc avoir son propre compte et gérer ses finances personnelles de manière indépendante. Si vous êtes seul à utiliser l'application et que vous ne voulez pas créer de compte utilisateur, vous devrez modifier le code source (ce qui est tout à fait possible).
 
 **Finance dashboard** n'est pas disponible en ligne, si vous voulez l'utiliser, vous devrez l'installer sur votre propre serveur. Si vous voulez créer un serveur personnel vous pouvez suivre les instructions de ma documentation sur la [création d'un serveur personnel](https://florobart.github.io/Documentations/src/doc_creation_serveur_local.html). Si vous avez déjà un serveur personnel, vous pouvez suivre les [instructions d'installation de **Finance dashboard**](#installation).
+
+## Fonctionnalités
 
 **Grâce à cette application vous pourrez :**
 
