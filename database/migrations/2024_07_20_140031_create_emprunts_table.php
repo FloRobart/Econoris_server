@@ -2,7 +2,7 @@
 
 /*
  * Ce fichier fait partie du projet Finance Dashboard
- * Copyright (C) 2024 Floris Robart <florisrobart.pro@gmail.com>
+ * Copyright (C) 2024 Floris Robart <florobart.github.com>
  */
 
 use Illuminate\Database\Migrations\Migration;
