@@ -151,8 +151,8 @@ Pour installer **Finance dashboard** sur votre serveur, vous devez avoir les pr�
 
 ### Installation complète
 
-- [Installer Home Server Maison]()
-- [Lancer Home Server Maison]()
+- [Installer Home Server Maison](https://github.com/FloRobart/HomeServerMaison?tab=readme-ov-file#installation)
+- [Lancer Home Server Maison](https://github.com/FloRobart/HomeServerMaison?tab=readme-ov-file#lancement-home-server-maison)
 - [Installer Finance dashboard](https://github.com/FloRobart/FinanceDashboard/archive/refs/tags/v1.0.0.zip)
 - Copier le fichier `.env.example` dans le fichier `.env`
   - Vous pouvez modifier le nom de la base de données, le nom d'utilisateur et le mot de passe dans le fichier `.env` pour s'adapter à votre configuration. Si vous avez laissé les valeurs par défaut lors de l'installation de XAMPP, vous n'avez pas besoin de modifier le fichier `.env`.
