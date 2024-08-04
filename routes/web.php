@@ -180,6 +180,19 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pret/add', [PrivateController::class, 'addPret'])->name('pret.add');
     Route::post('/pret/edit', [PrivateController::class, 'editPret'])->name('pret.edit');
     Route::get('/pret/remove/{id}', [PrivateController::class, 'removePret'])->name('pret.remove');
+
+
+    /*---------------------*/
+    /* Horaires de travail */
+    /*---------------------*/
+    /* Affichage des horaires de travail */
+    Route::get('/horaires', [PrivateController::class, 'horaires'])->name('horaires');
+    Route::get('/horaires/date/{date}', [PrivateController::class, 'horairesDate'])->name('horaires.date');
+
+    /* Édition des horaires de travail */
+    Route::post('/horaire/add', [PrivateController::class, 'addHoraire'])->name('horaire.add');
+    Route::post('/horaire/edit', [PrivateController::class, 'editHoraire'])->name('horaire.edit');
+    Route::get('/horaire/remove/{id}', [PrivateController::class, 'removeHoraire'])->name('horaire.remove');
 });
 
 /* Route pour la redirection en cas de mauvaise authentification */

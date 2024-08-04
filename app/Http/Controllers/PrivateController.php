@@ -15,6 +15,7 @@ use App\Models\Abonnement_history;
 use App\Models\Emprunt;
 use App\Models\Emprunt_history;
 use App\Models\Depense;
+use App\Models\Horaire;
 use App\Models\Pret;
 
 
@@ -2091,6 +2092,42 @@ class PrivateController extends Controller
 
 
 
+    /*---------------------*/
+    /* Horaires de travail */
+    /*---------------------*/
+    /* Affichage des horaires de travail */
+    /**
+     * Affiche tous les horaires de travail
+     */
+    public function horairesTravail(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $horaires = PrivateController::getHorairesTravail('', $sort, $order);
+
+        return view('private.horaire_travail', compact('horaires'));
+    }
+
+    /**
+     * Affiche les horaires de travail réalisé à une même date
+     */
+    public function horairesTravailDate(Request $request, string $date)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $sort = $request->query('sort') ?? 'date_transaction';
+        $order = $request->query('order') ?? 'desc';
+
+        $horaires = PrivateController::getHorairesTravail($date, $sort, $order);
+
+        return view('private.horaire_travail', compact('horaires'));
+    }
+
+
+
 
     /*======================*/
     /* Fonction Utilitaires */
@@ -2378,5 +2415,28 @@ class PrivateController extends Controller
         }
 
         return $order == 'asc' ? $prets->sortBy($sort) : $prets->sortByDesc($sort);
+    }
+
+
+
+    /*---------------------*/
+    /* Horaires de travail */
+    /*---------------------*/
+    /**
+     * Récupère les horaires de travail
+     * @param string $date
+     * @param string $sort
+     * @param string $order
+     */
+    public function getHorairesTravail(string $date, string $sort = 'date_transaction', $order = 'desc')
+    {
+        $horaires_travail = Horaire::all()->where('user_id', auth()->user()->id);
+
+        if ($date != '') {
+            $horaires_travail = $horaires_travail->where('date_transaction', '>=', PrivateController::getFirstDay($date))
+                                                 ->where('date_transaction', '<=', PrivateController::getLastDay($date));
+        }
+
+        return $order == 'asc' ? $horaires_travail->sortBy($sort) : $horaires_travail->sortByDesc($sort);
     }
 }

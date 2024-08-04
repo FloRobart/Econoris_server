@@ -17,8 +17,6 @@ class Depense extends Model
     protected $table = 'depenses';
 
     protected $fillable = [
-        'id',
-        'user_id',
         'date_transaction',
         'nom_actif',
         'montant_transaction'

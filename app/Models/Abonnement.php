@@ -17,8 +17,6 @@ class Abonnement extends Model
     protected $table = 'abonnements';
 
     protected $fillable = [
-        'id',
-        'user_id',
         'nom_actif',
         'montant_transaction',
         'date_transaction',

@@ -17,8 +17,6 @@ class Abonnement_history extends Model
     protected $table = 'abonnement_histories';
 
     protected $fillable = [
-        'id',
-        'user_id',
         'nom_actif',
         'montant_transaction',
         'date_transaction'

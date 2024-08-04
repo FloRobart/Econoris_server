@@ -9,17 +9,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Epargne extends Model
+class Horaire extends Model
 {
     use HasFactory;
 
     protected $connection = 'finance_dashboard';
-    protected $table = 'epargnes';
+    protected $table = 'horaires';
 
     protected $fillable = [
         'date_transaction',
-        'montant_transaction',
-        'banque',
-        'compte'
+        'heure_matin',
+        'heure_midi',
+        'pause_apres_midi',
+        'heure_soir'
     ];
 }

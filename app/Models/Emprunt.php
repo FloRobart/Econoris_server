@@ -17,8 +17,6 @@ class Emprunt extends Model
     protected $table = 'emprunts';
 
     protected $fillable = [
-        'id',
-        'user_id',
         'nom_actif',
         'montant_transaction',
         'taux_interet_annuel',

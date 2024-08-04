@@ -17,8 +17,6 @@ class Investissement extends Model
     protected $table = 'investissements';
 
     protected $fillable = [
-        'id',
-        'user_id',
         'date_transaction',
         'montant_transaction',
         'frais_transaction',

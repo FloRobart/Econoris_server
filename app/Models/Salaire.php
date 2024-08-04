@@ -17,8 +17,6 @@ class Salaire extends Model
     protected $table = 'salaires';
 
     protected $fillable = [
-        'id',
-        'user_id',
         'date_transaction',
         'montant_transaction',
         'employeur'

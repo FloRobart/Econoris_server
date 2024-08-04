@@ -17,7 +17,6 @@ class Pret extends Model
     protected $table = 'prets';
 
     protected $fillable = [
-        'user_id',
         'date_transaction',
         'nom_emprunteur',
         'montant_pret',
