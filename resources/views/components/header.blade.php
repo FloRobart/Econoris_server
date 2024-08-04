@@ -70,6 +70,7 @@
                     'emprunts' => route('emprunts'),
                     'depenses' => route('depenses'),
                     'prets' => route('prets'),
+                    'horaires' => route('horaires'),
                     
                     /* Niveau 2 */
                     'abonnements_histories' => route('abonnements_histories'),

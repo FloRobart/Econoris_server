@@ -2127,6 +2127,125 @@ class PrivateController extends Controller
     }
 
 
+    /* Édition des horaires de travail */
+    /**
+     * Ajoute un horaire de travail
+     */
+    public function addHoraireTravail(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'date_transaction' => 'required|date',
+            'heure_matin' => 'required|date_format:H:i',
+            'heure_midi' => 'nullable|date_format:H:i',
+            'heure_apres_midi' => 'nullable|date_format:H:i',
+            'heure_soir' => 'required|date_format:H:i'
+        ], [
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'heure_matin.required' => 'L\'heure du matin est obligatoire.',
+            'heure_matin.date_format' => 'L\'heure du matin doit être au format HH:MM.',
+            'heure_midi.date_format' => 'L\'heure du midi doit être au format HH:MM.',
+            'heure_apres_midi.date_format' => 'L\'heure de l\'après-midi doit être au format HH:MM.',
+            'heure_soir.required' => 'L\'heure du soir est obligatoire.',
+            'heure_soir.date_format' => 'L\'heure du soir doit être au format HH:MM.'
+        ]);
+
+        /* Message de confirmation */
+        if (Horaire::where('date_transaction', $request->date_transaction)->where('heure_debut', $request->heure_debut)->where('heure_fin', $request->heure_fin)->first()) {
+            $message = 'Attention, une transaction similaire a déjà été ajouté pour cette date. 🤔';
+        } else {
+            $message = '';
+        }
+
+        /* Ajout de l'horaire de travail */
+        $horaire = new Horaire();
+        $horaire->user_id         = auth()->user()->id;
+        $horaire->date_transaction = $request->date_transaction;
+        $horaire->heure_matin     = $request->heure_matin;
+        $horaire->heure_midi      = $request->heure_midi ?? $request->heure_matin;
+        $horaire->heure_apres_midi = $request->heure_apres_midi ?? $request->heure_matin;
+        $horaire->heure_soir      = $request->heure_soir;
+        
+        if ($horaire->save()) {
+            return back()->with('success', 'L\'horaire de travail a bien été ajouté 👍.')->with('message', $message);
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de l\'ajout de l\'horaire de travail ❌.');
+        }
+    }
+
+    /**
+     * Modifie un horaire de travail
+     */
+    public function editHoraireTravail(Request $request)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        $request->validate([
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.horaires,id',
+            'date_transaction' => 'required|date',
+            'heure_matin' => 'required|date_format:H:i',
+            'heure_midi' => 'nullable|date_format:H:i',
+            'heure_apres_midi' => 'nullable|date_format:H:i',
+            'heure_soir' => 'required|date_format:H:i'
+        ], [
+            'id.required' => 'L\'id est obligatoire.',
+            'id.numeric' => 'L\'id doit être un nombre.',
+            'id.min' => 'L\'id doit être supérieur ou égal à 1.',
+            'id.exists' => 'L\'id n\'existe pas.',
+            'date_transaction.required' => 'La date est obligatoire.',
+            'date_transaction.date' => 'La date doit être une date.',
+            'heure_matin.required' => 'L\'heure du matin est obligatoire.',
+            'heure_matin.date_format' => 'L\'heure du matin doit être au format HH:MM.',
+            'heure_midi.date_format' => 'L\'heure du midi doit être au format HH:MM.',
+            'heure_apres_midi.date_format' => 'L\'heure de l\'après-midi doit être au format HH:MM.',
+            'heure_soir.required' => 'L\'heure du soir est obligatoire.',
+            'heure_soir.date_format' => 'L\'heure du soir doit être au format HH:MM.'
+        ]);
+
+        /* Modification de l'horaire de travail */
+        $horaire = Horaire::find($request->id);
+        if ($horaire->user_id != auth()->user()->id) { back()->with('error', 'L\'horaire de travail ne vous appartient pas ❌.'); }
+
+        $horaire->date_transaction = $request->date_transaction;
+        $horaire->heure_matin      = $request->heure_matin;
+        $horaire->heure_midi       = $request->heure_midi ?? $request->heure_matin;
+        $horaire->heure_apres_midi = $request->heure_apres_midi ?? $request->heure_matin;
+        $horaire->heure_soir       = $request->heure_soir;
+
+        if ($horaire->save()) {
+            return back()->with('success', 'L\'horaire de travail a bien été modifié 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la modification de l\'horaire de travail ❌.');
+        }
+    }
+
+    /**
+     * Supprime un horaire de travail
+     */
+    public function removeHoraireTravail(string $id)
+    {
+        setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
+
+        /* Validation des données */
+        if ($id == null) { back()->with('error', 'l\'id est null ❌.'); }
+        if (!is_numeric($id)) { back()->with('error', 'l\'id n\'est pas un nombre ❌.'); }
+        if ($id <= 0) { back()->with('error', 'l\'id est inférieur ou égal à 0 ❌.'); }
+
+        $horaire = Horaire::find($id);
+        if (!$horaire) { back()->with('error', 'L\'horaire de travail n\'existe pas ❌.'); }
+        if ($horaire->user_id != auth()->user()->id) { back()->with('error', 'L\'horaire de travail ne vous appartient pas ❌.'); }
+
+        /* Suppression de l'horaire de travail */
+        if ($horaire->delete()) {
+            return back()->with('success', 'L\'horaire de travail a bien été supprimé 👍.');
+        } else {
+            return back()->with('error', 'Une erreur est survenue lors de la suppression de l\'horaire de travail ❌.');
+        }
+    }
+
+
 
 
     /*======================*/
