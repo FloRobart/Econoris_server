@@ -38,24 +38,60 @@
         <div class="rowCenterContainer">
             @php
                 $totalHeure = 0;
+                $totalminute = 0;
                 foreach ($horaires as $horaire) {
-                    $totalHeure += ($horaire->heure_soir - $horaire->heure_apres_midi) + ($horaire->heure_apres_midi - $horaire->heure_matin);
+                    /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
+                    $matin = new DateTime($horaire->heure_matin);
+                    $midi = new DateTime($horaire->heure_midi);
+                    $apres_midi = new DateTime($horaire->heure_apres_midi);
+                    $soir = new DateTime($horaire->heure_soir);
+                    
+                    /* Calcul du nombre d'heure travaillé le matin et l'après-midi */
+                    $heure_matin = $matin->diff($midi);
+                    $heure_soir = $apres_midi->diff($soir);
+
+                    /* Calcul du nombre d'hre travaillé dans la journée sans la pause du midi */
+                    $totalHeure  += $heure_matin->format('%H') + $heure_soir->format('%H');
+                    $totalminute += $heure_matin->format('%I') + $heure_soir->format('%I');
+
+                    while ($totalminute >= 60) {
+                        $totalHeure += 1;
+                        $totalminute -= 60;
+                    }
                 }
             @endphp
-            <span class="normalText">Nombre d'heure total : <span class="normalTextBleuLogo font-bold">{{ $totalHeure }} heures</span></span>
+            <span class="normalText text-center">Nombre d'heure total : <span class="normalTextBleuLogo font-bold text-center">{{ $totalHeure . 'h' . str_pad($totalminute, 2, '0', STR_PAD_LEFT) }}</span></span>
         </div>
 
         <!-- Nombre d'heure travaillé dans le mois -->
         <div class="rowCenterContainer">
             @php
-                $totalHeureMois = 0;
+                $totalHeure = 0;
+                $totalminute = 0;
                 foreach ($horaires as $horaire) {
                     if (date('m', strtotime($horaire->date_transaction)) == date('m')) {
-                        $totalHeureMois += ($horaire->heure_soir - $horaire->heure_apres_midi) + ($horaire->heure_apres_midi - $horaire->heure_matin);
+                        /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
+                        $matin = new DateTime($horaire->heure_matin);
+                        $midi = new DateTime($horaire->heure_midi);
+                        $apres_midi = new DateTime($horaire->heure_apres_midi);
+                        $soir = new DateTime($horaire->heure_soir);
+                        
+                        /* Calcul du nombre d'heure travaillé le matin et l'après-midi */
+                        $heure_matin = $matin->diff($midi);
+                        $heure_soir = $apres_midi->diff($soir);
+
+                        /* Calcul du nombre d'hre travaillé dans la journée sans la pause du midi */
+                        $totalHeure  += $heure_matin->format('%H') + $heure_soir->format('%H');
+                        $totalminute += $heure_matin->format('%I') + $heure_soir->format('%I');
+
+                        while ($totalminute >= 60) {
+                            $totalHeure += 1;
+                            $totalminute -= 60;
+                        }
                     }
                 }
             @endphp
-            <span class="normalText">Nombre d'heure total pendant le mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ $totalHeureMois }} heures</span></span>
+            <span class="normalText text-center">Nombre d'heure total pendant le mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold text-center">{{ $totalHeure . 'h' . str_pad($totalminute, 2, '0', STR_PAD_LEFT) }}</span></span>
         </div>
     </div>
 
@@ -72,9 +108,11 @@
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
                     <th class="tableCell" title="Trier par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}">Date</a></th>
                     <th class="tableCell" title="Trier par heure de début de travail @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=heure_matin' . '&order=' . $order }}">Heure de début</a></th>
+                    <th class="tableCell">Durée de la pause du midi</th>
                     <th class="tableCell" title="Trier par heure de fin de travail @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=heure_soir' . '&order=' . $order }}">Heure de fin</a></th>
-                    <th class="tableCell">Nombre d'heure dans la journée</th>
+                    <th class="tableCell">Nombre d'heure travaillé</th>
                     <th class="tableCell">Nombre d'heure dans la semaine</th>
+                    <th class="tableCell max-md:hidden">Nombre d'heure dans le mois</th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
@@ -85,27 +123,109 @@
                     @foreach ($horaires as $horaire)
                         <tr class="tableRow smallText text-center">
                             <!-- Date de la transaction -->
-                            <td class="tableCell"><a href="{{ route('horaires.date', $horaire->date_transaction) }}">{{ strftime('%d %B %Y', strtotime($horaire->date_transaction)); }}</a></td>
+                            <td class="tableCell"><a class="link" href="{{ route('horaires.date', $horaire->date_transaction) }}">{{ strftime('%d %B %Y', strtotime($horaire->date_transaction)); }}</a></td>
                             
-                            <!-- Heure de début de travail -->
-                            <td class="tableCell">{{ $horaire->heure_matin }}</td>
-                            
-                            <!-- Heure de fin de travail -->
-                            <td class="tableCell">{{ $horaire->heure_soir }}</td>
-                            
-                            <!-- Nombre d'heure dans la journée -->
-                            <td class="tableCell">{{ ($horaire->heure_soir - $horaire->heure_apres_midi) + ($horaire->heure_apres_midi - $horaire->heure_matin) }}</td>
+                            <!-- Heure de début de travail au format HH:MM -->
+                            <td class="tableCell">{{ date_format(date_create($horaire->heure_matin), 'H:i') }}</td>
 
-                            <!-- Nombre d'heure dans la semaine -->
-                             @php
-                                $totalHeureSemaine = 0;
-                                foreach ($horaires as $horaire) {
-                                    if (date('W', strtotime($horaire->date_transaction)) == date('W')) {
-                                        $totalHeureSemaine += ($horaire->heure_soir - $horaire->heure_apres_midi) + ($horaire->heure_apres_midi - $horaire->heure_matin);
+                            <!-- Durée de la pause du midi -->
+                            @php
+                                $matin = new DateTime($horaire->heure_midi);
+                                $midi = new DateTime($horaire->heure_apres_midi);
+                                $heure_matin = $matin->diff($midi);
+                            @endphp
+                            <td class="tableCell">{{ $heure_matin->format('%H') . 'h' . str_pad($heure_matin->format('%I'), 2, '0', STR_PAD_LEFT) }}</td>
+                            
+                            <!-- Heure de fin de travail au format HH:MM -->
+                            <td class="tableCell">{{ date_format(date_create($horaire->heure_soir), 'H:i') }}</td>
+                            
+                            <!-- Nombre d'heure dans la journée au format HH:MM -->
+                            @php
+                                $totalHeure = 0;
+                                $totalminute = 0;
+                                foreach ($horaires as $horaire2) {
+                                    if (date('d', strtotime($horaire2->date_transaction)) == date('d', strtotime($horaire->date_transaction)) && date('m', strtotime($horaire2->date_transaction)) == date('m', strtotime($horaire->date_transaction)) && date('Y', strtotime($horaire2->date_transaction)) == date('Y', strtotime($horaire->date_transaction))) {
+                                        /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
+                                        $matin = new DateTime($horaire->heure_matin);
+                                        $midi = new DateTime($horaire->heure_midi);
+                                        $apres_midi = new DateTime($horaire->heure_apres_midi);
+                                        $soir = new DateTime($horaire->heure_soir);
+                                        
+                                        /* Calcul du nombre d'heure travaillé le matin et l'après-midi */
+                                        $heure_matin = $matin->diff($midi);
+                                        $heure_soir = $apres_midi->diff($soir);
+
+                                        /* Calcul du nombre d'hre travaillé dans la journée sans la pause du midi */
+                                        $heure = $heure_matin->format('%H') + $heure_soir->format('%H');
+                                        $minute = $heure_matin->format('%I') + $heure_soir->format('%I');
+
+                                        while ($minute >= 60) {
+                                            $heure += 1;
+                                            $minute -= 60;
+                                        }
                                     }
                                 }
                             @endphp
-                            <td class="tableCell">{{ $totalHeureSemaine }}</td>
+                            <td class="tableCell">{{ $heure . 'h' . str_pad($minute, 2, '0', STR_PAD_LEFT) }}</td>
+
+                            <!-- Nombre d'heure dans la semaine au format HH:MM -->
+                             @php
+                                $totalHeure = 0;
+                                $totalminute = 0;
+                                foreach ($horaires as $horaire2) {
+                                    if (date('W', strtotime($horaire2->date_transaction)) == date('W', strtotime($horaire->date_transaction)) && date('Y', strtotime($horaire2->date_transaction)) == date('Y', strtotime($horaire->date_transaction))) {
+                                        /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
+                                        $matin = new DateTime($horaire2->heure_matin);
+                                        $midi = new DateTime($horaire2->heure_midi);
+                                        $apres_midi = new DateTime($horaire2->heure_apres_midi);
+                                        $soir = new DateTime($horaire2->heure_soir);
+                                        
+                                        /* Calcul du nombre d'heure travaillé le matin et l'après-midi */
+                                        $heure_matin = $matin->diff($midi);
+                                        $heure_soir = $apres_midi->diff($soir);
+
+                                        /* Calcul du nombre d'hre travaillé dans la journée sans la pause du midi */
+                                        $totalHeure  += $heure_matin->format('%H') + $heure_soir->format('%H');
+                                        $totalminute += $heure_matin->format('%I') + $heure_soir->format('%I');
+
+                                        while ($totalminute >= 60) {
+                                            $totalHeure += 1;
+                                            $totalminute -= 60;
+                                        }
+                                    }
+                                }
+                            @endphp
+                            <td class="tableCell" title="{{ $totalHeure . 'h' . str_pad($totalminute, 2, '0', STR_PAD_LEFT) }} travaillé dans la semaine numéro {{ date('W', strtotime($horaire->date_transaction)) }} de l'année {{ date('Y', strtotime($horaire->date_transaction)) }}">{{ $totalHeure . 'h' . str_pad($totalminute, 2, '0', STR_PAD_LEFT) }}</td>
+
+                            <!-- Nombre d'heure dans le mois au format HH:MM -->
+                            @php
+                                $totalHeure = 0;
+                                $totalminute = 0;
+                                foreach ($horaires as $horaire2) {
+                                    if (date('m', strtotime($horaire2->date_transaction)) == date('m', strtotime($horaire->date_transaction)) && date('Y', strtotime($horaire2->date_transaction)) == date('Y', strtotime($horaire->date_transaction))) {
+                                        /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
+                                        $matin = new DateTime($horaire2->heure_matin);
+                                        $midi = new DateTime($horaire2->heure_midi);
+                                        $apres_midi = new DateTime($horaire2->heure_apres_midi);
+                                        $soir = new DateTime($horaire2->heure_soir);
+                                        
+                                        /* Calcul du nombre d'heure travaillé le matin et l'après-midi */
+                                        $heure_matin = $matin->diff($midi);
+                                        $heure_soir = $apres_midi->diff($soir);
+
+                                        /* Calcul du nombre d'hre travaillé dans la journée sans la pause du midi */
+                                        $totalHeure  += $heure_matin->format('%H') + $heure_soir->format('%H');
+                                        $totalminute += $heure_matin->format('%I') + $heure_soir->format('%I');
+
+                                        while ($totalminute >= 60) {
+                                            $totalHeure += 1;
+                                            $totalminute -= 60;
+                                        }
+                                    }
+                                }
+                            @endphp
+                            <td class="tableCell max-md:hidden" title="{{ $totalHeure . 'h' . str_pad($totalminute, 2, '0', STR_PAD_LEFT) }} travaillé dans le mois de {{ strftime('%B %Y', strtotime($horaire->date_transaction)) }}">{{ $totalHeure . 'h' . str_pad($totalminute, 2, '0', STR_PAD_LEFT) }}</td>
+
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
@@ -134,12 +254,13 @@
             @csrf
             <div class="colCenterContainer">
                 <div class="colStartContainer lg:rowStartContainer">
-                    <input id="date_transaction" name="date_transaction" required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="heure_matin"      name="heure_matin"      required type="time" placeholder="Heure de début" min="00:00" max="23:59"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="heure_midi"       name="heure_midi"                type="time" placeholder="Heure du midi"  min="00:00" max="23:59"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="heure_apres_midi" name="heure_apres_midi"          type="time" placeholder="Heure de début" min="00:00" max="23:59"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="heure_soir"       name="heure_soir"       required type="time" placeholder="Heure de début" min="00:00" max="23:59"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="date_transaction" name="date_transaction" required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"               title="Renseigner la date de votre jour de travail" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="heure_matin"      name="heure_matin"      required type="time" placeholder="Heure de début" min="00:00" max="23:59"  value="07:00" title="Renseigner l'heure de début du travail" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="heure_midi"       name="heure_midi"                type="time" placeholder="Heure du midi"  min="00:00" max="23:59"  value="12:00" title="Renseigner l'heure du début de la pause du midi si vous en avez une" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="heure_apres_midi" name="heure_apres_midi"          type="time" placeholder="Heure de début" min="00:00" max="23:59"  value="14:00" title="Renseigner l'heure de reprise du travail l'après midi (si vous avez eu une pause)" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="heure_soir"       name="heure_soir"       required type="time" placeholder="Heure de début" min="00:00" max="23:59"  value="18:00" title="Renseigner l'heure d'arrêt du travail" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>
+                <span class="normalText text-center">Si vous n'avez pas de pause du midi, vider le deuxième et troisième champs pour qu'il ressemble à ceci : <b>--:--</b></span>
                 <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
             </div>

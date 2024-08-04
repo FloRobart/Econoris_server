@@ -24,7 +24,7 @@ return new class extends Migration
             $table->date('date_transaction');
             $table->time('heure_matin');
             $table->time('heure_midi');
-            $table->time('pause_apres_midi');
+            $table->time('heure_apres_midi');
             $table->time('heure_soir');
             $table->timestamps();
         });

@@ -38,6 +38,7 @@
         <a href="{{ route('abonnements') }}" class="buttonForm">Abonnements</a>
         <a href="{{ route('emprunts') }}"    class="buttonForm">Emprunts   </a>
         <a href="{{ route('prets') }}"       class="buttonForm">Prêts      </a>
+        <a href="{{ route('horaires') }}"    class="buttonForm">Horaires   </a>
     </div>
 
     <!-- Investissements -->

@@ -17,7 +17,7 @@ use App\Models\Emprunt_history;
 use App\Models\Depense;
 use App\Models\Horaire;
 use App\Models\Pret;
-
+use DateTime;
 
 class PrivateController extends Controller
 {
@@ -2099,7 +2099,7 @@ class PrivateController extends Controller
     /**
      * Affiche tous les horaires de travail
      */
-    public function horairesTravail(Request $request)
+    public function horaires(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -2108,13 +2108,13 @@ class PrivateController extends Controller
 
         $horaires = PrivateController::getHorairesTravail('', $sort, $order);
 
-        return view('private.horaire_travail', compact('horaires'));
+        return view('private.horaire', compact('horaires'));
     }
 
     /**
      * Affiche les horaires de travail réalisé à une même date
      */
-    public function horairesTravailDate(Request $request, string $date)
+    public function horairesDate(Request $request, string $date)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -2123,7 +2123,7 @@ class PrivateController extends Controller
 
         $horaires = PrivateController::getHorairesTravail($date, $sort, $order);
 
-        return view('private.horaire_travail', compact('horaires'));
+        return view('private.horaire', compact('horaires'));
     }
 
 
@@ -2131,7 +2131,7 @@ class PrivateController extends Controller
     /**
      * Ajoute un horaire de travail
      */
-    public function addHoraireTravail(Request $request)
+    public function addHoraire(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -2153,7 +2153,7 @@ class PrivateController extends Controller
         ]);
 
         /* Message de confirmation */
-        if (Horaire::where('date_transaction', $request->date_transaction)->where('heure_debut', $request->heure_debut)->where('heure_fin', $request->heure_fin)->first()) {
+        if (Horaire::where('date_transaction', $request->date_transaction)->where('heure_matin', $request->heure_debut)->where('heure_soir', $request->heure_fin)->first()) {
             $message = 'Attention, une transaction similaire a déjà été ajouté pour cette date. 🤔';
         } else {
             $message = '';
@@ -2178,7 +2178,7 @@ class PrivateController extends Controller
     /**
      * Modifie un horaire de travail
      */
-    public function editHoraireTravail(Request $request)
+    public function editHoraire(Request $request)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -2224,7 +2224,7 @@ class PrivateController extends Controller
     /**
      * Supprime un horaire de travail
      */
-    public function removeHoraireTravail(string $id)
+    public function removeHoraire(string $id)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
@@ -2558,4 +2558,35 @@ class PrivateController extends Controller
 
         return $order == 'asc' ? $horaires_travail->sortBy($sort) : $horaires_travail->sortByDesc($sort);
     }
+
+    /**
+     * Récupère le temps de travail dans une journée sans la pause du midi
+     * @param string $horaire_matin
+     * @param string $horaire_midi
+     * @param string $horaire_apres_midi
+     * @param string $horaire_soir
+     */
+    public function getTimeJournee($horaire_matin, $horaire_midi, $horaire_apres_midi, $horaire_soir)
+    {
+        /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
+        $matin = new DateTime($horaire_matin);
+        $midi = new DateTime($horaire_midi);
+        $apres_midi = new DateTime($horaire_apres_midi);
+        $soir = new DateTime($horaire_soir);
+        
+        /* Calcul du nombre d'heure travaillé le matin et l'après-midi */
+        $heure_matin = $matin->diff($midi);
+        $heure_soir = $apres_midi->diff($soir);
+
+        /* Calcul du nombre d'hre travaillé dans la journée sans la pause du midi */
+        $heure = $heure_matin->format('%H') + $heure_soir->format('%H');
+        $minute = $heure_matin->format('%I') + $heure_soir->format('%I');
+
+        if ($minute >= 60) {
+            $heure += 1;
+            $minute -= 60;
+        }
+
+        return $heure . ':' . str_pad($minute, 2, '0', STR_PAD_LEFT);
+    } 
 }

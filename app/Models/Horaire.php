@@ -20,7 +20,7 @@ class Horaire extends Model
         'date_transaction',
         'heure_matin',
         'heure_midi',
-        'pause_apres_midi',
+        'heure_apres_midi',
         'heure_soir'
     ];
 }
