@@ -1,3 +1,8 @@
+/*
+ * Ce fichier fait partie du projet Finance Dashboard
+ * Copyright (C) 2024 Floris Robart <florobart.github@gmail.com>
+ */
+
 /* Fonction pour afficher le formulaire d'ajout d'un salaire, épargne ou autre */
 function showForm(message, buttonText, action) {
     /* Récupération du formulaire et du bouton */

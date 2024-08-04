@@ -97,6 +97,8 @@ Finance dashboard à été conçue pour être utilisé par plusieurs personnes, 
   <img src="./documentation/img/desktop/connexion_password.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
 </div>
 
+<br>
+
 <div style="display: flex; justify-content: space-between;">
   <img src="./documentation/img/desktop/home_accueil.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
   <img src="./documentation/img/desktop/profil.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
@@ -109,10 +111,14 @@ Finance dashboard à été conçue pour être utilisé par plusieurs personnes, 
   <img src="./documentation/img/desktop/crypto.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
 </div>
 
+<br>
+
 <div style="display: flex; justify-content: space-between;">
   <img src="./documentation/img/desktop/revenue.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
   <img src="./documentation/img/desktop/revenu_delete.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
 </div>
+
+<br>
 
 <div style="display: flex; justify-content: space-between;">
   <img src="./documentation/img/desktop/abonnement.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
@@ -158,9 +164,9 @@ Pour installer **Finance dashboard** sur votre serveur, vous devez avoir les pr�
 
 ### Installation complète
 
-- [Installer Home Server Maison](https://github.com/FloRobart/HomeServerMaison?tab=readme-ov-file#installation)
-- [Lancer Home Server Maison](https://github.com/FloRobart/HomeServerMaison?tab=readme-ov-file#lancement-home-server-maison)
-- [Installer Finance dashboard](https://github.com/FloRobart/FinanceDashboard/archive/refs/tags/v1.0.0.zip)
+- [Installer Home Server Maison](https://github.com/FloRobart/Home_server_maison?tab=readme-ov-file#installation)
+- [Lancer Home Server Maison](https://github.com/FloRobart/Home_server_maison?tab=readme-ov-file#lancement-home-server-maison)
+- [Installer Finance dashboard](https://github.com/FloRobart/Finance_dashboard/archive/refs/tags/v1.0.0.zip)
 - Copier le fichier `.env.example` dans le fichier `.env`
   - Vous pouvez modifier le nom de la base de données, le nom d'utilisateur et le mot de passe dans le fichier `.env` pour s'adapter à votre configuration. Si vous avez laissé les valeurs par défaut lors de l'installation de XAMPP, vous n'avez pas besoin de modifier le fichier `.env`.
 - Créer les base de données
@@ -169,7 +175,7 @@ Pour installer **Finance dashboard** sur votre serveur, vous devez avoir les pr�
   php artisan migrate --database=finance_dashboard
   ```
 
-- Modifier le fichier `routes/web.php` pour remplacer <IP Home Server Maison> pour l'adresse IP et le port de votre serveur Home Server Maison
+- Modifier le fichier `routes/web.php` pour remplacer <IP Home Server Maison> par l'adresse IP et le port de votre serveur Home Server Maison
   - Par exemple, si votre serveur Home Server Maison est accessible à l'adresse `192.168.1.30:3000`, vous devez remplacer `<IP Home Server Maison>` par `http://192.168.1.30:3000` dans le fichier `routes/web.php`.
 
 ### Lancer Finance dashboard
