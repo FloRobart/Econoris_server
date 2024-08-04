@@ -46,6 +46,7 @@ Finance dashboard à été conçue pour être utilisé par plusieurs personnes, 
 - Suivre vos prêts (l'argent que vous avez prêté)
 - Suivre vos investissements (quelque soit leur nature [immobilier, bourse, cryptomonnaie, etc.])
   - En se qui concerne les investissements le logiciel vous permet de créer des catégories d'investissements et donc de suivre vos investissements dans chaque catégorie même les plus inatendus.
+- Noté vos heure de travail
 
 **Finance dashboard** est une application web open-source, elle est donc gratuite et libre d'utilisation. Vous pouvez l'utiliser, la modifier, la distribuer, la partager, etc. comme bon vous semble. Par contre, vous ne pouvez pas la vendre, ni la commercialiser, ni la distribuer sans en donner l'accès gratuit.
 
@@ -60,6 +61,8 @@ Finance dashboard à été conçue pour être utilisé par plusieurs personnes, 
   <img src="./documentation/img/mobile/connexion_password.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
 </div>
 
+<br>
+
 <div style="display: flex; justify-content: space-between;">
   <img src="./documentation/img/mobile/home_accueil.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
   <img src="./documentation/img/mobile/profil.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
@@ -72,10 +75,14 @@ Finance dashboard à été conçue pour être utilisé par plusieurs personnes, 
   <img src="./documentation/img/mobile/crypto.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
 </div>
 
+<br>
+
 <div style="display: flex; justify-content: space-between;">
   <img src="./documentation/img/mobile/revenue.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
   <img src="./documentation/img/mobile/revenu_delete.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
 </div>
+
+<br>
 
 <div style="display: flex; justify-content: space-between;">
   <img src="./documentation/img/mobile/abonnement.png" alt="" width="45%" style="display: block; margin-left: auto; margin-right: auto;" border="1" />
@@ -208,9 +215,9 @@ Finance dashboard est un projet open-source développé seulement par [Floris Ro
 
 ## Report de bug et suggestions
 
-Si vous découvrez une erreur, quelquelle soit, cela peut êgre une faute de frappe ou d'orthographe, une erreur de calcul, une erreur de conception, un bug qui empêche le bon fonctionnement de l'application, ou tout autre problème, Merci de me le signaler par mail à l'adresse [florobart.github.com](mailto:florobart.github.com). Toutes les erreurs, quelque soit leur nature ou leur importance, seront traitées le plus rapidement possible.
+Si vous découvrez une erreur, quelquelle soit, cela peut êgre une faute de frappe ou d'orthographe, une erreur de calcul, une erreur de conception, un bug qui empêche le bon fonctionnement de l'application, ou tout autre problème, Merci de me le signaler par mail à l'adresse [florobart.github@gmail.com](mailto:florobart.github@gmail.com). Toutes les erreurs, quelque soit leur nature ou leur importance, seront traitées le plus rapidement possible.
 
-Si vous avez une une **suggestion**, une **idée**, une **amélioration**, ou une **demande de fonctionnalité**, merci de me la communiquer par mail à l'adresse [florobart.github.com](mailto:florobart.github.com). Toutes les suggestions, quelque soit leur nature ou leur importance, seront étudiées et prises en compte dans la mesure du possible.
+Si vous avez une une **suggestion**, une **idée**, une **amélioration**, ou une **demande de fonctionnalité**, merci de me la communiquer par mail à l'adresse [florobart.github@gmail.com](mailto:florobart.github@gmail.com). Toutes les suggestions, quelque soit leur nature ou leur importance, seront étudiées et prises en compte dans la mesure du possible.
 
 ## License
 
