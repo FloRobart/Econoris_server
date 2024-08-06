@@ -32,7 +32,7 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         /* Récupération des différents type d'investissements */
-        $investissements = Investissement::select('type_investissement')->distinct()->get();
+        $investissements = Investissement::select('type_investissement')->where('user_id', auth()->user()->id)->distinct()->get();
 
         return view('private.accueil', compact('investissements'));
     }
