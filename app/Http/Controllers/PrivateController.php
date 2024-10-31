@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
  */
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Salaire;
 use App\Models\Epargne;
 use App\Models\Investissement;
@@ -32,7 +33,7 @@ class PrivateController extends Controller
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
         /* Récupération des différents type d'investissements */
-        $investissements = Investissement::select('type_investissement')->where('user_id', auth()->user()->id)->distinct()->get();
+        $investissements = Investissement::select('type_investissement')->where('user_id', Auth::user()->id)->distinct()->get();
 
         return view('private.accueil', compact('investissements'));
     }
@@ -230,7 +231,7 @@ class PrivateController extends Controller
 
         /* Ajout du salaire */
         $salaire = new Salaire();
-        $salaire->user_id = auth()->user()->id;
+        $salaire->user_id = Auth::user()->id;
         $salaire->date_transaction = $request->date_transaction;
         $salaire->montant_transaction = $request->montant_transaction;
         $salaire->employeur = ucfirst($request->employeur);
@@ -273,7 +274,7 @@ class PrivateController extends Controller
 
         /* Modification du salaire */
         $salaire = Salaire::find($request->id);
-        if ($salaire->user_id != auth()->user()->id) { back()->with('error', 'Le salaire ne vous appartient pas ❌.'); }
+        if ($salaire->user_id != Auth::user()->id) { back()->with('error', 'Le salaire ne vous appartient pas ❌.'); }
 
         $salaire->date_transaction = $request->date_transaction;
         $salaire->montant_transaction = $request->montant_transaction;
@@ -300,7 +301,7 @@ class PrivateController extends Controller
 
         $salaire = Salaire::find($id);
         if (!$salaire) { back()->with('error', 'Le salaire n\'existe pas ❌.'); }
-        if ($salaire->user_id != auth()->user()->id) { back()->with('error', 'Le salaire ne vous appartient pas ❌.'); }
+        if ($salaire->user_id != Auth::user()->id) { back()->with('error', 'Le salaire ne vous appartient pas ❌.'); }
 
         /* Suppression du salaire */
         if ($salaire->delete()) {
@@ -468,7 +469,7 @@ class PrivateController extends Controller
 
         /* Ajout de l'épargne */
         $epargne = new Epargne();
-        $epargne->user_id = auth()->user()->id;
+        $epargne->user_id = Auth::user()->id;
         $epargne->date_transaction = $request->date_transaction;
         $epargne->montant_transaction = $request->montant_transaction;
         $epargne->banque = ucfirst($request->banque);
@@ -523,7 +524,7 @@ class PrivateController extends Controller
 
         /* Modification de l'épargne */
         $epargne = Epargne::find($request->id);
-        if ($epargne->user_id != auth()->user()->id) { back()->with('error', 'L\'épargne ne vous appartient pas ❌.'); }
+        if ($epargne->user_id != Auth::user()->id) { back()->with('error', 'L\'épargne ne vous appartient pas ❌.'); }
 
         $epargne->date_transaction = $request->date_transaction;
         $epargne->montant_transaction = $request->montant_transaction;
@@ -551,7 +552,7 @@ class PrivateController extends Controller
 
         $epargne = Epargne::find($id);
         if (!$epargne) { back()->with('error', 'L\'épargne n\'existe pas ❌.'); }
-        if ($epargne->user_id != auth()->user()->id) { back()->with('error', 'L\'épargne ne vous appartient pas ❌.'); }
+        if ($epargne->user_id != Auth::user()->id) { back()->with('error', 'L\'épargne ne vous appartient pas ❌.'); }
 
         /* Suppression de l'épargne */
         if ($epargne->delete()) {
@@ -770,7 +771,7 @@ class PrivateController extends Controller
 
         /* Ajout de l'investissement */
         $investissement = new Investissement();
-        $investissement->user_id             = auth()->user()->id;
+        $investissement->user_id             = Auth::user()->id;
         $investissement->date_transaction    = $request->date_transaction;
         $investissement->type_investissement = ucfirst($type_investissement);
         $investissement->nom_actif           = ucfirst($request->nom_actif);
@@ -830,7 +831,7 @@ class PrivateController extends Controller
 
         /* Modification de l'investissement */
         $investissement = Investissement::find($request->id);
-        if ($investissement->user_id != auth()->user()->id) { back()->with('error', 'L\'investissement ne vous appartient pas ❌.'); }
+        if ($investissement->user_id != Auth::user()->id) { back()->with('error', 'L\'investissement ne vous appartient pas ❌.'); }
 
         $investissement->date_transaction    = $request->date_transaction;
         $investissement->type_investissement = ucfirst($request->type_investissement);
@@ -859,7 +860,7 @@ class PrivateController extends Controller
 
         $investissement = Investissement::find($id);
         if (!$investissement) { back()->with('error', 'L\'investissement n\'existe pas ❌.'); }
-        if ($investissement->user_id != auth()->user()->id) { back()->with('error', 'L\'investissement ne vous appartient pas ❌.'); }
+        if ($investissement->user_id != Auth::user()->id) { back()->with('error', 'L\'investissement ne vous appartient pas ❌.'); }
 
         /* Suppression de l'investissement */
         if ($investissement->delete()) {
@@ -1064,7 +1065,7 @@ class PrivateController extends Controller
 
         /* Ajout de l'abonnement */
         $abonnement = new Abonnement();
-        $abonnement->user_id             = auth()->user()->id;
+        $abonnement->user_id             = Auth::user()->id;
         $abonnement->date_transaction    = $request->date_transaction;
         $abonnement->nom_actif           = ucfirst($request->nom_actif);
         $abonnement->montant_transaction = $request->montant_transaction;
@@ -1110,7 +1111,7 @@ class PrivateController extends Controller
 
         /* Ajout de l'abonnement */
         $abonnement = Abonnement::find($request->id);
-        if ($abonnement->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
+        if ($abonnement->user_id != Auth::user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
 
         $abonnement->date_transaction    = $request->date_transaction;
         $abonnement->nom_actif           = ucfirst($request->nom_actif);
@@ -1138,7 +1139,7 @@ class PrivateController extends Controller
 
         $abonnement = Abonnement::find($id);
         if (!$abonnement) { back()->with('error', 'L\'abonnement n\'existe pas ❌.'); }
-        if ($abonnement->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
+        if ($abonnement->user_id != Auth::user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
 
         /* Suppression de l'abonnement */
         if ($abonnement->delete()) {
@@ -1165,7 +1166,7 @@ class PrivateController extends Controller
         $order = $request->query('order') ?? 'desc';
 
         /* Récupération d'un abonnement aléatoire */
-        $abonnement = Abonnement::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
+        $abonnement = Abonnement::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories('', '', $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1181,7 +1182,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnement = Abonnement::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
+        $abonnement = Abonnement::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories($date, '', $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1197,7 +1198,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnement = Abonnement::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
+        $abonnement = Abonnement::where('user_id', Auth::user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories('', $nom_actif, $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1213,7 +1214,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnement = Abonnement::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
+        $abonnement = Abonnement::where('user_id', Auth::user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories($date, $nom_actif, $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1253,7 +1254,7 @@ class PrivateController extends Controller
 
         /* Ajout de l'abonnement */
         $abonnement_history = new Abonnement_history();
-        $abonnement_history->user_id             = auth()->user()->id;
+        $abonnement_history->user_id             = Auth::user()->id;
         $abonnement_history->date_transaction    = $request->date_transaction;
         $abonnement_history->nom_actif           = ucfirst($request->nom_actif);
         $abonnement_history->montant_transaction = $request->montant_transaction;
@@ -1296,7 +1297,7 @@ class PrivateController extends Controller
 
         /* Modification de l'abonnement */
         $abonnement_history = Abonnement_history::find($request->id);
-        if ($abonnement_history->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
+        if ($abonnement_history->user_id != Auth::user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
 
         $abonnement_history->date_transaction    = $request->date_transaction;
         $abonnement_history->nom_actif           = ucfirst($request->nom_actif);
@@ -1323,7 +1324,7 @@ class PrivateController extends Controller
 
         $abonnement_history = Abonnement_history::find($id);
         if (!$abonnement_history) { back()->with('error', 'L\'abonnement n\'existe pas ❌.'); }
-        if ($abonnement_history->user_id != auth()->user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
+        if ($abonnement_history->user_id != Auth::user()->id) { back()->with('error', 'L\'abonnement ne vous appartient pas ❌.'); }
 
         /* Suppression de l'abonnement */
         if ($abonnement_history->delete()) {
@@ -1419,7 +1420,7 @@ class PrivateController extends Controller
 
         /* Ajout de l'emprunt */
         $emprunt = new Emprunt();
-        $emprunt->user_id             = auth()->user()->id;
+        $emprunt->user_id             = Auth::user()->id;
         $emprunt->date_debut          = $request->date_debut;
         $emprunt->date_fin            = $request->date_fin;
         $emprunt->nom_actif           = ucfirst($request->nom_actif);
@@ -1481,7 +1482,7 @@ class PrivateController extends Controller
 
         /* Modification de l'emprunt */
         $emprunt = Emprunt::find($request->id);
-        if ($emprunt->user_id != auth()->user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
+        if ($emprunt->user_id != Auth::user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
 
         $emprunt->date_debut          = $request->date_debut;
         $emprunt->date_fin            = $request->date_fin;
@@ -1512,7 +1513,7 @@ class PrivateController extends Controller
 
         $emprunt = Emprunt::find($id);
         if (!$emprunt) { back()->with('error', 'L\'emprunt n\'existe pas ❌.'); }
-        if ($emprunt->user_id != auth()->user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
+        if ($emprunt->user_id != Auth::user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
 
         /* Suppression de l'emprunt */
         if ($emprunt->delete()) {
@@ -1539,7 +1540,7 @@ class PrivateController extends Controller
         $order = $request->query('order') ?? 'desc';
 
         /* Récupération d'un emprunt aléatoire */
-        $emprunt = Emprunt::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
+        $emprunt = Emprunt::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->first();
         $emprunts_histories = PrivateController::getEmpruntsHistories('', '', '', $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
@@ -1555,7 +1556,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_emprunt';
         $order = $request->query('order') ?? 'desc';
 
-        $emprunt = Emprunt::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
+        $emprunt = Emprunt::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->first();
         $emprunts_histories = PrivateController::getEmpruntsHistories('', $nom_actif, '', $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
@@ -1571,7 +1572,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_emprunt';
         $order = $request->query('order') ?? 'desc';
 
-        $emprunt = Emprunt::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
+        $emprunt = Emprunt::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->first();
         $emprunts_histories = PrivateController::getEmpruntsHistories('', '', $banque, $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
@@ -1587,7 +1588,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_emprunt';
         $order = $request->query('order') ?? 'desc';
 
-        $emprunt = Emprunt::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
+        $emprunt = Emprunt::where('user_id', Auth::user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $emprunts_histories = PrivateController::getEmpruntsHistories('', $nom_actif, $banque, $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
@@ -1630,7 +1631,7 @@ class PrivateController extends Controller
 
         /* Ajout de l'emprunt */
         $emprunt_history = new Emprunt_history();
-        $emprunt_history->user_id             = auth()->user()->id;
+        $emprunt_history->user_id             = Auth::user()->id;
         $emprunt_history->date_transaction    = $request->date_transaction;
         $emprunt_history->nom_actif           = ucfirst($request->nom_actif);
         $emprunt_history->banque              = ucfirst($request->banque);
@@ -1676,7 +1677,7 @@ class PrivateController extends Controller
 
         /* Modification de l'emprunt */
         $emprunt_history = Emprunt_history::find($request->id);
-        if ($emprunt_history->user_id != auth()->user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
+        if ($emprunt_history->user_id != Auth::user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
 
         $emprunt_history->date_transaction    = $request->date_transaction;
         $emprunt_history->nom_actif           = ucfirst($request->nom_actif);
@@ -1704,7 +1705,7 @@ class PrivateController extends Controller
 
         $emprunt_history = Emprunt_history::find($id);
         if (!$emprunt_history) { back()->with('error', 'L\'emprunt n\'existe pas ❌.'); }
-        if ($emprunt_history->user_id != auth()->user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
+        if ($emprunt_history->user_id != Auth::user()->id) { back()->with('error', 'L\'emprunt ne vous appartient pas ❌.'); }
 
         /* Suppression de l'emprunt */
         if ($emprunt_history->delete()) {
@@ -1813,7 +1814,7 @@ class PrivateController extends Controller
 
         /* Ajout de la dépense */
         $depense = new Depense();
-        $depense->user_id             = auth()->user()->id;
+        $depense->user_id             = Auth::user()->id;
         $depense->date_transaction    = $request->date_transaction;
         $depense->nom_actif           = ucfirst($request->nom_actif);
         $depense->montant_transaction = $request->montant_transaction;
@@ -1854,7 +1855,7 @@ class PrivateController extends Controller
 
         /* Modification de la dépense */
         $depense = Depense::find($request->id);
-        if ($depense->user_id != auth()->user()->id) { back()->with('error', 'La dépense ne vous appartient pas ❌.'); }
+        if ($depense->user_id != Auth::user()->id) { back()->with('error', 'La dépense ne vous appartient pas ❌.'); }
 
         $depense->date_transaction    = $request->date_transaction;
         $depense->nom_actif           = ucfirst($request->nom_actif);
@@ -1881,7 +1882,7 @@ class PrivateController extends Controller
 
         $depense = Depense::find($id);
         if (!$depense) { back()->with('error', 'La dépense n\'existe pas ❌.'); }
-        if ($depense->user_id != auth()->user()->id) { back()->with('error', 'La dépense ne vous appartient pas ❌.'); }
+        if ($depense->user_id != Auth::user()->id) { back()->with('error', 'La dépense ne vous appartient pas ❌.'); }
 
         /* Suppression de la dépense */
         if ($depense->delete()) {
@@ -1999,7 +2000,7 @@ class PrivateController extends Controller
 
         /* Ajout du prêt */
         $pret = new Pret();
-        $pret->user_id           = auth()->user()->id;
+        $pret->user_id           = Auth::user()->id;
         $pret->date_transaction  = $request->date_transaction;
         $pret->nom_emprunteur    = ucfirst($request->nom_emprunteur);
         $pret->montant_pret      = $request->montant_pret;
@@ -2051,7 +2052,7 @@ class PrivateController extends Controller
 
         /* Modification du prêt */
         $pret = Pret::find($request->id);
-        if ($pret->user_id != auth()->user()->id) { back()->with('error', 'Le prêt ne vous appartient pas ❌.'); }
+        if ($pret->user_id != Auth::user()->id) { back()->with('error', 'Le prêt ne vous appartient pas ❌.'); }
 
         $pret->date_transaction  = $request->date_transaction;
         $pret->nom_emprunteur    = ucfirst($request->nom_emprunteur);
@@ -2080,7 +2081,7 @@ class PrivateController extends Controller
 
         $pret = Pret::find($id);
         if (!$pret) { back()->with('error', 'Le prêt n\'existe pas ❌.'); }
-        if ($pret->user_id != auth()->user()->id) { back()->with('error', 'Le prêt ne vous appartient pas ❌.'); }
+        if ($pret->user_id != Auth::user()->id) { back()->with('error', 'Le prêt ne vous appartient pas ❌.'); }
 
         /* Suppression du prêt */
         if ($pret->delete()) {
@@ -2161,7 +2162,7 @@ class PrivateController extends Controller
 
         /* Ajout de l'horaire de travail */
         $horaire = new Horaire();
-        $horaire->user_id         = auth()->user()->id;
+        $horaire->user_id         = Auth::user()->id;
         $horaire->date_transaction = $request->date_transaction;
         $horaire->heure_matin     = $request->heure_matin;
         $horaire->heure_midi      = $request->heure_midi ?? $request->heure_matin;
@@ -2206,7 +2207,7 @@ class PrivateController extends Controller
 
         /* Modification de l'horaire de travail */
         $horaire = Horaire::find($request->id);
-        if ($horaire->user_id != auth()->user()->id) { back()->with('error', 'L\'horaire de travail ne vous appartient pas ❌.'); }
+        if ($horaire->user_id != Auth::user()->id) { back()->with('error', 'L\'horaire de travail ne vous appartient pas ❌.'); }
 
         $horaire->date_transaction = $request->date_transaction;
         $horaire->heure_matin      = $request->heure_matin;
@@ -2235,7 +2236,7 @@ class PrivateController extends Controller
 
         $horaire = Horaire::find($id);
         if (!$horaire) { back()->with('error', 'L\'horaire de travail n\'existe pas ❌.'); }
-        if ($horaire->user_id != auth()->user()->id) { back()->with('error', 'L\'horaire de travail ne vous appartient pas ❌.'); }
+        if ($horaire->user_id != Auth::user()->id) { back()->with('error', 'L\'horaire de travail ne vous appartient pas ❌.'); }
 
         /* Suppression de l'horaire de travail */
         if ($horaire->delete()) {
@@ -2278,7 +2279,7 @@ class PrivateController extends Controller
      */
     public function getSalaires(string $date, string $employeur, string $sort = 'date_transaction', $order = 'desc')
     {
-        $salaires = Salaire::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $salaires = Salaire::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $salaires = $salaires->where('date_transaction', '>=', PrivateController::getFirstDay($date))
@@ -2307,7 +2308,7 @@ class PrivateController extends Controller
      */
     public function getEpargnes(string $date, string $banque, string $compte, string $sort = 'date_transaction', $order = 'desc')
     {
-        $epargnes = Epargne::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $epargnes = Epargne::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $epargnes = $epargnes->where('date_transaction', '>=', PrivateController::getFirstDay($date))
@@ -2340,7 +2341,7 @@ class PrivateController extends Controller
      */
     public function getInvestissements(string $date, string $type, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
-        $investissements = Investissement::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $investissements = Investissement::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $investissements = $investissements->where('date_transaction', '>=', PrivateController::getFirstDay($date))
@@ -2373,7 +2374,7 @@ class PrivateController extends Controller
      */
     public function getAbonnements(string $date, string $nom_actif, string $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
     {
-        $abonnements = Abonnement::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $abonnements = Abonnement::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $abonnements = $abonnements->where('date_transaction', '>=', PrivateController::getFirstDay($date))
@@ -2405,7 +2406,7 @@ class PrivateController extends Controller
      */
     public function getAbonnementsHistories(string $date, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
-        $abonnements = Abonnement_history::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $abonnements = Abonnement_history::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $abonnements = $abonnements->where('date_transaction', '>=', PrivateController::getFirstDay($date))
@@ -2433,7 +2434,7 @@ class PrivateController extends Controller
      */
     public function getEmprunts(string $date, string $banque, string $sort = 'date_debut', $order = 'desc')
     {
-        $emprunts = Emprunt::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $emprunts = Emprunt::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $emprunts = $emprunts->where('date_debut', '>=', PrivateController::getFirstDay($date))
@@ -2462,7 +2463,7 @@ class PrivateController extends Controller
      */
     public function getEmpruntsHistories(string $date, string $nom_actif, string $banque, string $sort = 'date_debut', $order = 'desc')
     {
-        $emprunts = Emprunt_history::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $emprunts = Emprunt_history::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $emprunts = $emprunts->where('date_transaction', '>=', PrivateController::getFirstDay($date))
@@ -2494,7 +2495,7 @@ class PrivateController extends Controller
      */
     public function getDepenses(string $date, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
     {
-        $depenses = Depense::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $depenses = Depense::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $depenses = $depenses->where('date_transaction', '>=', PrivateController::getFirstDay($date))
@@ -2522,7 +2523,7 @@ class PrivateController extends Controller
      */
     public function getPrets(string $date, string $nom_emprunteur, string $sort = 'date_transaction', $order = 'desc')
     {
-        $prets = Pret::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $prets = Pret::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $prets = $prets->where('date_transaction', '>=', PrivateController::getFirstDay($date))
@@ -2549,7 +2550,7 @@ class PrivateController extends Controller
      */
     public function getHorairesTravail(string $date, string $sort = 'date_transaction', $order = 'desc')
     {
-        $horaires_travail = Horaire::where('user_id', auth()->user()->id)->orderBy($sort, $order)->get();
+        $horaires_travail = Horaire::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
         if ($date != '') {
             $horaires_travail = $horaires_travail->where('date_transaction', '>=', PrivateController::getFirstDay($date))
