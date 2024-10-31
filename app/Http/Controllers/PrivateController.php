@@ -27,6 +27,7 @@ class PrivateController extends Controller
     /*=========*/
     /**
      * Affiche la page d'accueil
+     * @return \Illuminate\View\View private.accueil
      */
     public function accueil()
     {
@@ -50,6 +51,8 @@ class PrivateController extends Controller
     /* Affichage des salaires */
     /**
      * Affiche la page des salaires
+     * @param Request $request
+     * @return \Illuminate\View\View private.salaire
      */
     public function salaires(Request $request)
     {
@@ -87,6 +90,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les salaires d'un même mois
+     * @param Request $request
+     * @param string $date La date du mois
+     * @return \Illuminate\View\View private.salaire
      */
     public function salairesDate(Request $request, string $date)
     {
@@ -124,6 +130,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les salaires d'un même employeur
+     * @param Request $request
+     * @param string $employeur Le nom de l'employeur
+     * @return \Illuminate\View\View private.salaire
      */
     public function salairesEmployeur(Request $request, string $employeur)
     {
@@ -161,6 +170,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les salaires d'un même mois et d'un même employeur
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $employeur Le nom de l'employeur
+     * @return \Illuminate\View\View private.salaire
      */
     public function salairesDateEmployeur(Request $request, string $date, string $employeur)
     {
@@ -200,6 +213,8 @@ class PrivateController extends Controller
     /* Édition des salaires */
     /**
      * Ajoute un salaire
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addSalaire(Request $request)
     {
@@ -245,6 +260,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un salaire
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editSalaire(Request $request)
     {
@@ -289,6 +306,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un salaire
+     * @param string $id L'id du salaire
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeSalaire(string $id)
     {
@@ -320,6 +339,8 @@ class PrivateController extends Controller
     /* Affichage des épargnes */
     /**
      * Affiche la page des épargnes
+     * @param Request $request
+     * @return \Illuminate\View\View private.epargne
      */
     public function epargnes(Request $request)
     {
@@ -334,6 +355,8 @@ class PrivateController extends Controller
 
     /**
      * Affiche les épargnes d'un même mois
+     * @param Request $request
+     * @param string $date La date du mois
      */
     public function epargnesDate(Request $request, string $date)
     {
@@ -348,6 +371,8 @@ class PrivateController extends Controller
 
     /**
      * Affiche les épargnes d'une même banque
+     * @param Request $request
+     * @param string $banque Le nom de la banque
      */
     public function epargnesBanque(Request $request, string $banque)
     {
@@ -362,6 +387,8 @@ class PrivateController extends Controller
 
     /**
      * Affiche les épargnes d'un même compte
+     * @param Request $request
+     * @param string $compte Le nom du compte
      */
     public function epargnesCompte(Request $request, string $compte)
     {
@@ -376,6 +403,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les épargnes d'un même mois et d'une même banque
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $banque Le nom de la banque
+     * @return \Illuminate\View\View private.epargne
      */
     public function epargnesDateBanque(Request $request, string $date, string $banque)
     {
@@ -390,6 +421,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les épargnes d'une même date et d'un même compte
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $compte Le nom du compte
+     * @return \Illuminate\View\View private.epargne
      */
     public function epargnesDateCompte(Request $request, string $date, string $compte)
     {
@@ -404,6 +439,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les épargnes d'une même banque et d'un même compte
+     * @param Request $request
+     * @param string $banque Le nom de la banque
+     * @param string $compte Le nom du compte
+     * @return \Illuminate\View\View private.epargne
      */
     public function epargnesBanqueCompte(Request $request, string $banque, string $compte)
     {
@@ -418,6 +457,11 @@ class PrivateController extends Controller
 
     /**
      * Récupère les épargnes d'une même date, d'une même banque et d'un même compte
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $banque Le nom de la banque
+     * @param string $compte Le nom du compte
+     * @return \Illuminate\View\View private.epargne
      */
     public function epargnesDateBanqueCompte(Request $request, string $date, string $banque, string $compte)
     {
@@ -434,6 +478,8 @@ class PrivateController extends Controller
     /* Édition des épargnes */
     /**
      * Ajoute une épargne
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addEpargne(Request $request)
     {
@@ -484,6 +530,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie une épargne
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editEpargne(Request $request)
     {
@@ -540,6 +588,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime une épargne
+     * @param string $id L'id de l'épargne
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeEpargne(string $id)
     {
@@ -570,6 +620,8 @@ class PrivateController extends Controller
     /* Affichage des investissements */
     /**
      * Affiche tous les investissements
+     * @param Request $request
+     * @return \Illuminate\View\View private.investissement
      */
     public function investissements(Request $request)
     {
@@ -585,6 +637,12 @@ class PrivateController extends Controller
         return view('private.investissement', compact('investissements', 'type_investissement'));
     }
 
+    /**
+     * Affiche les investissements d'un même mois
+     * @param Request $request
+     * @param string $date La date du mois
+     * @return \Illuminate\View\View private.investissement
+     */
     public function investissementsDate(Request $request, string $date)
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
@@ -600,6 +658,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche tous les investissements d'un même type
+     * @param Request $request
+     * @param string $type Le type d'investissement
+     * @return \Illuminate\View\View private.investissement
      */
     public function investissementsType(Request $request, string $type)
     {
@@ -624,6 +685,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche tous les investissements d'un même nom d'actif
+     * @param Request $request
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.investissement
      */
     public function investissementsNom(Request $request, string $nom_actif)
     {
@@ -640,6 +704,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les investissements d'une même date et d'un même type
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $type Le type d'investissement
+     * @return \Illuminate\View\View private.investissement
      */
     public function investissementsDateType(Request $request, string $date, string $type)
     {
@@ -664,6 +732,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les investissements d'une même date et d'un même nom d'actif
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.investissement
      */
     public function investissementsDateNom(Request $request, string $date, string $nom_actif)
     {
@@ -680,6 +752,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les investissements d'un même type et d'un même nom d'actif
+     * @param Request $request
+     * @param string $type Le type d'investissement
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.investissement
      */
     public function investissementsTypeNom(Request $request, string $type, string $nom_actif)
     {
@@ -704,6 +780,11 @@ class PrivateController extends Controller
 
     /**
      * Affiche les détails d'un investissement d'un même mois et d'un même type
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $type Le type d'investissement
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.investissement
      */
     public function investissementsDateTypeNom(Request $request, string $date, string $type, string $nom_actif)
     {
@@ -722,6 +803,8 @@ class PrivateController extends Controller
     /* Édition des investissements */
     /**
      * Ajoute un investissement
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addInvestissement(Request $request)
     {
@@ -787,6 +870,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un investissement
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editInvestissement(Request $request)
     {
@@ -848,6 +933,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un investissement
+     * @param string $id L'id de l'investissement
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeInvestissement(string $id)
     {
@@ -874,6 +961,8 @@ class PrivateController extends Controller
     /* Ajout de type d'investissement */
     /**
      * Ajoute un type d'investissement
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addTypeInvestissement(Request $request)
     {
@@ -909,6 +998,8 @@ class PrivateController extends Controller
     /* Affiche des abonnements */
     /**
      * Affiche tous les abonnements
+     * @param Request $request
+     * @return \Illuminate\View\View private.abonnement
      */
     public function abonnements(Request $request)
     {
@@ -925,6 +1016,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les abonnements d'un même mois
+     * @param Request $request
+     * @param string $date La date du mois
+     * @return \Illuminate\View\View private.abonnement
      */
     public function abonnementsDate(Request $request, string $date)
     {
@@ -940,6 +1034,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les abonnements d'un même nom
+     * @param Request $request
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.abonnement
      */
     public function abonnementsNom(Request $request, string $nom_actif)
     {
@@ -955,6 +1052,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les abonnements actifs ou inactifs
+     * @param Request $request
+     * @param int $actif L'état de l'abonnement
+     * @return \Illuminate\View\View private.abonnement
      */
     public function abonnementsActif(Request $request, int $actif)
     {
@@ -970,6 +1070,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les abonnements d'un même mois et d'un même nom
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.abonnement
      */
     public function abonnementsDateNom(Request $request, string $date, string $nom_actif)
     {
@@ -985,6 +1089,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les abonnements d'un même mois et d'un même état
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $actif L'état de l'abonnement
+     * @return \Illuminate\View\View private.abonnement
      */
     public function abonnementsDateActif(Request $request, string $date, string $actif)
     {
@@ -1000,6 +1108,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les abonnements d'un même nom et d'un même état
+     * @param Request $request
+     * @param string $nom_actif Le nom de l'actif
+     * @param string $actif L'état de l'abonnement
+     * @return \Illuminate\View\View private.abonnement
      */
     public function abonnementsNomActif(Request $request, string $nom_actif, string $actif)
     {
@@ -1015,6 +1127,11 @@ class PrivateController extends Controller
 
     /**
      * Affiche les abonnements d'un même mois, d'un même nom et d'un même état
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $nom_actif Le nom de l'actif
+     * @param string $actif L'état de l'abonnement
+     * @return \Illuminate\View\View private.abonnement
      */
     public function abonnementsDateNomActif(Request $request, string $date, string $nom_actif, string $actif)
     {
@@ -1032,6 +1149,8 @@ class PrivateController extends Controller
     /* Édition des abonnements */
     /**
      * Ajoute un abonnement
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addAbonnement(Request $request)
     {
@@ -1080,6 +1199,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un abonnement
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editAbonnement(Request $request)
     {
@@ -1127,6 +1248,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un abonnement
+     * @param string $id L'id de l'abonnement
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeAbonnement(string $id)
     {
@@ -1157,6 +1280,8 @@ class PrivateController extends Controller
     /* Affichage des historiques d'abonnements */
     /**
      * Affiche tous les historiques d'abonnements
+     * @param Request $request
+     * @return \Illuminate\View\View private.abonnement_history
      */
     public function abonnementsHistories(Request $request)
     {
@@ -1174,6 +1299,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les historiques d'abonnements d'une même date
+     * @param Request $request
+     * @param string $date La date de la transaction
+     * @return \Illuminate\View\View private.abonnement_history
      */
     public function abonnementsHistoriesDate(Request $request, string $date)
     {
@@ -1190,6 +1318,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les historiques d'abonnements d'un même nom d'actif
+     * @param Request $request
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.abonnement_history
      */
     public function abonnementsHistoriesNom(Request $request, string $nom_actif)
     {
@@ -1206,6 +1337,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les historiques d'abonnements d'une même date et d'un même nom d'actif
+     * @param Request $request
+     * @param string $date La date de la transaction
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.abonnement_history
      */
     public function abonnementsHistoriesDateNom(Request $request, string $date, string $nom_actif)
     {
@@ -1223,6 +1358,8 @@ class PrivateController extends Controller
     /* Édition des historiques d'abonnements */
     /**
      * Ajoute un historiques d'abonnement
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addAbonnementHistory(Request $request)
     {
@@ -1268,6 +1405,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un historiques d'abonnement
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editAbonnementHistory(Request $request)
     {
@@ -1312,6 +1451,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un historiques d'abonnement
+     * @param string $id L'id de l'abonnement
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeAbonnementHistory(string $id)
     {
@@ -1342,6 +1483,8 @@ class PrivateController extends Controller
     /* Affichage des emprunts */
     /**
      * Affiche tous les emprunts
+     * @param Request $request
+     * @return \Illuminate\View\View private.emprunt
      */
     public function emprunts(Request $request)
     {
@@ -1357,6 +1500,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les emprunts réalisé auprès d'une même banque
+     * @param Request $request
+     * @param string $banque La banque
+     * @return \Illuminate\View\View private.emprunt
      */
     public function empruntsBanque(Request $request, string $banque)
     {
@@ -1374,6 +1520,8 @@ class PrivateController extends Controller
     /* Édition des emprunts */
     /**
      * Ajoute un emprunt
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addEmprunt(Request $request)
     {
@@ -1438,6 +1586,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un emprunt
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editEmprunt(Request $request)
     {
@@ -1501,6 +1651,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un emprunt
+     * @param string $id L'id de l'emprunt
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeEmprunt(string $id)
     {
@@ -1531,6 +1683,8 @@ class PrivateController extends Controller
     /* Affichage des historiques d'emprunts */
     /**
      * Affiche tous les historiques d'emprunts
+     * @param Request $request
+     * @return \Illuminate\View\View private.emprunt_history
      */
     public function empruntsHistories(Request $request)
     {
@@ -1548,6 +1702,8 @@ class PrivateController extends Controller
 
     /**
      * Affiche les historiques d'emprunts d'un même nom d'actif
+     * @param Request $request
+     * @param string $nom_actif Le nom de l'actif
      */
     public function empruntsHistoriesNom(Request $request, string $nom_actif)
     {
@@ -1564,6 +1720,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les historiques d'emprunts réalisé auprès d'une même banque
+     * @param Request $request
+     * @param string $banque le nom de la banque
+     * @return \Illuminate\View\View private.emprunt_history
      */
     public function empruntsHistoriesBanque(Request $request, string $banque)
     {
@@ -1580,6 +1739,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les historiques d'emprunts d'un même nom d'actif et d'une même banque
+     * @param Request $request
+     * @param string $nom_actif Le nom de l'actif
+     * @param string $banque Le nom de la banque
+     * @return \Illuminate\View\View private.emprunt_history
      */
     public function empruntsHistoriesNomBanque(Request $request, string $nom_actif, string $banque)
     {
@@ -1598,6 +1761,8 @@ class PrivateController extends Controller
     /* Édition des historiques d'emprunts */
     /**
      * Ajoute un historiques d'emprunt
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addEmpruntHistory(Request $request)
     {
@@ -1646,6 +1811,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un historiques d'emprunt
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editEmpruntHistory(Request $request)
     {
@@ -1693,6 +1860,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un historiques d'emprunt
+     * @param string $id L'id de l'emprunt
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeEmpruntHistory(string $id)
     {
@@ -1723,6 +1892,8 @@ class PrivateController extends Controller
     /* Affichage des dépenses */
     /**
      * Affiche toutes les dépenses
+     * @param Request $request
+     * @return \Illuminate\View\View private.depense
      */
     public function depenses(Request $request)
     {
@@ -1738,6 +1909,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les dépenses réalisé à une même date
+     * @param Request $request
+     * @param string $date La date du mois
+     * @return \Illuminate\View\View private.depense
      */
     public function depensesDate(Request $request, string $date)
     {
@@ -1753,6 +1927,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les dépenses réalisé auprès d'un même nom
+     * @param Request $request
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.depense
      */
     public function depensesNom(Request $request, string $nom_actif)
     {
@@ -1768,6 +1945,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les dépenses réalisé auprès d'un même nom et à une même date
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $nom_actif Le nom de l'actif
+     * @return \Illuminate\View\View private.depense
      */
     public function depensesDateNom(Request $request, string $date, string $nom_actif)
     {
@@ -1785,6 +1966,8 @@ class PrivateController extends Controller
     /* Édition des dépenses */
     /**
      * Ajoute une dépense
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addDepense(Request $request)
     {
@@ -1828,6 +2011,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie une dépense
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editDepense(Request $request)
     {
@@ -1870,6 +2055,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime une dépense
+     * @param string $id L'id de la dépense
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeDepense(string $id)
     {
@@ -1900,6 +2087,8 @@ class PrivateController extends Controller
     /* Affichage des prêts */
     /**
      * Affiche tous les prêts
+     * @param Request $request
+     * @return \Illuminate\View\View private.pret
      */
     public function prets(Request $request)
     {
@@ -1915,6 +2104,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les prêts réalisé à une même date
+     * @param Request $request
+     * @param string $date La date du mois
+     * @return \Illuminate\View\View private.pret
      */
     public function pretsDate(Request $request, string $date)
     {
@@ -1930,6 +2122,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les prêts réalisé auprès d'un même nom
+     * @param Request $request
+     * @param string $nom_emprunteur Le nom de l'emprunteur
+     * @return \Illuminate\View\View private.pret
      */
     public function pretsNom(Request $request, string $nom_emprunteur)
     {
@@ -1945,6 +2140,10 @@ class PrivateController extends Controller
 
     /**
      * Affiche les prêts réalisé auprès d'un même nom et à une même date
+     * @param Request $request
+     * @param string $date La date du mois
+     * @param string $nom_emprunteur Le nom de l'emprunteur
+     * @return \Illuminate\View\View private.pret
      */
     public function pretsDateNom(Request $request, string $date, string $nom_emprunteur)
     {
@@ -1962,6 +2161,8 @@ class PrivateController extends Controller
     /* Édition des prêts */
     /**
      * Ajoute un prêt
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addPret(Request $request)
     {
@@ -2016,6 +2217,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un prêt
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editPret(Request $request)
     {
@@ -2069,6 +2272,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un prêt
+     * @param string $id L'id du prêt
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removePret(string $id)
     {
@@ -2099,6 +2304,8 @@ class PrivateController extends Controller
     /* Affichage des horaires de travail */
     /**
      * Affiche tous les horaires de travail
+     * @param Request $request
+     * @return \Illuminate\View\View private.horaire
      */
     public function horaires(Request $request)
     {
@@ -2114,6 +2321,9 @@ class PrivateController extends Controller
 
     /**
      * Affiche les horaires de travail réalisé à une même date
+     * @param Request $request
+     * @param string $date La date du mois
+     * @return \Illuminate\View\View private.horaire
      */
     public function horairesDate(Request $request, string $date)
     {
@@ -2131,6 +2341,8 @@ class PrivateController extends Controller
     /* Édition des horaires de travail */
     /**
      * Ajoute un horaire de travail
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function addHoraire(Request $request)
     {
@@ -2178,6 +2390,8 @@ class PrivateController extends Controller
 
     /**
      * Modifie un horaire de travail
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function editHoraire(Request $request)
     {
@@ -2224,6 +2438,8 @@ class PrivateController extends Controller
 
     /**
      * Supprime un horaire de travail
+     * @param string $id L'id de l'horaire de travail
+     * @return \Illuminate\Http\RedirectResponse back()
      */
     public function removeHoraire(string $id)
     {
@@ -2257,11 +2473,15 @@ class PrivateController extends Controller
     /*------*/
     /**
      * Récupère la première date d'un mois
+     * @param string $date La date du mois
+     * @return string La première date du mois
      */
     public function getFirstDay(string $date) { return date('Y-m-01', strtotime($date)); }
 
     /**
      * Récupère la dernière date d'un mois
+     * @param string $date La date du mois
+     * @return string La dernière date du mois
      */
     public function getLastDay(string $date) { return date('Y-m-t', strtotime($date)); }
 
@@ -2272,12 +2492,12 @@ class PrivateController extends Controller
     /*---------*/
     /**
      * Récupère les salaires
-     * @param string $date
-     * @param string $employeur
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param string $employeur Le nom de l'employeur
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
-    public function getSalaires(string $date, string $employeur, string $sort = 'date_transaction', $order = 'desc')
+    public function getSalaires(string $date, string $employeur, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $salaires = Salaire::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2300,13 +2520,13 @@ class PrivateController extends Controller
     /*---------*/
     /**
      * Récupère les épargnes
-     * @param string $date
-     * @param string $banque
-     * @param string $compte
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param string $banque La banque
+     * @param string $compte Le compte
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
-    public function getEpargnes(string $date, string $banque, string $compte, string $sort = 'date_transaction', $order = 'desc')
+    public function getEpargnes(string $date, string $banque, string $compte, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $epargnes = Epargne::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2333,13 +2553,13 @@ class PrivateController extends Controller
     /*----------------*/
     /**
      * Récupère les investissements
-     * @param string $date
-     * @param string $type
-     * @param string $nom_actif
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param string $type Le type d'investissement
+     * @param string $nom_actif Le nom de l'actif
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
-    public function getInvestissements(string $date, string $type, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
+    public function getInvestissements(string $date, string $type, string $nom_actif, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $investissements = Investissement::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2366,13 +2586,13 @@ class PrivateController extends Controller
     /*-------------*/
     /**
      * Récupère les abonnements
-     * @param string $date
-     * @param string $nom_actif
-     * @param bool $abonnement_actif
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param string $nom_actif Le nom de l'actif
+     * @param bool $abonnement_actif Si l'abonnement est actif ou non
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
-    public function getAbonnements(string $date, string $nom_actif, string $abonnement_actif, string $sort = 'date_transaction', $order = 'desc')
+    public function getAbonnements(string $date, string $nom_actif, string $abonnement_actif, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $abonnements = Abonnement::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2399,10 +2619,10 @@ class PrivateController extends Controller
     /*-------------------------------------------------*/
     /**
      * Récupère les abonnements
-     * @param string $date
-     * @param string $nom_actif
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param string $nom_actif Le nom de l'actif
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
     public function getAbonnementsHistories(string $date, string $nom_actif, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
@@ -2427,10 +2647,10 @@ class PrivateController extends Controller
     /*----------*/
     /**
      * Récupère les emprunts
-     * @param string $date
-     * @param string $banque
-     * @param ?string $sort
-     * @param ?string $order
+     * @param string $date La date du mois
+     * @param string $banque Le nom de la banque
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
     public function getEmprunts(string $date, string $banque, ?string $sort = 'date_debut', ?string $order = 'desc')
     {
@@ -2455,13 +2675,13 @@ class PrivateController extends Controller
     /*----------------------------------------------*/
     /**
      * Récupère les emprunts
-     * @param string $date
-     * @param string $nom_actif
-     * @param string $banque
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param string $nom_actif Le nom de l'actif
+     * @param string $banque Le nom de la banque
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
-    public function getEmpruntsHistories(string $date, string $nom_actif, string $banque, string $sort = 'date_transaction', $order = 'desc')
+    public function getEmpruntsHistories(string $date, string $nom_actif, string $banque, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $emprunts = Emprunt_history::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2488,12 +2708,12 @@ class PrivateController extends Controller
     /*----------*/
     /**
      * Récupère les dépenses
-     * @param string $date
-     * @param string $nom_actif
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param string $nom_actif Le nom de l'actif
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
-    public function getDepenses(string $date, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
+    public function getDepenses(string $date, string $nom_actif, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $depenses = Depense::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2516,12 +2736,12 @@ class PrivateController extends Controller
     /*-------*/
     /**
      * Récupère les prêts
-     * @param string $date
-     * @param string $nom_emprunteur
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param string $nom_emprunteur Le nom de l'emprunteur
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
-    public function getPrets(string $date, string $nom_emprunteur, string $sort = 'date_transaction', $order = 'desc')
+    public function getPrets(string $date, string $nom_emprunteur, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $prets = Pret::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2544,11 +2764,11 @@ class PrivateController extends Controller
     /*---------------------*/
     /**
      * Récupère les horaires de travail
-     * @param string $date
-     * @param string $sort
-     * @param string $order
+     * @param string $date La date du mois
+     * @param ?string $sort Le tri
+     * @param ?string $order L'ordre
      */
-    public function getHorairesTravail(string $date, string $sort = 'date_transaction', $order = 'desc')
+    public function getHorairesTravail(string $date, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $horaires_travail = Horaire::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2562,12 +2782,12 @@ class PrivateController extends Controller
 
     /**
      * Récupère le temps de travail dans une journée sans la pause du midi
-     * @param string $horaire_matin
-     * @param string $horaire_midi
-     * @param string $horaire_apres_midi
-     * @param string $horaire_soir
+     * @param string $horaire_matin Le début de la journée
+     * @param string $horaire_midi Le début de la pause du midi
+     * @param string $horaire_apres_midi La fin de la pause du midi
+     * @param string $horaire_soir La fin de la journée
      */
-    public function getTimeJournee($horaire_matin, $horaire_midi, $horaire_apres_midi, $horaire_soir)
+    public function getTimeJournee(string $horaire_matin, string $horaire_midi, string $horaire_apres_midi, string $horaire_soir)
     {
         /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
         $matin = new DateTime($horaire_matin);
