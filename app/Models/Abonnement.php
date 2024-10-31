@@ -20,6 +20,7 @@ class Abonnement extends Model
         'nom_actif',
         'montant_transaction',
         'date_transaction',
-        'abonnement_actif'
+        'abonnement_actif',
+        'mensuel',
     ];
 }

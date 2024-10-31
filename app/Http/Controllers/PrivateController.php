@@ -70,6 +70,9 @@ class PrivateController extends Controller
         /* Récupération des investissements */
         $investissements = PrivateController::getInvestissements('', '', '', $sort);
 
+        /* Récupération des abonnements */
+        $abonnements = PrivateController::getAbonnements('', '', '', '', $sort);
+
         /* Récupération de l'historique des abonnements */
         $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', $sort);
 
@@ -85,7 +88,7 @@ class PrivateController extends Controller
         /* Récupération des prêts */
         $prets = PrivateController::getPrets('', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
 
     /**
@@ -110,6 +113,9 @@ class PrivateController extends Controller
         /* Récupération des investissements du mois */
         $investissements = PrivateController::getInvestissements($date, '', '', $sort);
 
+        /* Récupération des abonnements */
+        $abonnements = PrivateController::getAbonnements('', '', '', '', $sort);
+
         /* Récupération de l'historique des abonnements */
         $abonnementsHistories = PrivateController::getAbonnementsHistories($date, '', $sort);
 
@@ -125,7 +131,7 @@ class PrivateController extends Controller
         /* Récupération des prêts */
         $prets = PrivateController::getPrets($date, '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
 
     /**
@@ -150,6 +156,9 @@ class PrivateController extends Controller
         /* Récupération des investissements du mois */
         $investissements = PrivateController::getInvestissements('', '', '', $sort);
 
+        /* Récupération des abonnements */
+        $abonnements = PrivateController::getAbonnements('', '', '', '', $sort);
+
         /* Récupération de l'historique des abonnements */
         $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', $sort);
 
@@ -165,7 +174,7 @@ class PrivateController extends Controller
         /* Récupération des prêts */
         $prets = PrivateController::getPrets('', '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
 
     /**
@@ -191,6 +200,9 @@ class PrivateController extends Controller
         /* Récupération des investissements du mois */
         $investissements = PrivateController::getInvestissements($date, '', '', $sort);
 
+        /* Récupération des abonnements */
+        $abonnements = PrivateController::getAbonnements('', '', '', '', $sort);
+
         /* Récupération de l'historique des abonnements */
         $abonnementsHistories = PrivateController::getAbonnementsHistories($date, '', $sort);
 
@@ -206,7 +218,7 @@ class PrivateController extends Controller
         /* Récupération des prêts */
         $prets = PrivateController::getPrets($date, '', $sort);
 
-        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
+        return view('private.salaire', compact('salaires', 'epargnes', 'investissements', 'abonnements', 'abonnementsHistories', 'empruntsHistories', 'totalEmprunte', 'depenses', 'prets'));
     }
 
 
@@ -1009,7 +1021,7 @@ class PrivateController extends Controller
         $order = $request->query('order') ?? 'desc';
 
         /* Récupération des abonnements */
-        $abonnements = PrivateController::getAbonnements('', '', '', $sort, $order);
+        $abonnements = PrivateController::getAbonnements('', '', '', '', $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1027,7 +1039,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnements = PrivateController::getAbonnements($date, '', '', $sort, $order);
+        $abonnements = PrivateController::getAbonnements($date, '', '', '', $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1045,7 +1057,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnements = PrivateController::getAbonnements('', $nom_actif, '', $sort, $order);
+        $abonnements = PrivateController::getAbonnements('', $nom_actif, '', '', $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1063,7 +1075,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnements = PrivateController::getAbonnements('', '', $actif, $sort, $order);
+        $abonnements = PrivateController::getAbonnements('', '', $actif, '', $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1082,7 +1094,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnements = PrivateController::getAbonnements($date, $nom_actif, '', $sort, $order);
+        $abonnements = PrivateController::getAbonnements($date, $nom_actif, '', '', $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1101,7 +1113,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnements = PrivateController::getAbonnements($date, '', $actif, $sort, $order);
+        $abonnements = PrivateController::getAbonnements($date, '', $actif, '', $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1120,7 +1132,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnements = PrivateController::getAbonnements('', $nom_actif, $actif, $sort, $order);
+        $abonnements = PrivateController::getAbonnements('', $nom_actif, $actif, '', $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1140,7 +1152,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnements = PrivateController::getAbonnements($date, $nom_actif, $actif, $sort, $order);
+        $abonnements = PrivateController::getAbonnements($date, $nom_actif, $actif, '', $sort, $order);
 
         return view('private.abonnement', compact('abonnements'));
     }
@@ -1161,7 +1173,8 @@ class PrivateController extends Controller
             'date_transaction' => 'required|date|before:tomorrow',
             'nom_actif' => 'required|string|max:255',
             'montant_transaction' => 'required|numeric|min:0',
-            'abonnement_actif' => 'required'
+            'abonnement_actif' => 'required',
+            'mensuel' => 'required'
         ], [
             'date_transaction.required' => 'La date est obligatoire.',
             'date_transaction.date' => 'La date doit être une date.',
@@ -1189,6 +1202,7 @@ class PrivateController extends Controller
         $abonnement->nom_actif           = ucfirst($request->nom_actif);
         $abonnement->montant_transaction = $request->montant_transaction;
         $abonnement->abonnement_actif    = filter_var($request->abonnement_actif, FILTER_VALIDATE_BOOLEAN);
+        $abonnement->mensuel             = filter_var($request->mensuel, FILTER_VALIDATE_BOOLEAN);
 
         if ($abonnement->save()) {
             return back()->with('success', 'L\'abonnement a bien été ajouté 👍.')->with('message', $message);
@@ -1212,7 +1226,8 @@ class PrivateController extends Controller
             'date_transaction' => 'required|date|before:tomorrow',
             'nom_actif' => 'required|string|max:255',
             'montant_transaction' => 'required|numeric|min:0',
-            'abonnement_actif' => 'required'
+            'abonnement_actif' => 'required',
+            'mensuel' => 'required'
         ], [
             'id.required' => 'L\'id est obligatoire.',
             'id.numeric' => 'L\'id doit être un nombre.',
@@ -1238,6 +1253,7 @@ class PrivateController extends Controller
         $abonnement->nom_actif           = ucfirst($request->nom_actif);
         $abonnement->montant_transaction = $request->montant_transaction;
         $abonnement->abonnement_actif    = filter_var($request->abonnement_actif, FILTER_VALIDATE_BOOLEAN);
+        $abonnement->mensuel             = filter_var($request->mensuel, FILTER_VALIDATE_BOOLEAN);
 
         if ($abonnement->save()) {
             return back()->with('success', 'L\'abonnement a bien été modifié 👍.');
@@ -2588,11 +2604,11 @@ class PrivateController extends Controller
      * Récupère les abonnements
      * @param string $date La date du mois
      * @param string $nom_actif Le nom de l'actif
-     * @param bool $abonnement_actif Si l'abonnement est actif ou non
+     * @param string $abonnement_actif Si l'abonnement est actif ou non
      * @param ?string $sort Le tri
      * @param ?string $order L'ordre
      */
-    public function getAbonnements(string $date, string $nom_actif, string $abonnement_actif, ?string $sort = 'date_transaction', ?string $order = 'desc')
+    public function getAbonnements(string $date, string $nom_actif, string $abonnement_actif, string $mensuel, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $abonnements = Abonnement::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2607,6 +2623,10 @@ class PrivateController extends Controller
 
         if ($abonnement_actif != '') {
             $abonnements = $abonnements->where('abonnement_actif', filter_var($abonnement_actif, FILTER_VALIDATE_BOOLEAN));
+        }
+
+        if ($mensuel != '') {
+            $abonnements = $abonnements->where('mensuel', filter_var($mensuel, FILTER_VALIDATE_BOOLEAN));
         }
 
         return $abonnements;

@@ -44,19 +44,60 @@
             <span class="normalText">Nombre d'abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ $abonnements->where('abonnement_actif', 1)->count() }}</span></span>
         </div>
 
+        <br>
+
         <!-- Montant mensuel des abonnements actifs -->
+        @php
+            $montantMensuelActif = 0;
+            foreach ($abonnements as $abonnement) {
+                if ($abonnement->abonnement_actif) {
+                    $montantMensuelActif += $abonnement->mensuel == 1 ? $abonnement->montant_transaction : $abonnement->montant_transaction / 12;
+                }
+            }
+        @endphp
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements->where('abonnement_actif', 1)->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelActif, 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant mensuel des abonnements inactifs -->
+        @php
+            $montantMensuelInactif = 0;
+            foreach ($abonnements as $abonnement) {
+                if (!$abonnement->abonnement_actif) {
+                    $montantMensuelInactif += $abonnement->mensuel == 1 ? $abonnement->montant_transaction : $abonnement->montant_transaction / 12;
+                }
+            }
+        @endphp
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel des abonnements inactifs : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements->where('abonnement_actif', 0)->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant mensuel des abonnements inactifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelInactif, 2, ',', ' ') }} €</span></span>
         </div>
 
-        <!-- Montant mensuel des abonnements -->
+        <!-- Montant mensuel de tout les abonnements -->
+        @php
+            $montantMensuelTotal = 0;
+            foreach ($abonnements as $abonnement) {
+                $montantMensuelTotal += $abonnement->mensuel == 1 ? $abonnement->montant_transaction : $abonnement->montant_transaction / 12;
+            }
+        @endphp
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel de tout les abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant mensuel de tout les abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelTotal, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <br>
+
+        <!-- Montant annuel des abonnements actifs -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelActif*12, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant annuel des abonnements inactifs -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant mensuel des abonnements inactifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelInactif*12, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant annuel de tout les abonnements -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant mensuel de tout les abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelTotal*12, 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 
@@ -74,6 +115,7 @@
                     <th class="tableCell" title="Trier les abonnements par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date d'abonnement</a></th>
                     <th class="tableCell" title="Trier les abonnements par nom @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de l'abonnement</a></th>
                     <th class="tableCell" title="Trier les abonnements par montant mensuel @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant mensuel</a></th>
+                    <th class="tableCell">Montant annuel</th>
                     <th class="tableCell" title="Trier les abonnements en affichant d'abord les abonnements @if ($order == 'asc') inactif @else actif @endif"><a href="{{ URL::current() . '?sort=abonnement_actif' . '&order=' . $order }}" class="link">Actif</a></th>
                     <th class="tableCell">Actions</th>
                 </tr>
@@ -106,8 +148,17 @@
                             <!-- Nom de l'actif -->
                             <td class="tableCell" title="Afficher l'historique des transaction de {{ $abonnement->nom_actif }}"><a href="{{ route('abonnements_histories.nom_actif', $abonnement->nom_actif) }}" class="link">{{ $abonnement->nom_actif }}</a></td>
 
-                            <!-- Montant investie -->
-                            <td class="tableCell" title="Montant mensuel de l'abonnement">{{ number_format($abonnement->montant_transaction, 2, ',', ' ') }} €</td>
+                            <!-- Montant mensuel de l'abonnement -->
+                            @php
+                                $montantMensuel = $abonnement->mensuel == 1 ? $abonnement->montant_transaction : $abonnement->montant_transaction / 12;
+                            @endphp
+                            <td class="tableCell" title="Montant mensuel de l'abonnement">{{ number_format($montantMensuel, 2, ',', ' ') }} €</td>
+
+                            <!-- Montant annuel de l'abonnement -->
+                            @php
+                                $montantAnnuel = $abonnement->mensuel == 1 ? $abonnement->montant_transaction * 12 : $abonnement->montant_transaction;
+                            @endphp
+                            <td class="tableCell" title="Montant annuel de l'abonnement">{{ number_format($montantAnnuel, 2, ',', ' ') }} €</td>
 
                             <!-- Abonnement actif -->
                             @if (str_contains(strtolower(URL::current()), 'abonnement_actif'))
@@ -191,7 +242,7 @@
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
                                 <!-- Modifier -->
-                                <button onclick="editAbonnement('{{ strftime('%Y-%m-%d', strtotime($abonnement->date_transaction)) }}', '{{ str_replace('\'', '\\\'', $abonnement->nom_actif) }}', '{{ $abonnement->montant_transaction }}', '{{ $abonnement->abonnement_actif }}', '{{ $abonnement->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
+                                <button onclick="editAbonnement('{{ strftime('%Y-%m-%d', strtotime($abonnement->date_transaction)) }}', '{{ str_replace('\'', '\\\'', $abonnement->nom_actif) }}', '{{ $abonnement->montant_transaction }}', '{{ $abonnement->abonnement_actif }}', '{{ $abonnement->mensuel }}','{{ $abonnement->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                     </svg>
@@ -224,6 +275,12 @@
                         <input type="radio" id="abonnement_inactif" name="abonnement_actif" value="0" class="mr-1">
                         <label for="abonnement_inactif">Inactif</label>
                     </div>
+                    <div class="w-[65%] min-[350px]:w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                        <input type="radio" id="mensuel" name="mensuel" value="1" checked class="mr-1">
+                        <label for="mensuel" class="mr-2">Mensuel</label>
+                        <input type="radio" id="annuel" name="mensuel" value="0" class="mr-1">
+                        <label for="annuel">Annuel</label>
+                    </div>
                 </div>
                 <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
@@ -241,7 +298,7 @@
 <script>
     oldId = 0;
     /* Fonction pour modifier un abonnement */
-    function editAbonnement(date, nom_actif, montant, actif, id) {
+    function editAbonnement(date, nom_actif, montant, actif, mensuel, id) {
         /* Affichage du formulaire */
         hidden = document.getElementById('form').classList.contains('hidden');
         if (hidden || oldId == id) {
@@ -259,6 +316,11 @@
             document.getElementById('abonnement_inactif').checked = true;
         } else {
             document.getElementById('abonnement_actif').checked = true;
+        }
+        if (mensuel == 0) {
+            document.getElementById('annuel').checked = true;
+        } else {
+            document.getElementById('mensuel').checked = true;
         }
 
         if (document.getElementById('id') != null) {
