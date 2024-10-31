@@ -33,14 +33,36 @@
     <!-- Information générale -->
     <div class="colCenterContainer">
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
-        <!-- Nombre de depenses reçus -->
+        <!-- Nombre de depenses -->
         <div class="rowCenterContainer">
             <span class="normalText">Nombre de dépences effectué : <span class="normalTextBleuLogo font-bold">{{ $depenses->count() }}</span></span>
         </div>
 
-        <!-- Montant total des depenses reçus -->
+        <!-- Montant total des depenses -->
         <div class="rowCenterContainer">
             <span class="normalText">Montant total des dépences : <span class="normalTextBleuLogo font-bold">{{ number_format($depenses->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant total des depenses du mois -->
+        @php $montantDepenseMois = 0; @endphp
+        @foreach ($depenses as $depense)
+            @if (date("m", strtotime($depense->date_transaction)) == date("m", strtotime(date('Y-m-d'))))
+                @php $montantDepenseMois += $depense->montant_transaction; @endphp
+            @endif
+        @endforeach
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant total des dépences du mois : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseMois, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant total des depenses du jour -->
+        @php $montantDepenseJour = 0; @endphp
+        @foreach ($depenses as $depense)
+            @if (date("j", strtotime($depense->date_transaction)) == date("j", strtotime(date('Y-m-j'))))
+                @php $montantDepenseJour += $depense->montant_transaction; @endphp
+            @endif
+        @endforeach
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant total des dépences du jour : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseJour, 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 
