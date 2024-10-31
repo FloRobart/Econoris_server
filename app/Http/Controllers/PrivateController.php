@@ -68,13 +68,13 @@ class PrivateController extends Controller
         $investissements = PrivateController::getInvestissements('', '', '', $sort);
 
         /* Récupération de l'historique des abonnements */
-        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
+        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', $sort);
 
         /* Récupération de l'historique des emprunts */
         $empruntsHistories = PrivateController::getEmpruntsHistories('', '', '', $sort);
 
         /* Récupération du montant total emprunté */
-        $totalEmprunte = PrivateController::getEmprunts('', '', $sort)->sum('montant_transaction');
+        $totalEmprunte = PrivateController::getEmprunts('', '')->sum('montant_transaction');
 
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses('', '', $sort);
@@ -105,13 +105,13 @@ class PrivateController extends Controller
         $investissements = PrivateController::getInvestissements($date, '', '', $sort);
 
         /* Récupération de l'historique des abonnements */
-        $abonnementsHistories = PrivateController::getAbonnementsHistories($date, '', '', $sort);
+        $abonnementsHistories = PrivateController::getAbonnementsHistories($date, '', $sort);
 
         /* Récupération de l'historique des emprunts */
         $empruntsHistories = PrivateController::getEmpruntsHistories($date, '', '', $sort);
 
         /* Récupération du montant total emprunté */
-        $totalEmprunte = PrivateController::getEmprunts($date, '', $sort)->sum('montant_transaction');
+        $totalEmprunte = PrivateController::getEmprunts($date, '')->sum('montant_transaction');
 
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses($date, '', $sort);
@@ -142,13 +142,13 @@ class PrivateController extends Controller
         $investissements = PrivateController::getInvestissements('', '', '', $sort);
 
         /* Récupération de l'historique des abonnements */
-        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', '', $sort);
+        $abonnementsHistories = PrivateController::getAbonnementsHistories('', '', $sort);
 
         /* Récupération de l'historique des emprunts */
         $empruntsHistories = PrivateController::getEmpruntsHistories('', '', '', $sort);
 
         /* Récupération du montant total emprunté */
-        $totalEmprunte = PrivateController::getEmprunts('', '', $sort)->sum('montant_transaction');
+        $totalEmprunte = PrivateController::getEmprunts('', '')->sum('montant_transaction');
 
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses('', '', $sort);
@@ -179,13 +179,13 @@ class PrivateController extends Controller
         $investissements = PrivateController::getInvestissements($date, '', '', $sort);
 
         /* Récupération de l'historique des abonnements */
-        $abonnementsHistories = PrivateController::getAbonnementsHistories($date, '', '', $sort);
+        $abonnementsHistories = PrivateController::getAbonnementsHistories($date, '', $sort);
 
         /* Récupération de l'historique des emprunts */
         $empruntsHistories = PrivateController::getEmpruntsHistories($date, '', '', $sort);
 
         /* Récupération du montant total emprunté */
-        $totalEmprunte = PrivateController::getEmprunts($date, '', $sort)->sum('montant_transaction');
+        $totalEmprunte = PrivateController::getEmprunts($date, '')->sum('montant_transaction');
 
         /* Récupération des dépenses */
         $depenses = PrivateController::getDepenses($date, '', $sort);
@@ -2404,7 +2404,7 @@ class PrivateController extends Controller
      * @param string $sort
      * @param string $order
      */
-    public function getAbonnementsHistories(string $date, string $nom_actif, string $sort = 'date_transaction', $order = 'desc')
+    public function getAbonnementsHistories(string $date, string $nom_actif, ?string $sort = 'date_transaction', ?string $order = 'desc')
     {
         $abonnements = Abonnement_history::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2429,10 +2429,10 @@ class PrivateController extends Controller
      * Récupère les emprunts
      * @param string $date
      * @param string $banque
-     * @param string $sort
-     * @param string $order
+     * @param ?string $sort
+     * @param ?string $order
      */
-    public function getEmprunts(string $date, string $banque, string $sort = 'date_debut', $order = 'desc')
+    public function getEmprunts(string $date, string $banque, ?string $sort = 'date_debut', ?string $order = 'desc')
     {
         $emprunts = Emprunt::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
@@ -2461,7 +2461,7 @@ class PrivateController extends Controller
      * @param string $sort
      * @param string $order
      */
-    public function getEmpruntsHistories(string $date, string $nom_actif, string $banque, string $sort = 'date_debut', $order = 'desc')
+    public function getEmpruntsHistories(string $date, string $nom_actif, string $banque, string $sort = 'date_transaction', $order = 'desc')
     {
         $emprunts = Emprunt_history::where('user_id', Auth::user()->id)->orderBy($sort, $order)->get();
 
