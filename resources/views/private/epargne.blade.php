@@ -43,6 +43,28 @@
         <div class="rowCenterContainer">
             <span class="normalText">Montant total épargné : <span class="normalTextBleuLogo font-bold">{{ number_format($epargnes->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
+
+        <!-- Montant total épargné -->
+        @php $montantEpargneMois = 0; @endphp
+        @foreach ($epargnes as $epargne)
+            @if (date("m", strtotime($epargne->date_transaction)) == date("m"))
+                @php $montantEpargneMois += $epargne->montant_transaction; @endphp
+            @endif
+        @endforeach
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant épargné au mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($montantEpargneMois, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <!-- Montant total épargné -->
+        @php $montantEpargneJour = 0; @endphp
+        @foreach ($epargnes as $epargne)
+            @if (date("j", strtotime($epargne->date_transaction)) == date("j"))
+                @php $montantEpargneJour += $epargne->montant_transaction; @endphp
+            @endif
+        @endforeach
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant épargné aujourd'hui : <span class="normalTextBleuLogo font-bold">{{ number_format($montantEpargneJour, 2, ',', ' ') }} €</span></span>
+        </div>
     </div>
 
     <!-- Barre de séparation -->
