@@ -1165,7 +1165,7 @@ class PrivateController extends Controller
         $order = $request->query('order') ?? 'desc';
 
         /* Récupération d'un abonnement aléatoire */
-        $abonnement = Abonnement::inRandomOrder()->first();
+        $abonnement = Abonnement::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories('', '', $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1181,7 +1181,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnement = Abonnement::inRandomOrder()->first();
+        $abonnement = Abonnement::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories($date, '', $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1197,7 +1197,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnement = Abonnement::inRandomOrder()->where('nom_actif', $nom_actif)->first();
+        $abonnement = Abonnement::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories('', $nom_actif, $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1213,7 +1213,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_transaction';
         $order = $request->query('order') ?? 'desc';
 
-        $abonnement = Abonnement::inRandomOrder()->where('nom_actif', $nom_actif)->first();
+        $abonnement = Abonnement::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $abonnements_histories = PrivateController::getAbonnementsHistories($date, $nom_actif, $sort, $order);
 
         return view('private.abonnement_history', compact('abonnements_histories', 'abonnement'));
@@ -1539,7 +1539,7 @@ class PrivateController extends Controller
         $order = $request->query('order') ?? 'desc';
 
         /* Récupération d'un emprunt aléatoire */
-        $emprunt = Emprunt::inRandomOrder()->first();
+        $emprunt = Emprunt::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $emprunts_histories = PrivateController::getEmpruntsHistories('', '', '', $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
@@ -1555,7 +1555,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_emprunt';
         $order = $request->query('order') ?? 'desc';
 
-        $emprunt = Emprunt::inRandomOrder()->where('nom_actif', $nom_actif)->first();
+        $emprunt = Emprunt::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $emprunts_histories = PrivateController::getEmpruntsHistories('', $nom_actif, '', $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
@@ -1571,7 +1571,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_emprunt';
         $order = $request->query('order') ?? 'desc';
 
-        $emprunt = Emprunt::inRandomOrder()->where('banque', $banque)->first();
+        $emprunt = Emprunt::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $emprunts_histories = PrivateController::getEmpruntsHistories('', '', $banque, $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
@@ -1587,7 +1587,7 @@ class PrivateController extends Controller
         $sort = $request->query('sort') ?? 'date_emprunt';
         $order = $request->query('order') ?? 'desc';
 
-        $emprunt = Emprunt::inRandomOrder()->where('nom_actif', $nom_actif)->where('banque', $banque)->first();
+        $emprunt = Emprunt::where('user_id', auth()->user()->id)->where('nom_actif', $nom_actif)->orderBy('created_at', 'desc')->first();
         $emprunts_histories = PrivateController::getEmpruntsHistories('', $nom_actif, $banque, $sort, $order);
 
         return view('private.emprunt_history', compact('emprunts_histories', 'emprunt'));
