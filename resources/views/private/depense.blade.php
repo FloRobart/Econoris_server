@@ -46,23 +46,23 @@
         <!-- Montant total des depenses du mois -->
         @php $montantDepenseMois = 0; @endphp
         @foreach ($depenses as $depense)
-            @if (date("m", strtotime($depense->date_transaction)) == date("m", strtotime(date('Y-m-d'))))
+            @if (date("m", strtotime($depense->date_transaction)) == date("m"))
                 @php $montantDepenseMois += $depense->montant_transaction; @endphp
             @endif
         @endforeach
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des dépences du mois : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseMois, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant des dépences du mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseMois, 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total des depenses du jour -->
         @php $montantDepenseJour = 0; @endphp
         @foreach ($depenses as $depense)
-            @if (date("j", strtotime($depense->date_transaction)) == date("j", strtotime(date('Y-m-j'))))
+            @if (date("j", strtotime($depense->date_transaction)) == date("j"))
                 @php $montantDepenseJour += $depense->montant_transaction; @endphp
             @endif
         @endforeach
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des dépences du jour : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseJour, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant des dépences du jour : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseJour, 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 
