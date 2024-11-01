@@ -64,6 +64,11 @@
         <div class="rowCenterContainer">
             <span class="normalText">Montant total des dépences : <span class="normalTextBleuLogo font-bold">{{ number_format($depenses->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
+
+        <!-- Ratio argent gagné / argent dépensé -->
+        <div class="rowCenterContainer">
+            <span class="normalText">Ratio argent gagné / argent dépensé : <span class="normalTextBleuLogo font-bold">{{ number_format($salaires->sum('montant_transaction') / $depenses->sum('montant_transaction'), 2, ',', ' ') }}</span></span>
+        </div>
     </div>
 
     <!-- Barre de séparation -->
