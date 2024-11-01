@@ -62,32 +62,6 @@
             </div>
         </div>
     </div>
-</div>
-
-<style>
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
-
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 200px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-
-  /* Position the tooltip */
-  position: absolute;
-  z-index: 1;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-}
-</style>
 
     <!-- Barre de séparation -->
     <livewire:horizontal-separation />
@@ -284,6 +258,33 @@
         <button onclick="showForm('Ajouter un revenu', 'Ajouter', '{{ route('salaire.add') }}')" id="button" class="buttonForm mt-8">Ajouter un salaire</a>
     </div>
 </section>
+@endsection
+
+@section('styles')
+<style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+</style>
 @endsection
 
 @section('scripts')
