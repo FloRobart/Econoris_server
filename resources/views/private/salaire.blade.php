@@ -119,11 +119,28 @@
 
                             <!-- Montant des abonnements -->
                             @php $montantAbonnements = 0; @endphp
-                            @foreach ($abonnementsHistories as $abonnement)
-                                @if (date("m",strtotime($abonnement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                    @php $montantAbonnements += $abonnement->montant_transaction; @endphp
-                                @endif
-                            @endforeach
+                            @if (date("m", strtotime($salaire->date_transaction)) == date("m"))
+                                @php $montantAbonnementMensuel = 0; $montantAbonnementAnnuel = 0; @endphp
+                                @foreach ($abonnements as $abo)
+                                    @if ($abo->abonnement_actif == 1)
+                                        @if ($abo->mensuel == 1)
+                                            @php $montantAbonnementMensuel += $abo->montant_transaction; @endphp
+                                        @else
+                                            @if (date("m", strtotime($abo->date_transaction)) == date("m"))
+                                                @php $montantAbonnementAnnuel += $abo->montant_transaction; @endphp
+                                            @endif
+                                        @endif
+                                    @endif
+                                @endforeach
+
+                                @php $montantAbonnements = $montantAbonnementMensuel + $montantAbonnementAnnuel; @endphp
+                            @else
+                                @foreach ($abonnementsHistories as $abonnement)
+                                    @if (date("m",strtotime($abonnement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @php $montantAbonnements += $abonnement->montant_transaction; @endphp
+                                    @endif
+                                @endforeach
+                            @endif
                             <td class="tableCell max-[850px]:hidden" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences -->
@@ -137,24 +154,29 @@
 
                             <!-- Montant des dépences possible -->
                             @php $montantEmprunt = 0; $totalSalairesMentuel = 0; $montantPret = 0; @endphp
+
+                            {{-- Calcul du montant des emprunts --}}
                             @foreach ($empruntsHistories as $emprunt)
                                 @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
                                     @php $montantEmprunt += $emprunt->montant_transaction; @endphp
                                 @endif
                             @endforeach
+
+                            {{-- Calcul du montant des salaires du mois --}}
                             @foreach ($salaires as $salaireMensuel)
                                 @if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
                                     @php $totalSalairesMentuel += $salaireMensuel->montant_transaction; @endphp
                                 @endif
                             @endforeach
+
+                            {{-- Calcul du montant des prêts --}}
                             @foreach ($prets as $pret)
                                 @if (date("m",strtotime($pret->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
                                     @php $montantPret += $pret->montant_pret - $pret->montant_rembourse; @endphp
                                 @endif
                             @endforeach
-                            @php
-                                $montantDepensesPossible = $totalSalairesMentuel - $montantEpargne - $montantInvestissement - $montantAbonnements - $montantEmprunt - $montantDepenses - $montantPret;
-                            @endphp
+
+                            @php $montantDepensesPossible = $totalSalairesMentuel - $montantEpargne - $montantInvestissement - $montantEmprunt - $montantDepenses - $montantPret - $montantAbonnements; @endphp
                             <td class="tableCell @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($montantDepensesPossible, 2, ',', ' ') }} €</td>
 
                             <!-- Actions -->
