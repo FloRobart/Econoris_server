@@ -1430,7 +1430,7 @@ class PrivateController extends Controller
 
         /* Validation des données */
         $request->validate([
-            'id' => 'required|numeric|min:1|exists:finance_dashboard.abonnements_histories,id',
+            'id' => 'required|numeric|min:1|exists:finance_dashboard.abonnement_histories,id',
             'date_transaction' => 'required|date|before:tomorrow',
             'nom_actif' => 'required|string|max:255',
             'montant_transaction' => 'required|numeric|min:0'
