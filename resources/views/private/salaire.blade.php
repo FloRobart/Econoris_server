@@ -186,7 +186,7 @@
 
                             <!-- Ration argent gagné / argent dépensé -->
                             @php
-                                $ratio = (($totalSalairesMensuel - $montantDepensesPossible - $montantEpargne - $montantInvestissement ) / $totalSalairesMensuel) * 100;
+                                $ratio = (($totalSalairesMensuel - $montantDepensesPossible - $montantEpargne - $montantInvestissement ) / ($totalSalairesMensuel == 0 ? 1 : $totalSalairesMensuel )) * 100;
                                 $totalRatio += $ratio;
                             @endphp
                             <td class="tableCell" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
@@ -235,7 +235,8 @@
                     <td class="tableCell pt-16 @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($totalDepensePossible, 2, ',', ' ') }} €</td>
 
                     <!-- Ration argent gagné / argent dépensé -->
-                    <td class="tableCell pt-16" title="Vous avez dépensé {{ number_format($totalRatio / $salaires->count(), 0, ',', ' ') }} % de tous vos salaires">{{ number_format($totalRatio / $salaires->count(), 0, ',', ' ') }} %</td>
+                    @php $ration = $totalRatio / ($salaires->count() == 0 ? 1 : $salaires->count()); @endphp
+                    <td class="tableCell pt-16" title="Vous avez dépensé {{ number_format($ration, 0, ',', ' ') }} % de tous vos salaires">{{ number_format($ration, 0, ',', ' ') }} %</td>
                 </tr>
             </tbody>
         </table>
