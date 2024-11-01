@@ -37,39 +37,57 @@
         <div class="rowCenterContainer">
             <span class="normalText">Nombre de revenus reçus : <span class="normalTextBleuLogo font-bold">{{ $salaires->count() }}</span></span>
         </div>
-        <!-- Montant total des salaires reçus -->
-        <div class="rowCenterContainer">
-            <span class="normalText">Montant total des revenus reçus : <span class="normalTextBleuLogo font-bold">{{ number_format($salaires->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
-        </div>
-        <!-- Montant total épargné -->
-        <div class="rowCenterContainer">
-            <span class="normalText">Montant total épargné : <span class="normalTextBleuLogo font-bold">{{ number_format($epargnes->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
-        </div>
-        <!-- Montant total investie -->
-        <div class="rowCenterContainer">
-            <span class="normalText">Montant total investie : <span class="normalTextBleuLogo font-bold">{{ number_format($investissements->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
-        </div>
 
         <!-- Montant total emprunté -->
         <div class="rowCenterContainer">
             <span class="normalText">Montant total des emprunts : <span class="normalTextBleuLogo font-bold">{{ number_format($totalEmprunte, 2, ',', ' ') }} €</span></span>
         </div>
 
-        <!-- Montant total des abonnements -->
+        <!-- Montant total emprunté -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des transactions lié aux abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnementsHistories->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total des prêts : <span class="normalTextBleuLogo font-bold">{{ number_format($totalEmprunte, 2, ',', ' ') }} €</span></span>
         </div>
 
-        <!-- Montant total des dépences -->
-        <div class="rowCenterContainer">
-            <span class="normalText">Montant total des dépences : <span class="normalTextBleuLogo font-bold">{{ number_format($depenses->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
-        </div>
+        <br>
 
-        <!-- Ratio argent gagné / argent dépensé -->
+        <!-- Indice de gestion d'argent -->
         <div class="rowCenterContainer">
-            <span class="normalText">Ratio argent gagné / argent dépensé : <span class="normalTextBleuLogo font-bold">{{ number_format($salaires->sum('montant_transaction') / $depenses->sum('montant_transaction'), 2, ',', ' ') }}</span></span>
+            <span class="normalText">Indice de gestion d'argent : <span class="normalTextBleuLogo font-bold">{{ number_format($salaires->sum('montant_transaction') / ($depenses->sum('montant_transaction') + $abonnementsHistories->sum('montant_transaction')), 2, ',', ' ') }}</span></span>
+            <div class="ml-3 tooltip">
+                <svg class="tinySizeIcons" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                </svg>
+
+                <span class="tooltiptext">L'indice de gestion d'argent vous indique si vous géré correctement votre argent. Plus l'indice est élevé plus gérer correctement votre argent. Quand l'indice est à 1 ça veux dire que vous dépensé tous se que vous gagné et si l'indice est en dessous de 1 ça veux dire que vous dépensé plus que se que vous gagné.</span>
+            </div>
         </div>
     </div>
+</div>
+
+<style>
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+</style>
 
     <!-- Barre de séparation -->
     <livewire:horizontal-separation />
@@ -89,12 +107,14 @@
                     <th class="tableCell max-[850px]:hidden" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Montant des abonnements</a></th>
                     <th class="tableCell" title="Afficher toutes les dépences"><a href="{{ route('depenses') }}" class="link">Montant des dépences</a></th>
                     <th class="tableCell">Dépences possibles</th>
+                    <th class="tableCell">Ration</th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
 
             <!-- Contenue du tableau -->
             <tbody class="w-full normalText">
+                @php $totalSalaire = 0; $totalEpargne = 0; $totalInvestissement = 0; $totalAbonnement = 0; $totalDepense = 0; $totalDepensePossible = 0; $totalRatio = 0; @endphp
                 @if (isset($salaires))
                     @foreach ($salaires as $salaire)
                         <tr class="tableRow smallText text-center">
@@ -102,6 +122,7 @@
                             <td class="tableCell" title="Afficher les salaires du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
                             
                             <!-- Montant du salaire -->
+                            @php $totalSalaire += $salaire->montant_transaction; @endphp
                             <td class="tableCell" title="Afficher les salaires versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($salaire->montant_transaction, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant épargné -->
@@ -111,6 +132,7 @@
                                     @php $montantEpargne += $epargne->montant_transaction; @endphp
                                 @endif
                             @endforeach
+                            @php $totalEpargne += $montantEpargne; @endphp
                             <td class="tableCell max-[850px]:hidden" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant investie -->
@@ -120,6 +142,7 @@
                                     @php $montantInvestissement += $investissement->montant_transaction; @endphp
                                 @endif
                             @endforeach
+                            @php $totalInvestissement += $montantInvestissement; @endphp
                             <td class="tableCell max-[850px]:hidden" title="Afficher les investissements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des abonnements -->
@@ -146,6 +169,7 @@
                                     @endif
                                 @endforeach
                             @endif
+                            @php $totalAbonnement += $montantAbonnements; @endphp
                             <td class="tableCell max-[850px]:hidden" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences -->
@@ -155,10 +179,11 @@
                                     @php $montantDepenses += $depense->montant_transaction; @endphp
                                 @endif
                             @endforeach
+                            @php $totalDepense += $montantDepenses; @endphp
                             <td class="tableCell" title="Afficher les dépences du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
 
                             <!-- Montant des dépences possible -->
-                            @php $montantEmprunt = 0; $totalSalairesMentuel = 0; $montantPret = 0; @endphp
+                            @php $montantEmprunt = 0; $totalSalairesMensuel = 0; $montantPret = 0; @endphp
 
                             {{-- Calcul du montant des emprunts --}}
                             @foreach ($empruntsHistories as $emprunt)
@@ -170,7 +195,7 @@
                             {{-- Calcul du montant des salaires du mois --}}
                             @foreach ($salaires as $salaireMensuel)
                                 @if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                    @php $totalSalairesMentuel += $salaireMensuel->montant_transaction; @endphp
+                                    @php $totalSalairesMensuel += $salaireMensuel->montant_transaction; @endphp
                                 @endif
                             @endforeach
 
@@ -181,8 +206,16 @@
                                 @endif
                             @endforeach
 
-                            @php $montantDepensesPossible = $totalSalairesMentuel - $montantEpargne - $montantInvestissement - $montantEmprunt - $montantDepenses - $montantPret - $montantAbonnements; @endphp
+                            @php $montantDepensesPossible = $totalSalairesMensuel - $montantEpargne - $montantInvestissement - $montantEmprunt - $montantDepenses - $montantPret - $montantAbonnements; @endphp
+                            @php $totalDepensePossible += $montantDepensesPossible; @endphp
                             <td class="tableCell @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($montantDepensesPossible, 2, ',', ' ') }} €</td>
+
+                            <!-- Ration argent gagné / argent dépensé -->
+                            @php
+                                $ratio = (($totalSalairesMensuel - $montantDepensesPossible - $montantEpargne - $montantInvestissement ) / $totalSalairesMensuel) * 100;
+                                $totalRatio += $ratio;
+                            @endphp
+                            <td class="tableCell" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
 
                             <!-- Actions -->
                             <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
@@ -203,6 +236,33 @@
                         </tr>
                     @endforeach
                 @endif
+
+                <!-- Total des colonnes -->
+                <tr class="tableRow smallText text-center">
+                    <!-- Total -->
+                    <td class="tableCell pt-16">Total</td>
+                    
+                    <!-- Montant des salaire -->
+                    <td class="tableCell pt-16" title="Montant total des salaires">{{ number_format($totalSalaire, 2, ',', ' ') }} €</td>
+
+                    <!-- Montant total épargné -->
+                    <td class="tableCell pt-16 max-[850px]:hidden" title="Montant total épargnés">{{ number_format($totalEpargne, 2, ',', ' ') }} €</td>
+
+                    <!-- Montant total investie -->
+                    <td class="tableCell pt-16 max-[850px]:hidden" title="Montant total investies">{{ number_format($totalInvestissement, 2, ',', ' ') }} €</td>
+
+                    <!-- Montant total des abonnements -->
+                    <td class="tableCell pt-16 max-[850px]:hidden" title="Montant total des abonnements">{{ number_format($totalAbonnement, 2, ',', ' ') }} €</td>
+
+                    <!-- Montant total des dépences -->
+                    <td class="tableCell pt-16" title="Total argent dépensé, épargné ou investie">{{ number_format($totalDepense, 2, ',', ' ') }} €</td>
+
+                    <!-- Montant total des dépences possible -->
+                    <td class="tableCell pt-16 @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($totalDepensePossible, 2, ',', ' ') }} €</td>
+
+                    <!-- Ration argent gagné / argent dépensé -->
+                    <td class="tableCell pt-16" title="Vous avez dépensé {{ number_format($totalRatio / $salaires->count(), 0, ',', ' ') }} % de tous vos salaires">{{ number_format($totalRatio / $salaires->count(), 0, ',', ' ') }} %</td>
+                </tr>
             </tbody>
         </table>
 
