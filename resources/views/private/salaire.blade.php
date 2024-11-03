@@ -50,6 +50,21 @@
 
         <br>
 
+        <!-- Montant total des salaires du mois -->
+        @php
+            $totalSalairesMensuel = 0;
+            foreach ($salaires as $salaireMensuel) {
+                if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m")) {
+                    $totalSalairesMensuel += $salaireMensuel->montant_transaction;
+                }
+            }
+        @endphp
+        <div class="rowCenterContainer">
+            <span class="normalText">Montant total des salaires du mois : <span class="normalTextBleuLogo font-bold">{{ number_format($totalSalairesMensuel, 2, ',', ' ') }} €</span></span>
+        </div>
+
+        <br>
+
         <!-- Indice de gestion d'argent -->
         <div class="rowCenterContainer">
             <span class="normalText">Indice de gestion d'argent : <span class="normalTextBleuLogo font-bold">{{ number_format($salaires->sum('montant_transaction') / ($depenses->sum('montant_transaction') + $abonnementsHistories->sum('montant_transaction')), 2, ',', ' ') }}</span></span>
