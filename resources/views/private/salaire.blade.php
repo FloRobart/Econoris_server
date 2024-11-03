@@ -94,8 +94,8 @@
                     <th class="tableCell max-[850px]:hidden" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
                     <th class="tableCell max-[850px]:hidden" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
                     <th class="tableCell max-[850px]:hidden" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Montant des abonnements</a></th>
-                    <th class="tableCell" title="Afficher toutes les dépences"><a href="{{ route('depenses') }}" class="link">Montant des dépences</a></th>
-                    <th class="tableCell">Dépences possibles</th>
+                    <th class="tableCell" title="Afficher toutes les dépenses"><a href="{{ route('depenses') }}" class="link">Montant des dépenses</a></th>
+                    <th class="tableCell">Dépenses possibles</th>
                     <th class="tableCell">Ration</th>
                     <th class="tableCell">Actions</th>
                 </tr>
@@ -161,7 +161,7 @@
                             @php $totalAbonnement += $montantAbonnements; @endphp
                             <td class="tableCell max-[850px]:hidden" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
 
-                            <!-- Montant des dépences -->
+                            <!-- Montant des dépenses -->
                             @php $montantDepenses = 0; @endphp
                             @foreach ($depenses as $depense)
                                 @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
@@ -169,9 +169,9 @@
                                 @endif
                             @endforeach
                             @php $totalDepense += $montantDepenses; @endphp
-                            <td class="tableCell" title="Afficher les dépences du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
+                            <td class="tableCell" title="Afficher les dépenses du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
 
-                            <!-- Montant des dépences possible -->
+                            <!-- Montant des dépenses possible -->
                             @php $montantEmprunt = 0; $totalSalairesMensuel = 0; $montantPret = 0; @endphp
 
                             {{-- Calcul du montant des emprunts --}}
@@ -243,10 +243,10 @@
                     <!-- Montant total des abonnements -->
                     <td class="tableCell pt-16 max-[850px]:hidden" title="Montant total des abonnements">{{ number_format($totalAbonnement, 2, ',', ' ') }} €</td>
 
-                    <!-- Montant total des dépences -->
+                    <!-- Montant total des dépenses -->
                     <td class="tableCell pt-16" title="Total argent dépensé, épargné ou investie">{{ number_format($totalDepense, 2, ',', ' ') }} €</td>
 
-                    <!-- Montant total des dépences possible -->
+                    <!-- Montant total des dépenses possible -->
                     <td class="tableCell pt-16 @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($totalDepensePossible, 2, ',', ' ') }} €</td>
 
                     <!-- Ration argent gagné / argent dépensé -->

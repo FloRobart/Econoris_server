@@ -6,12 +6,12 @@
 <!-- Page d'accueil -->
 @extends('layouts.page_template')
 @section('title')
-    Dépences
+    Dépenses
 @endsection
 
 @section('content')
 <!-- Titre de la page -->
-<livewire:page-title :title="'Dépences'" />
+<livewire:page-title :title="'Dépenses'" />
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">
@@ -35,12 +35,12 @@
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
         <!-- Nombre de depenses -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de dépences effectué : <span class="normalTextBleuLogo font-bold">{{ $depenses->count() }}</span></span>
+            <span class="normalText">Nombre de dépenses effectué : <span class="normalTextBleuLogo font-bold">{{ $depenses->count() }}</span></span>
         </div>
 
         <!-- Montant total des depenses -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des dépences : <span class="normalTextBleuLogo font-bold">{{ number_format($depenses->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total des dépenses : <span class="normalTextBleuLogo font-bold">{{ number_format($depenses->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total des depenses du mois -->
@@ -51,7 +51,7 @@
             @endif
         @endforeach
         <div class="rowCenterContainer">
-            <span class="normalText">Montant des dépences du mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseMois, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant des dépenses du mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseMois, 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total des depenses du jour -->
@@ -62,7 +62,7 @@
             @endif
         @endforeach
         <div class="rowCenterContainer">
-            <span class="normalText">Montant des dépences du jour : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseJour, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant des dépenses du jour : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseJour, 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 
@@ -77,9 +77,9 @@
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell" title="Trier les dépences par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date d'achat</a></th>
-                    <th class="tableCell" title="Trier les dépences par nom"><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de la dépence</a></th>
-                    <th class="tableCell" title="Trier les dépences par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant dépencé</a></th>
+                    <th class="tableCell" title="Trier les dépenses par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date d'achat</a></th>
+                    <th class="tableCell" title="Trier les dépenses par nom"><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de la dépense</a></th>
+                    <th class="tableCell" title="Trier les dépenses par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant dépencé</a></th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
@@ -90,10 +90,10 @@
                     @foreach ($depenses as $depense)
                         <tr class="tableRow smallText text-center">
                             <!-- Date du virement -->
-                            <td class="tableCell" title="Afficher les dépences du mois de {{ strftime('%B %Y', strtotime($depense->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'nom_actif')) {{ route('depenses.date.nom_actif', [$depense->date_transaction, $depense->nom_actif]) }}  @else {{ route('depenses.date', [$depense->date_transaction]) }}  @endif" class="link">{{ strftime('%d %B %Y',strtotime($depense->date_transaction)); }}</a></td>
+                            <td class="tableCell" title="Afficher les dépenses du mois de {{ strftime('%B %Y', strtotime($depense->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'nom_actif')) {{ route('depenses.date.nom_actif', [$depense->date_transaction, $depense->nom_actif]) }}  @else {{ route('depenses.date', [$depense->date_transaction]) }}  @endif" class="link">{{ strftime('%d %B %Y',strtotime($depense->date_transaction)); }}</a></td>
                             
-                            <!-- Nom de la dépence -->
-                            <td class="tableCell" title="Afficher les dépences à {{ $depense->nom_actif }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('depenses.date.nom_actif', [$depense->date_transaction, $depense->nom_actif]) }}  @else {{ route('depenses.nom_actif', [$depense->nom_actif]) }}  @endif" class="link">{{ $depense->nom_actif }}</a></td>
+                            <!-- Nom de la dépense -->
+                            <td class="tableCell" title="Afficher les dépenses à {{ $depense->nom_actif }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('depenses.date.nom_actif', [$depense->date_transaction, $depense->nom_actif]) }}  @else {{ route('depenses.nom_actif', [$depense->nom_actif]) }}  @endif" class="link">{{ $depense->nom_actif }}</a></td>
 
                             <!-- Montant dépencé -->
                             <td class="tableCell">{{ number_format($depense->montant_transaction, 2, ',', ' ') }} €</td>
