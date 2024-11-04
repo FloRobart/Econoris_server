@@ -60,7 +60,7 @@
             }
         @endphp
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des salaires du mois : <span class="normalTextBleuLogo font-bold">{{ number_format($totalSalairesMensuel, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total des salaires du mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($totalSalairesMensuel, 2, ',', ' ') }} €</span></span>
         </div>
 
         <br>
@@ -90,139 +90,261 @@
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
                     <th class="tableCell" title="Trier les salaires par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date du virement</a></th>
-                    <th class="tableCell" title="Trier les salaires par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant du salaire</a></th>
-                    <th class="tableCell max-[850px]:hidden" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Montant épargné</a></th>
-                    <th class="tableCell max-[850px]:hidden" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Montant investie</a></th>
-                    <th class="tableCell max-[850px]:hidden" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Montant des abonnements</a></th>
-                    <th class="tableCell" title="Afficher toutes les dépenses"><a href="{{ route('depenses') }}" class="link">Montant des dépenses</a></th>
-                    <th class="tableCell">Dépenses possibles</th>
-                    <th class="tableCell">Ration</th>
+                    <th class="tableCell" title="Trier les salaires par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Revenue</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Épargné</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Investie</a></th>
+                    <th class="tableCell max-[850px]:hidden" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Abonnements</a></th>
+                    <th class="tableCell" title="Afficher toutes les dépenses"><a href="{{ route('depenses') }}" class="link">Dépenses</a></th>
+                    <th class="tableCell" title="Argent qui peut être dépensé">Dépenses possibles</th>
+                    <th class="tableCell" title="Pourcentage d'argent dépensé par rapport au salaire">%</th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
 
             <!-- Contenue du tableau -->
             <tbody class="w-full normalText">
-                @php $totalSalaire = 0; $totalEpargne = 0; $totalInvestissement = 0; $totalAbonnement = 0; $totalDepense = 0; $totalDepensePossible = 0; $totalRatio = 0; @endphp
+                @php $oldSalaire = null; $totalSalaire = 0; $totalEpargne = 0; $totalInvestissement = 0; $totalAbonnement = 0; $totalDepense = 0; $totalDepensePossible = 0; @endphp
                 @if (isset($salaires))
                     @foreach ($salaires as $salaire)
-                        <tr class="tableRow smallText text-center">
-                            <!-- Date du virement -->
-                            <td class="tableCell" title="Afficher les salaires du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
-                            
-                            <!-- Montant du salaire -->
-                            @php $totalSalaire += $salaire->montant_transaction; @endphp
-                            <td class="tableCell" title="Afficher les salaires versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($salaire->montant_transaction, 2, ',', ' ') }} €</a></td>
+                        @if (!str_contains(strtolower(Request::url()), 'date'))
+                            @if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction)))
+                                <tr class="tableRow smallText text-center">
+                                    <!-- Date du virement -->
+                                    <td class="tableCell" title="Afficher les salaires du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
+                                    
+                                    <!-- Montant du salaire -->
+                                    {{-- Calcul du montant des salaires du mois --}}
+                                    @php $totalSalairesMensuel = 0; @endphp
+                                    @foreach ($salaires as $salaireMensuel)
+                                        @if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                            @php $totalSalairesMensuel += $salaireMensuel->montant_transaction; @endphp
+                                        @endif
+                                    @endforeach
+                                    @php $totalSalaire += $totalSalairesMensuel @endphp
+                                    <td class="tableCell" title="Afficher les salaires versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($totalSalairesMensuel, 2, ',', ' ') }} €</a></td>
 
-                            <!-- Montant épargné -->
-                            @php $montantEpargne = 0; @endphp
-                            @foreach ($epargnes as $epargne)
-                                @if (date("m",strtotime($epargne->date_transaction)) == date("m",strtotime($salaire->date_transaction)) && date("Y",strtotime($epargne->date_transaction)) == date("Y",strtotime($salaire->date_transaction)))
-                                    @php $montantEpargne += $epargne->montant_transaction; @endphp
-                                @endif
-                            @endforeach
-                            @php $totalEpargne += $montantEpargne; @endphp
-                            <td class="tableCell max-[850px]:hidden" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
+                                    <!-- Montant épargné -->
+                                    @php $montantEpargne = 0; @endphp
+                                    @foreach ($epargnes as $epargne)
+                                        @if (date("m",strtotime($epargne->date_transaction)) == date("m",strtotime($salaire->date_transaction)) && date("Y",strtotime($epargne->date_transaction)) == date("Y",strtotime($salaire->date_transaction)))
+                                            @php $montantEpargne += $epargne->montant_transaction; @endphp
+                                        @endif
+                                    @endforeach
+                                    @php $totalEpargne += $montantEpargne; @endphp
+                                    <td class="tableCell max-[850px]:hidden" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
 
-                            <!-- Montant investie -->
-                            @php $montantInvestissement = 0; @endphp
-                            @foreach ($investissements as $investissement)
-                                @if (date("m",strtotime($investissement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                    @php $montantInvestissement += $investissement->montant_transaction; @endphp
-                                @endif
-                            @endforeach
-                            @php $totalInvestissement += $montantInvestissement; @endphp
-                            <td class="tableCell max-[850px]:hidden" title="Afficher les investissements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
+                                    <!-- Montant investie -->
+                                    @php $montantInvestissement = 0; @endphp
+                                    @foreach ($investissements as $investissement)
+                                        @if (date("m",strtotime($investissement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                            @php $montantInvestissement += $investissement->montant_transaction; @endphp
+                                        @endif
+                                    @endforeach
+                                    @php $totalInvestissement += $montantInvestissement; @endphp
+                                    <td class="tableCell max-[850px]:hidden" title="Afficher les investissements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
 
-                            <!-- Montant des abonnements -->
-                            @php $montantAbonnements = 0; @endphp
-                            @if (date("m", strtotime($salaire->date_transaction)) == date("m"))
-                                @php $montantAbonnementMensuel = 0; $montantAbonnementAnnuel = 0; @endphp
-                                @foreach ($abonnements as $abo)
-                                    @if ($abo->abonnement_actif == 1)
-                                        @if ($abo->mensuel == 1)
-                                            @php $montantAbonnementMensuel += $abo->montant_transaction; @endphp
-                                        @else
-                                            @if (date("m", strtotime($abo->date_transaction)) == date("m"))
-                                                @php $montantAbonnementAnnuel += $abo->montant_transaction; @endphp
+                                    <!-- Montant des abonnements -->
+                                    @php $montantAbonnements = 0; @endphp
+                                    @if (date("m", strtotime($salaire->date_transaction)) == date("m"))
+                                        @php $montantAbonnementMensuel = 0; $montantAbonnementAnnuel = 0; @endphp
+                                        @foreach ($abonnements as $abo)
+                                            @if ($abo->abonnement_actif == 1)
+                                                @if ($abo->mensuel == 1)
+                                                    @php $montantAbonnementMensuel += $abo->montant_transaction; @endphp
+                                                @else
+                                                    @if (date("m", strtotime($abo->date_transaction)) == date("m"))
+                                                        @php $montantAbonnementAnnuel += $abo->montant_transaction; @endphp
+                                                    @endif
+                                                @endif
+                                            @endif
+                                        @endforeach
+
+                                        @php $montantAbonnements = $montantAbonnementMensuel + $montantAbonnementAnnuel; @endphp
+                                    @else
+                                        @foreach ($abonnementsHistories as $abonnement)
+                                            @if (date("m",strtotime($abonnement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                                @php $montantAbonnements += $abonnement->montant_transaction; @endphp
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                    @php $totalAbonnement += $montantAbonnements; @endphp
+                                    <td class="tableCell max-[850px]:hidden" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
+
+                                    <!-- Montant des dépenses -->
+                                    @php $montantDepenses = 0; @endphp
+                                    @foreach ($depenses as $depense)
+                                        @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                            @php $montantDepenses += $depense->montant_transaction; @endphp
+                                        @endif
+                                    @endforeach
+                                    @php $totalDepense += $montantDepenses; @endphp
+                                    <td class="tableCell" title="Afficher les dépenses du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
+
+                                    <!-- Montant des dépenses possible -->
+                                    @php $montantEmprunt = 0; $montantPret = 0; @endphp
+
+                                    {{-- Calcul du montant des emprunts --}}
+                                    @foreach ($empruntsHistories as $emprunt)
+                                        @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                            @php $montantEmprunt += $emprunt->montant_transaction; @endphp
+                                        @endif
+                                    @endforeach
+
+                                    {{-- Calcul du montant des prêts --}}
+                                    @foreach ($prets as $pret)
+                                        @if (date("m",strtotime($pret->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                            @php $montantPret += $pret->montant_pret - $pret->montant_rembourse; @endphp
+                                        @endif
+                                    @endforeach
+
+                                    @php $montantDepensesPossible = $totalSalairesMensuel - $montantEpargne - $montantInvestissement - $montantEmprunt - $montantDepenses - $montantPret - $montantAbonnements; @endphp
+                                    @php $totalDepensePossible += $montantDepensesPossible; @endphp
+                                    <td class="tableCell @if ($montantDepensesPossible < 0) fontColorError @endif" title="Vous pouvez dépenser {{ number_format($montantDepensesPossible, 2, ',', ' ') }} € au mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}">{{ number_format($montantDepensesPossible, 2, ',', ' ') }} €</td>
+
+                                    <!-- Ratio argent gagné / argent dépensé -->
+                                    @php
+                                        $ratio = (($totalSalairesMensuel - $montantDepensesPossible - $montantEpargne - $montantInvestissement ) / ($totalSalairesMensuel == 0 ? 1 : $totalSalairesMensuel )) * 100;
+                                    @endphp
+                                    <td class="tableCell" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
+
+                                    <!-- Actions -->
+                                    <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
+                                        <!-- Modifier -->
+                                        <button onclick="editSalaire('{{ strftime('%Y-%m-%d', strtotime($salaire->date_transaction)) }}', '{{ $salaire->montant_transaction }}', '{{ str_replace('\'', '\\\'', $salaire->employeur) }}','{{ $salaire->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                            </svg>
+                                        </button>
+
+                                        <!-- Supprimer -->
+                                        <a href="{{ route('salaire.remove', $salaire->id) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le salaire du {{ strftime('%A %d %B %Y',strtotime($salaire->date_transaction)) }} ? Cette action est irréversible.')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgError hover:bgErrorFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2 ml-1 min-[500px]:ml-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                            </svg>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endif
+                        @else
+                            <tr class="tableRow smallText text-center">
+                                <!-- Date du virement -->
+                                <td class="tableCell" title="Afficher les salaires du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
+                                
+                                <!-- Montant du salaire -->
+                                @php $totalSalaire += $salaire->montant_transaction; @endphp
+                                <td class="tableCell" title="Afficher les salaires versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($salaire->montant_transaction, 2, ',', ' ') }} €</a></td>
+
+                                <!-- Montant épargné -->
+                                @php $montantEpargne = 0; @endphp
+                                @foreach ($epargnes as $epargne)
+                                    @if (date("m",strtotime($epargne->date_transaction)) == date("m",strtotime($salaire->date_transaction)) && date("Y",strtotime($epargne->date_transaction)) == date("Y",strtotime($salaire->date_transaction)))
+                                        @php $montantEpargne += $epargne->montant_transaction; @endphp
+                                    @endif
+                                @endforeach
+                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalEpargne += $montantEpargne; } @endphp
+                                <td class="tableCell max-[850px]:hidden" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
+
+                                <!-- Montant investie -->
+                                @php $montantInvestissement = 0; @endphp
+                                @foreach ($investissements as $investissement)
+                                    @if (date("m",strtotime($investissement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @php $montantInvestissement += $investissement->montant_transaction; @endphp
+                                    @endif
+                                @endforeach
+                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalInvestissement += $montantInvestissement; } @endphp
+                                <td class="tableCell max-[850px]:hidden" title="Afficher les investissements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('investissements.date', $salaire->date_transaction  ) }}" class="link">{{ number_format($montantInvestissement, 2, ',', ' ') }} €</a></td>
+
+                                <!-- Montant des abonnements -->
+                                @php $montantAbonnements = 0; @endphp
+                                @if (date("m", strtotime($salaire->date_transaction)) == date("m"))
+                                    @php $montantAbonnementMensuel = 0; $montantAbonnementAnnuel = 0; @endphp
+                                    @foreach ($abonnements as $abo)
+                                        @if ($abo->abonnement_actif == 1)
+                                            @if ($abo->mensuel == 1)
+                                                @php $montantAbonnementMensuel += $abo->montant_transaction; @endphp
+                                            @else
+                                                @if (date("m", strtotime($abo->date_transaction)) == date("m"))
+                                                    @php $montantAbonnementAnnuel += $abo->montant_transaction; @endphp
+                                                @endif
                                             @endif
                                         @endif
+                                    @endforeach
+
+                                    @php $montantAbonnements = $montantAbonnementMensuel + $montantAbonnementAnnuel; @endphp
+                                @else
+                                    @foreach ($abonnementsHistories as $abonnement)
+                                        @if (date("m",strtotime($abonnement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                            @php $montantAbonnements += $abonnement->montant_transaction; @endphp
+                                        @endif
+                                    @endforeach
+                                @endif
+                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalAbonnement += $montantAbonnements; } @endphp
+                                <td class="tableCell max-[850px]:hidden" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
+
+                                <!-- Montant des dépenses -->
+                                @php $montantDepenses = 0; @endphp
+                                @foreach ($depenses as $depense)
+                                    @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @php $montantDepenses += $depense->montant_transaction; @endphp
+                                    @endif
+                                @endforeach
+                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalDepense += $montantDepenses; } @endphp
+                                <td class="tableCell" title="Afficher les dépenses du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
+
+                                <!-- Montant des dépenses possible -->
+                                @php $montantEmprunt = 0; $totalSalairesMensuel = 0; $montantPret = 0; @endphp
+
+                                {{-- Calcul du montant des emprunts --}}
+                                @foreach ($empruntsHistories as $emprunt)
+                                    @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @php $montantEmprunt += $emprunt->montant_transaction; @endphp
                                     @endif
                                 @endforeach
 
-                                @php $montantAbonnements = $montantAbonnementMensuel + $montantAbonnementAnnuel; @endphp
-                            @else
-                                @foreach ($abonnementsHistories as $abonnement)
-                                    @if (date("m",strtotime($abonnement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                        @php $montantAbonnements += $abonnement->montant_transaction; @endphp
+                                {{-- Calcul du montant des salaires du mois --}}
+                                @foreach ($salaires as $salaireMensuel)
+                                    @if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @php $totalSalairesMensuel += $salaireMensuel->montant_transaction; @endphp
                                     @endif
                                 @endforeach
-                            @endif
-                            @php $totalAbonnement += $montantAbonnements; @endphp
-                            <td class="tableCell max-[850px]:hidden" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
 
-                            <!-- Montant des dépenses -->
-                            @php $montantDepenses = 0; @endphp
-                            @foreach ($depenses as $depense)
-                                @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                    @php $montantDepenses += $depense->montant_transaction; @endphp
-                                @endif
-                            @endforeach
-                            @php $totalDepense += $montantDepenses; @endphp
-                            <td class="tableCell" title="Afficher les dépenses du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
+                                {{-- Calcul du montant des prêts --}}
+                                @foreach ($prets as $pret)
+                                    @if (date("m",strtotime($pret->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @php $montantPret += $pret->montant_pret - $pret->montant_rembourse; @endphp
+                                    @endif
+                                @endforeach
 
-                            <!-- Montant des dépenses possible -->
-                            @php $montantEmprunt = 0; $totalSalairesMensuel = 0; $montantPret = 0; @endphp
+                                @php $montantDepensesPossible = $totalSalairesMensuel - $montantEpargne - $montantInvestissement - $montantEmprunt - $montantDepenses - $montantPret - $montantAbonnements; @endphp
+                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalDepensePossible += $montantDepensesPossible; } @endphp
+                                <td class="tableCell @if ($montantDepensesPossible < 0) fontColorError @endif" title="Vous pouvez dépenser {{ number_format($montantDepensesPossible, 2, ',', ' ') }} € au mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}">{{ number_format($montantDepensesPossible, 2, ',', ' ') }} €</td>
 
-                            {{-- Calcul du montant des emprunts --}}
-                            @foreach ($empruntsHistories as $emprunt)
-                                @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                    @php $montantEmprunt += $emprunt->montant_transaction; @endphp
-                                @endif
-                            @endforeach
+                                <!-- Ratio argent gagné / argent dépensé -->
+                                @php
+                                    $ratio = (($totalSalairesMensuel - $montantDepensesPossible - $montantEpargne - $montantInvestissement ) / ($totalSalairesMensuel == 0 ? 1 : $totalSalairesMensuel )) * 100;
+                                @endphp
+                                <td class="tableCell" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
 
-                            {{-- Calcul du montant des salaires du mois --}}
-                            @foreach ($salaires as $salaireMensuel)
-                                @if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                    @php $totalSalairesMensuel += $salaireMensuel->montant_transaction; @endphp
-                                @endif
-                            @endforeach
+                                <!-- Actions -->
+                                <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
+                                    <!-- Modifier -->
+                                    <button onclick="editSalaire('{{ strftime('%Y-%m-%d', strtotime($salaire->date_transaction)) }}', '{{ $salaire->montant_transaction }}', '{{ str_replace('\'', '\\\'', $salaire->employeur) }}','{{ $salaire->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                        </svg>
+                                    </button>
 
-                            {{-- Calcul du montant des prêts --}}
-                            @foreach ($prets as $pret)
-                                @if (date("m",strtotime($pret->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
-                                    @php $montantPret += $pret->montant_pret - $pret->montant_rembourse; @endphp
-                                @endif
-                            @endforeach
+                                    <!-- Supprimer -->
+                                    <a href="{{ route('salaire.remove', $salaire->id) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le salaire du {{ strftime('%A %d %B %Y',strtotime($salaire->date_transaction)) }} ? Cette action est irréversible.')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgError hover:bgErrorFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2 ml-1 min-[500px]:ml-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endif
 
-                            @php $montantDepensesPossible = $totalSalairesMensuel - $montantEpargne - $montantInvestissement - $montantEmprunt - $montantDepenses - $montantPret - $montantAbonnements; @endphp
-                            @php $totalDepensePossible += $montantDepensesPossible; @endphp
-                            <td class="tableCell @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($montantDepensesPossible, 2, ',', ' ') }} €</td>
-
-                            <!-- Ration argent gagné / argent dépensé -->
-                            @php
-                                $ratio = (($totalSalairesMensuel - $montantDepensesPossible - $montantEpargne - $montantInvestissement ) / ($totalSalairesMensuel == 0 ? 1 : $totalSalairesMensuel )) * 100;
-                                $totalRatio += $ratio;
-                            @endphp
-                            <td class="tableCell" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
-
-                            <!-- Actions -->
-                            <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
-                                <!-- Modifier -->
-                                <button onclick="editSalaire('{{ strftime('%Y-%m-%d', strtotime($salaire->date_transaction)) }}', '{{ $salaire->montant_transaction }}', '{{ str_replace('\'', '\\\'', $salaire->employeur) }}','{{ $salaire->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                                    </svg>
-                                </button>
-
-                                <!-- Supprimer -->
-                                <a href="{{ route('salaire.remove', $salaire->id) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer le salaire du {{ strftime('%A %d %B %Y',strtotime($salaire->date_transaction)) }} ? Cette action est irréversible.')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgError hover:bgErrorFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2 ml-1 min-[500px]:ml-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                    </svg>
-                                </a>
-                            </td>
-                        </tr>
+                        @php $oldSalaire = $salaire; @endphp
                     @endforeach
                 @endif
 
@@ -249,9 +371,9 @@
                     <!-- Montant total des dépenses possible -->
                     <td class="tableCell pt-16 @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($totalDepensePossible, 2, ',', ' ') }} €</td>
 
-                    <!-- Ration argent gagné / argent dépensé -->
-                    @php $ration = $totalRatio / ($salaires->count() == 0 ? 1 : $salaires->count()); @endphp
-                    <td class="tableCell pt-16" title="Vous avez dépensé {{ number_format($ration, 0, ',', ' ') }} % de tous vos salaires">{{ number_format($ration, 0, ',', ' ') }} %</td>
+                    <!-- Ratio argent gagné / argent dépensé -->
+                    @php $ratio = (($totalAbonnement + $totalDepense) / ($totalSalaire == 0 ? 1 : $totalSalaire)) * 100; @endphp
+                    <td class="tableCell pt-16" title="Vous avez dépensé {{ number_format($ratio, 0, ',', ' ') }} % de tous vos salaires">{{ number_format($ratio, 0, ',', ' ') }} %</td>
                 </tr>
             </tbody>
         </table>
