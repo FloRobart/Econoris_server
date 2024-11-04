@@ -369,7 +369,7 @@
                     <td class="tableCell pt-16" title="Total argent dépensé, épargné ou investie">{{ number_format($totalDepense, 2, ',', ' ') }} €</td>
 
                     <!-- Montant total des dépenses possible -->
-                    <td class="tableCell pt-16 @if ($montantDepensesPossible < 0) fontColorError @endif">{{ number_format($totalDepensePossible, 2, ',', ' ') }} €</td>
+                    <td class="tableCell pt-16 @if ($totalDepensePossible < 0) fontColorError @endif">{{ number_format($totalDepensePossible, 2, ',', ' ') }} €</td>
 
                     <!-- Ratio argent gagné / argent dépensé -->
                     @php $ratio = (($totalAbonnement + $totalDepense) / ($totalSalaire == 0 ? 1 : $totalSalaire)) * 100; @endphp
