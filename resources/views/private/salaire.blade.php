@@ -205,7 +205,7 @@
                                     @php
                                         $ratio = (($totalSalairesMensuel - $montantDepensesPossible - $montantEpargne - $montantInvestissement ) / ($totalSalairesMensuel == 0 ? 1 : $totalSalairesMensuel )) * 100;
                                     @endphp
-                                    <td class="tableCell" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
+                                    <td class="tableCell @if($ratio < 35) fontColorValid @endif @if($ratio > 90 && $ratio <= 100) fontColorAlert @endif @if($ratio > 100) fontColorError @endif" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
 
                                     <!-- Actions -->
                                     <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
@@ -323,7 +323,7 @@
                                 @php
                                     $ratio = (($totalSalairesMensuel - $montantDepensesPossible - $montantEpargne - $montantInvestissement ) / ($totalSalairesMensuel == 0 ? 1 : $totalSalairesMensuel )) * 100;
                                 @endphp
-                                <td class="tableCell" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
+                                <td class="tableCell @if($ratio < 35) fontColorValid @endif @if($ratio > 90 && $ratio <= 100) fontColorAlert @endif @if($ratio > 100) fontColorError @endif" title="Vous avec dépensé {{ number_format($ratio, 0, ',', ' ') }} % de votre salaire">{{ number_format($ratio, 0, ',', ' ') }} %</td>
 
                                 <!-- Actions -->
                                 <td class="smallRowCenterContainer px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">
