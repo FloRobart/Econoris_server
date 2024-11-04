@@ -373,7 +373,7 @@
 
                     <!-- Ratio argent gagné / argent dépensé -->
                     @php $ratio = (($totalAbonnement + $totalDepense) / ($totalSalaire == 0 ? 1 : $totalSalaire)) * 100; @endphp
-                    <td class="tableCell pt-16" title="Vous avez dépensé {{ number_format($ratio, 0, ',', ' ') }} % de tous vos revenues">{{ number_format($ratio, 0, ',', ' ') }} %</td>
+                    <td class="tableCell pt-16 @if($ratio < 35) fontColorValid @endif @if($ratio > 90 && $ratio <= 100) fontColorAlert @endif @if($ratio > 100) fontColorError @endif" title="Vous avez dépensé {{ number_format($ratio, 0, ',', ' ') }} % de tous vos revenues">{{ number_format($ratio, 0, ',', ' ') }} %</td>
                 </tr>
             </tbody>
         </table>
