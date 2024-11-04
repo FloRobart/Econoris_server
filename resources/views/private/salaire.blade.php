@@ -60,7 +60,7 @@
             }
         @endphp
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des salaires du mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($totalSalairesMensuel, 2, ',', ' ') }} €</span></span>
+            <span class="normalText">Montant total des revenues du mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($totalSalairesMensuel, 2, ',', ' ') }} €</span></span>
         </div>
 
         <br>
@@ -81,7 +81,7 @@
     <!-- Barre de séparation -->
     <livewire:horizontal-separation />
 
-    <!-- Détails des salaires mois par mois -->
+    <!-- Détails des revenues mois par mois -->
     <h2 class="w-full bigTextBleuLogo text-center">Détails des Revenus</h2>
     <div class="colCenterContainer">
         <table class="w-full">
@@ -89,14 +89,14 @@
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell" title="Trier les salaires par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date du virement</a></th>
-                    <th class="tableCell" title="Trier les salaires par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Revenue</a></th>
+                    <th class="tableCell" title="Trier les revenues par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date du virement</a></th>
+                    <th class="tableCell" title="Trier les revenues par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Revenue</a></th>
                     <th class="tableCell max-[850px]:hidden" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Épargné</a></th>
                     <th class="tableCell max-[850px]:hidden" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Investie</a></th>
                     <th class="tableCell max-[850px]:hidden" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Abonnements</a></th>
                     <th class="tableCell" title="Afficher toutes les dépenses"><a href="{{ route('depenses') }}" class="link">Dépenses</a></th>
                     <th class="tableCell" title="Argent qui peut être dépensé">Dépenses possibles</th>
-                    <th class="tableCell" title="Pourcentage d'argent dépensé par rapport au salaire">%</th>
+                    <th class="tableCell" title="Pourcentage d'argent dépensé par rapport aux revenues">%</th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
@@ -110,10 +110,10 @@
                             @if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction)))
                                 <tr class="tableRow smallText text-center">
                                     <!-- Date du virement -->
-                                    <td class="tableCell" title="Afficher les salaires du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
+                                    <td class="tableCell" title="Afficher les revenues du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
                                     
-                                    <!-- Montant du salaire -->
-                                    {{-- Calcul du montant des salaires du mois --}}
+                                    <!-- Montant du revenues -->
+                                    {{-- Calcul du montant des revenues du mois --}}
                                     @php $totalSalairesMensuel = 0; @endphp
                                     @foreach ($salaires as $salaireMensuel)
                                         @if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
@@ -121,7 +121,7 @@
                                         @endif
                                     @endforeach
                                     @php $totalSalaire += $totalSalairesMensuel @endphp
-                                    <td class="tableCell" title="Afficher les salaires versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($totalSalairesMensuel, 2, ',', ' ') }} €</a></td>
+                                    <td class="tableCell" title="Afficher les revenues versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($totalSalairesMensuel, 2, ',', ' ') }} €</a></td>
 
                                     <!-- Montant épargné -->
                                     @php $montantEpargne = 0; @endphp
@@ -228,11 +228,11 @@
                         @else
                             <tr class="tableRow smallText text-center">
                                 <!-- Date du virement -->
-                                <td class="tableCell" title="Afficher les salaires du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
+                                <td class="tableCell" title="Afficher les revenues du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
                                 
                                 <!-- Montant du salaire -->
                                 @php $totalSalaire += $salaire->montant_transaction; @endphp
-                                <td class="tableCell" title="Afficher les salaires versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($salaire->montant_transaction, 2, ',', ' ') }} €</a></td>
+                                <td class="tableCell" title="Afficher les revenues versé par {{ $salaire->employeur }}"><a href="@if (str_contains(strtolower(URL::current()), 'date')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.employeur', $salaire->employeur) }} @endif" class="link">{{ number_format($salaire->montant_transaction, 2, ',', ' ') }} €</a></td>
 
                                 <!-- Montant épargné -->
                                 @php $montantEpargne = 0; @endphp
@@ -353,8 +353,8 @@
                     <!-- Total -->
                     <td class="tableCell pt-16">Total</td>
                     
-                    <!-- Montant des salaire -->
-                    <td class="tableCell pt-16" title="Montant total des salaires">{{ number_format($totalSalaire, 2, ',', ' ') }} €</td>
+                    <!-- Montant des revenues -->
+                    <td class="tableCell pt-16" title="Montant total des revenues">{{ number_format($totalSalaire, 2, ',', ' ') }} €</td>
 
                     <!-- Montant total épargné -->
                     <td class="tableCell pt-16 max-[850px]:hidden" title="Montant total épargnés">{{ number_format($totalEpargne, 2, ',', ' ') }} €</td>
@@ -373,27 +373,27 @@
 
                     <!-- Ratio argent gagné / argent dépensé -->
                     @php $ratio = (($totalAbonnement + $totalDepense) / ($totalSalaire == 0 ? 1 : $totalSalaire)) * 100; @endphp
-                    <td class="tableCell pt-16" title="Vous avez dépensé {{ number_format($ratio, 0, ',', ' ') }} % de tous vos salaires">{{ number_format($ratio, 0, ',', ' ') }} %</td>
+                    <td class="tableCell pt-16" title="Vous avez dépensé {{ number_format($ratio, 0, ',', ' ') }} % de tous vos revenues">{{ number_format($ratio, 0, ',', ' ') }} %</td>
                 </tr>
             </tbody>
         </table>
 
-        <!-- Formulaire pour ajouter un salaire -->
+        <!-- Formulaire pour ajouter un revenu -->
         <form id="form" action="{{ route('salaire.add') }}" method="POST" class="rowStartContainer hidden">
             @csrf
             <div class="colCenterContainer">
                 <div class="colStartContainer sm:rowStartContainer">
-                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant du salaire" min="0" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                    <input id="employeur"           name="employeur"           required type="text" placeholder="Nom de l'employeur"                       class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="date_transaction"    name="date_transaction"    required type="date" value="{{ date('Y-m-d') }}" max="{{ date('Y-m-d') }}" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant du revenu" min="0" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                    <input id="employeur"           name="employeur"           required type="text" placeholder="Nom de l'employeur"                      class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                 </div>
                 <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                 <div class="w-full tableRowTop"></div>
             </div>
         </form>
 
-        <!-- Bouton pour ajouter un salaire -->
-        <button onclick="showForm('Ajouter un revenu', 'Ajouter', '{{ route('salaire.add') }}')" id="button" class="buttonForm mt-8">Ajouter un salaire</a>
+        <!-- Bouton pour ajouter un revenues -->
+        <button onclick="showForm('Ajouter un revenu', 'Ajouter', '{{ route('salaire.add') }}')" id="button" class="buttonForm mt-8">Ajouter un revenu</a>
     </div>
 </section>
 @endsection
@@ -429,7 +429,7 @@
 <script src="{{ asset('js/showForm.js') }}"></script>
 <script>
     oldId = 0;
-    /* Fonction pour modifier un salaire */
+    /* Fonction pour modifier un revenues */
     function editSalaire(date, montant, employeur, id) {
         /* Affichage du formulaire */
         hidden = document.getElementById('form').classList.contains('hidden');
