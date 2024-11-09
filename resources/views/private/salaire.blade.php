@@ -54,7 +54,7 @@
         @php
             $totalSalairesMensuel = 0;
             foreach ($salaires as $salaireMensuel) {
-                if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m")) {
+                if (date("m-Y",strtotime($salaireMensuel->date_transaction)) == date("m-Y")) {
                     $totalSalairesMensuel += $salaireMensuel->montant_transaction;
                 }
             }
@@ -107,7 +107,7 @@
                 @if (isset($salaires))
                     @foreach ($salaires as $salaire)
                         @if (!str_contains(strtolower(Request::url()), 'date'))
-                            @if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction)))
+                            @if ($oldSalaire == null || date("m-Y", strtotime($oldSalaire->date_transaction)) != date("m-Y", strtotime($salaire->date_transaction)))
                                 <tr class="tableRow smallText text-center">
                                     <!-- Date du virement -->
                                     <td class="tableCell" title="Afficher les revenues du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
@@ -116,7 +116,7 @@
                                     {{-- Calcul du montant des revenues du mois --}}
                                     @php $totalSalairesMensuel = 0; @endphp
                                     @foreach ($salaires as $salaireMensuel)
-                                        @if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @if (date("m-Y",strtotime($salaireMensuel->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                             @php $totalSalairesMensuel += $salaireMensuel->montant_transaction; @endphp
                                         @endif
                                     @endforeach
@@ -126,7 +126,7 @@
                                     <!-- Montant épargné -->
                                     @php $montantEpargne = 0; @endphp
                                     @foreach ($epargnes as $epargne)
-                                        @if (date("m",strtotime($epargne->date_transaction)) == date("m",strtotime($salaire->date_transaction)) && date("Y",strtotime($epargne->date_transaction)) == date("Y",strtotime($salaire->date_transaction)))
+                                        @if (date("m-Y",strtotime($epargne->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)) && date("Y",strtotime($epargne->date_transaction)) == date("Y",strtotime($salaire->date_transaction)))
                                             @php $montantEpargne += $epargne->montant_transaction; @endphp
                                         @endif
                                     @endforeach
@@ -136,7 +136,7 @@
                                     <!-- Montant investie -->
                                     @php $montantInvestissement = 0; @endphp
                                     @foreach ($investissements as $investissement)
-                                        @if (date("m",strtotime($investissement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @if (date("m-Y",strtotime($investissement->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                             @php $montantInvestissement += $investissement->montant_transaction; @endphp
                                         @endif
                                     @endforeach
@@ -145,14 +145,14 @@
 
                                     <!-- Montant des abonnements -->
                                     @php $montantAbonnements = 0; @endphp
-                                    @if (date("m", strtotime($salaire->date_transaction)) == date("m"))
+                                    @if (date("m-Y", strtotime($salaire->date_transaction)) == date("m-Y"))
                                         @php $montantAbonnementMensuel = 0; $montantAbonnementAnnuel = 0; @endphp
                                         @foreach ($abonnements as $abo)
                                             @if ($abo->abonnement_actif == 1)
                                                 @if ($abo->mensuel == 1)
                                                     @php $montantAbonnementMensuel += $abo->montant_transaction; @endphp
                                                 @else
-                                                    @if (date("m", strtotime($abo->date_transaction)) == date("m"))
+                                                    @if (date("m-Y", strtotime($abo->date_transaction)) == date("m-Y"))
                                                         @php $montantAbonnementAnnuel += $abo->montant_transaction; @endphp
                                                     @endif
                                                 @endif
@@ -162,7 +162,7 @@
                                         @php $montantAbonnements = $montantAbonnementMensuel + $montantAbonnementAnnuel; @endphp
                                     @else
                                         @foreach ($abonnementsHistories as $abonnement)
-                                            @if (date("m",strtotime($abonnement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                            @if (date("m-Y",strtotime($abonnement->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                                 @php $montantAbonnements += $abonnement->montant_transaction; @endphp
                                             @endif
                                         @endforeach
@@ -173,7 +173,7 @@
                                     <!-- Montant des dépenses -->
                                     @php $montantDepenses = 0; @endphp
                                     @foreach ($depenses as $depense)
-                                        @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @if (date("m-Y",strtotime($depense->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                             @php $montantDepenses += $depense->montant_transaction; @endphp
                                         @endif
                                     @endforeach
@@ -185,14 +185,14 @@
 
                                     {{-- Calcul du montant des emprunts --}}
                                     @foreach ($empruntsHistories as $emprunt)
-                                        @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @if (date("m-Y",strtotime($emprunt->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                             @php $montantEmprunt += $emprunt->montant_transaction; @endphp
                                         @endif
                                     @endforeach
 
                                     {{-- Calcul du montant des prêts --}}
                                     @foreach ($prets as $pret)
-                                        @if (date("m",strtotime($pret->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @if (date("m-Y",strtotime($pret->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                             @php $montantPret += $pret->montant_pret - $pret->montant_rembourse; @endphp
                                         @endif
                                     @endforeach
@@ -239,17 +239,17 @@
                                 <!-- Montant épargné -->
                                 @php $montantEpargne = 0; @endphp
                                 @foreach ($epargnes as $epargne)
-                                    @if (date("m",strtotime($epargne->date_transaction)) == date("m",strtotime($salaire->date_transaction)) && date("Y",strtotime($epargne->date_transaction)) == date("Y",strtotime($salaire->date_transaction)))
+                                    @if (date("m-Y",strtotime($epargne->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                         @php $montantEpargne += $epargne->montant_transaction; @endphp
                                     @endif
                                 @endforeach
-                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalEpargne += $montantEpargne; } @endphp
+                                @php if ($oldSalaire == null || date("m-Y", strtotime($oldSalaire->date_transaction)) != date("m-Y", strtotime($salaire->date_transaction))) { $totalEpargne += $montantEpargne; } @endphp
                                 <td class="tableCell max-[850px]:hidden" title="Afficher les épargnes du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="{{ route('epargnes.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantEpargne, 2, ',', ' ') }} €</a></td>
 
                                 <!-- Montant investie -->
                                 @php $montantInvestissement = 0; @endphp
                                 @foreach ($investissements as $investissement)
-                                    @if (date("m",strtotime($investissement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @if (date("m-Y",strtotime($investissement->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                         @php $montantInvestissement += $investissement->montant_transaction; @endphp
                                     @endif
                                 @endforeach
@@ -258,14 +258,14 @@
 
                                 <!-- Montant des abonnements -->
                                 @php $montantAbonnements = 0; @endphp
-                                @if (date("m", strtotime($salaire->date_transaction)) == date("m"))
+                                @if (date("m-Y", strtotime($salaire->date_transaction)) == date("m-Y"))
                                     @php $montantAbonnementMensuel = 0; $montantAbonnementAnnuel = 0; @endphp
                                     @foreach ($abonnements as $abo)
                                         @if ($abo->abonnement_actif == 1)
                                             @if ($abo->mensuel == 1)
                                                 @php $montantAbonnementMensuel += $abo->montant_transaction; @endphp
                                             @else
-                                                @if (date("m", strtotime($abo->date_transaction)) == date("m"))
+                                                @if (date("m-Y", strtotime($abo->date_transaction)) == date("m-Y"))
                                                     @php $montantAbonnementAnnuel += $abo->montant_transaction; @endphp
                                                 @endif
                                             @endif
@@ -275,22 +275,22 @@
                                     @php $montantAbonnements = $montantAbonnementMensuel + $montantAbonnementAnnuel; @endphp
                                 @else
                                     @foreach ($abonnementsHistories as $abonnement)
-                                        @if (date("m",strtotime($abonnement->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                        @if (date("m-Y",strtotime($abonnement->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                             @php $montantAbonnements += $abonnement->montant_transaction; @endphp
                                         @endif
                                     @endforeach
                                 @endif
-                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalAbonnement += $montantAbonnements; } @endphp
+                                @php if ($oldSalaire == null || date("m-Y", strtotime($oldSalaire->date_transaction)) != date("m-Y", strtotime($salaire->date_transaction))) { $totalAbonnement += $montantAbonnements; } @endphp
                                 <td class="tableCell max-[850px]:hidden" title="Afficher les abonnements du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('abonnements_histories.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantAbonnements, 2, ',', ' ') }} €</a></td>
 
                                 <!-- Montant des dépenses -->
                                 @php $montantDepenses = 0; @endphp
                                 @foreach ($depenses as $depense)
-                                    @if (date("m",strtotime($depense->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @if (date("m-Y",strtotime($depense->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                         @php $montantDepenses += $depense->montant_transaction; @endphp
                                     @endif
                                 @endforeach
-                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalDepense += $montantDepenses; } @endphp
+                                @php if ($oldSalaire == null || date("m-Y", strtotime($oldSalaire->date_transaction)) != date("m-Y", strtotime($salaire->date_transaction))) { $totalDepense += $montantDepenses; } @endphp
                                 <td class="tableCell" title="Afficher les dépenses du mois de {{ strftime('%B %Y',strtotime($salaire->date_transaction)) }}"><a href="{{ route('depenses.date', $salaire->date_transaction) }}" class="link">{{ number_format($montantDepenses, 2, ',', ' ') }} €</a></td>
 
                                 <!-- Montant des dépenses possible -->
@@ -298,27 +298,27 @@
 
                                 {{-- Calcul du montant des emprunts --}}
                                 @foreach ($empruntsHistories as $emprunt)
-                                    @if (date("m",strtotime($emprunt->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @if (date("m-Y",strtotime($emprunt->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                         @php $montantEmprunt += $emprunt->montant_transaction; @endphp
                                     @endif
                                 @endforeach
 
                                 {{-- Calcul du montant des salaires du mois --}}
                                 @foreach ($salaires as $salaireMensuel)
-                                    @if (date("m",strtotime($salaireMensuel->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @if (date("m-Y",strtotime($salaireMensuel->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                         @php $totalSalairesMensuel += $salaireMensuel->montant_transaction; @endphp
                                     @endif
                                 @endforeach
 
                                 {{-- Calcul du montant des prêts --}}
                                 @foreach ($prets as $pret)
-                                    @if (date("m",strtotime($pret->date_transaction)) == date("m",strtotime($salaire->date_transaction)))
+                                    @if (date("m-Y",strtotime($pret->date_transaction)) == date("m-Y",strtotime($salaire->date_transaction)))
                                         @php $montantPret += $pret->montant_pret - $pret->montant_rembourse; @endphp
                                     @endif
                                 @endforeach
 
                                 @php $montantDepensesPossible = $totalSalairesMensuel - $montantEpargne - $montantInvestissement - $montantEmprunt - $montantDepenses - $montantPret - $montantAbonnements; @endphp
-                                @php if ($oldSalaire == null || date("m", strtotime($oldSalaire->date_transaction)) != date("m", strtotime($salaire->date_transaction))) { $totalDepensePossible += $montantDepensesPossible; } @endphp
+                                @php if ($oldSalaire == null || date("m-Y", strtotime($oldSalaire->date_transaction)) != date("m-Y", strtotime($salaire->date_transaction))) { $totalDepensePossible += $montantDepensesPossible; } @endphp
                                 <td class="tableCell @if ($montantDepensesPossible < 0) fontColorError @endif" title="Vous pouvez dépenser {{ number_format($montantDepensesPossible, 2, ',', ' ') }} € au mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}">{{ number_format($montantDepensesPossible, 2, ',', ' ') }} €</td>
 
                                 <!-- Ratio argent gagné / argent dépensé -->

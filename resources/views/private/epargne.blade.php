@@ -47,7 +47,7 @@
         <!-- Montant total épargné -->
         @php $montantEpargneMois = 0; @endphp
         @foreach ($epargnes as $epargne)
-            @if (date("m", strtotime($epargne->date_transaction)) == date("m"))
+            @if (date("m-Y", strtotime($epargne->date_transaction)) == date("m-Y"))
                 @php $montantEpargneMois += $epargne->montant_transaction; @endphp
             @endif
         @endforeach
@@ -58,7 +58,7 @@
         <!-- Montant total épargné -->
         @php $montantEpargneJour = 0; @endphp
         @foreach ($epargnes as $epargne)
-            @if (date("j", strtotime($epargne->date_transaction)) == date("j"))
+            @if (date("d-m-Y", strtotime($epargne->date_transaction)) == date("d-m-Y"))
                 @php $montantEpargneJour += $epargne->montant_transaction; @endphp
             @endif
         @endforeach

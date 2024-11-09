@@ -46,7 +46,7 @@
         <!-- Montant total des depenses du mois -->
         @php $montantDepenseMois = 0; @endphp
         @foreach ($depenses as $depense)
-            @if (date("m", strtotime($depense->date_transaction)) == date("m"))
+            @if (date("m-Y", strtotime($depense->date_transaction)) == date("m-Y"))
                 @php $montantDepenseMois += $depense->montant_transaction; @endphp
             @endif
         @endforeach
@@ -57,7 +57,7 @@
         <!-- Montant total des depenses du jour -->
         @php $montantDepenseJour = 0; @endphp
         @foreach ($depenses as $depense)
-            @if (date("j", strtotime($depense->date_transaction)) == date("j"))
+            @if (date("d-m-Y", strtotime($depense->date_transaction)) == date("d-m-Y"))
                 @php $montantDepenseJour += $depense->montant_transaction; @endphp
             @endif
         @endforeach

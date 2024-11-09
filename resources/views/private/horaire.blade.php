@@ -69,7 +69,7 @@
                 $totalHeure = 0;
                 $totalminute = 0;
                 foreach ($horaires as $horaire) {
-                    if (date('m', strtotime($horaire->date_transaction)) == date('m')) {
+                    if (date('m-Y', strtotime($horaire->date_transaction)) == date('m-Y')) {
                         /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
                         $matin = new DateTime($horaire->heure_matin);
                         $midi = new DateTime($horaire->heure_midi);
@@ -144,7 +144,7 @@
                                 $totalHeure = 0;
                                 $totalminute = 0;
                                 foreach ($horaires as $horaire2) {
-                                    if (date('d', strtotime($horaire2->date_transaction)) == date('d', strtotime($horaire->date_transaction)) && date('m', strtotime($horaire2->date_transaction)) == date('m', strtotime($horaire->date_transaction)) && date('Y', strtotime($horaire2->date_transaction)) == date('Y', strtotime($horaire->date_transaction))) {
+                                    if (date('d-m-Y', strtotime($horaire2->date_transaction)) == date('d-m-Y', strtotime($horaire->date_transaction))) {
                                         /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
                                         $matin = new DateTime($horaire->heure_matin);
                                         $midi = new DateTime($horaire->heure_midi);
@@ -173,7 +173,7 @@
                                 $totalHeure = 0;
                                 $totalminute = 0;
                                 foreach ($horaires as $horaire2) {
-                                    if (date('W', strtotime($horaire2->date_transaction)) == date('W', strtotime($horaire->date_transaction)) && date('Y', strtotime($horaire2->date_transaction)) == date('Y', strtotime($horaire->date_transaction))) {
+                                    if (date('W-Y', strtotime($horaire2->date_transaction)) == date('W-Y', strtotime($horaire->date_transaction))) {
                                         /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
                                         $matin = new DateTime($horaire2->heure_matin);
                                         $midi = new DateTime($horaire2->heure_midi);
@@ -202,7 +202,7 @@
                                 $totalHeure = 0;
                                 $totalminute = 0;
                                 foreach ($horaires as $horaire2) {
-                                    if (date('m', strtotime($horaire2->date_transaction)) == date('m', strtotime($horaire->date_transaction)) && date('Y', strtotime($horaire2->date_transaction)) == date('Y', strtotime($horaire->date_transaction))) {
+                                    if (date('m-Y', strtotime($horaire2->date_transaction)) == date('m-Y', strtotime($horaire->date_transaction))) {
                                         /* Calcul du nombre de secondes travaillé le matin et l'après-midi */
                                         $matin = new DateTime($horaire2->heure_matin);
                                         $midi = new DateTime($horaire2->heure_midi);
