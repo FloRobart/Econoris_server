@@ -35,22 +35,22 @@
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
         <!-- Nombre de prêts reçus -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de prêts effectué : <span class="normalTextBleuLogo font-bold">{{ $prets->count() }}</span></span>
+            <span class="normalText text-center">Nombre de prêts effectué : <span class="normalTextBleuLogo font-bold">{{ $prets->count() }}</span></span>
         </div>
 
         <!-- Montant total des prêts reçus -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des prêts : <span class="normalTextBleuLogo font-bold">{{ number_format($prets->sum('montant_pret'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant total des prêts : <span class="normalTextBleuLogo font-bold">{{ number_format($prets->sum('montant_pret'), 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total des prêts remboursés -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des prêts remboursés : <span class="normalTextBleuLogo font-bold">{{ number_format($prets->sum('montant_rembourse'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant total des prêts remboursés : <span class="normalTextBleuLogo font-bold">{{ number_format($prets->sum('montant_rembourse'), 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total des prêts non remboursés -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des prêts non remboursés : <span class="normalTextBleuLogo font-bold">{{ number_format($prets->sum('montant_pret') - $prets->sum('montant_rembourse'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant total des prêts non remboursés : <span class="normalTextBleuLogo font-bold">{{ number_format($prets->sum('montant_pret') - $prets->sum('montant_rembourse'), 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 

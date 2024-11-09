@@ -36,12 +36,12 @@
 
         <!-- Nombre de d'opérations -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de transaction lié aux emprunts : <span class="normalTextBleuLogo font-bold">{{ $emprunts_histories->count() }}</span></span>
+            <span class="normalText text-center">Nombre de transaction lié aux emprunts : <span class="normalTextBleuLogo font-bold">{{ $emprunts_histories->count() }}</span></span>
         </div>
 
         <!-- Montant total des transactions -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des transactions des emprunts : <span class="normalTextBleuLogo font-bold">{{ number_format($emprunts_histories->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant total des transactions des emprunts : <span class="normalTextBleuLogo font-bold">{{ number_format($emprunts_histories->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 

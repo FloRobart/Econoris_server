@@ -36,12 +36,12 @@
 
         <!-- Nombre de d'opérations -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de transaction lié aux abonnements : <span class="normalTextBleuLogo font-bold">{{ $abonnements_histories->count() }}</span></span>
+            <span class="normalText text-center">Nombre de transaction lié aux abonnements : <span class="normalTextBleuLogo font-bold">{{ $abonnements_histories->count() }}</span></span>
         </div>
 
         <!-- Montant mensuel des abonnements -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant de toute les transactions des abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements_histories->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant de toute les transactions des abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($abonnements_histories->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 

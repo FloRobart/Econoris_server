@@ -35,12 +35,12 @@
         <h2 class="w-full bigTextBleuLogo text-center mb-3">Information générale</h2>
         <!-- Nombre de depenses -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre de dépenses effectué : <span class="normalTextBleuLogo font-bold">{{ $depenses->count() }}</span></span>
+            <span class="normalText text-center">Nombre de dépenses effectué : <span class="normalTextBleuLogo font-bold">{{ $depenses->count() }}</span></span>
         </div>
 
         <!-- Montant total des depenses -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant total des dépenses : <span class="normalTextBleuLogo font-bold">{{ number_format($depenses->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant total des dépenses : <span class="normalTextBleuLogo font-bold">{{ number_format($depenses->sum('montant_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total des depenses du mois -->
@@ -51,7 +51,7 @@
             @endif
         @endforeach
         <div class="rowCenterContainer">
-            <span class="normalText">Montant des dépenses du mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseMois, 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant des dépenses du mois de {{ strftime('%B %Y', strtotime(date('Y-m-d'))) }} : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseMois, 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant total des depenses du jour -->
@@ -62,7 +62,7 @@
             @endif
         @endforeach
         <div class="rowCenterContainer">
-            <span class="normalText">Montant des dépenses du jour : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseJour, 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant des dépenses du jour : <span class="normalTextBleuLogo font-bold">{{ number_format($montantDepenseJour, 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 

@@ -36,12 +36,12 @@
 
         <!-- Nombre de d'opérations -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre d'abonnement : <span class="normalTextBleuLogo font-bold">{{ $abonnements->count() }}</span></span>
+            <span class="normalText text-center">Nombre d'abonnement : <span class="normalTextBleuLogo font-bold">{{ $abonnements->count() }}</span></span>
         </div>
 
         <!-- Nombre d'abonnements actifs -->
         <div class="rowCenterContainer">
-            <span class="normalText">Nombre d'abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ $abonnements->where('abonnement_actif', 1)->count() }}</span></span>
+            <span class="normalText text-center">Nombre d'abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ $abonnements->where('abonnement_actif', 1)->count() }}</span></span>
         </div>
 
         <br>
@@ -56,7 +56,7 @@
             }
         @endphp
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelActif, 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelActif, 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant mensuel des abonnements inactifs -->
@@ -69,7 +69,7 @@
             }
         @endphp
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel des abonnements inactifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelInactif, 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant mensuel des abonnements inactifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelInactif, 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant mensuel de tout les abonnements -->
@@ -80,24 +80,24 @@
             }
         @endphp
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel de tout les abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelTotal, 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant mensuel de tout les abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelTotal, 2, ',', ' ') }} €</span></span>
         </div>
 
         <br>
 
         <!-- Montant annuel des abonnements actifs -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelActif*12, 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant mensuel des abonnements actifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelActif*12, 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant annuel des abonnements inactifs -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel des abonnements inactifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelInactif*12, 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant mensuel des abonnements inactifs : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelInactif*12, 2, ',', ' ') }} €</span></span>
         </div>
 
         <!-- Montant annuel de tout les abonnements -->
         <div class="rowCenterContainer">
-            <span class="normalText">Montant mensuel de tout les abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelTotal*12, 2, ',', ' ') }} €</span></span>
+            <span class="normalText text-center">Montant mensuel de tout les abonnements : <span class="normalTextBleuLogo font-bold">{{ number_format($montantMensuelTotal*12, 2, ',', ' ') }} €</span></span>
         </div>
     </div>
 
