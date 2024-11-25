@@ -76,7 +76,7 @@
                     <th class="tableCell" title="Trier les investissements par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant investie</a></th>
                     <th class="tableCell">Montant unitaire</th>
                     <th class="tableCell max-[800px]:hidden" title="Trier les investissements par frais de transaction @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=frais_transaction' . '&order=' . $order }}" class="link">Montant des frais</a></th>
-                    <th class="tableCell">Montant hors frais</th>
+                    <th class="tableCell max-[690px]:hidden">Montant hors frais</th>
                     <th class="tableCell" title="Trier les investissements par quantité @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=quantite'. '&order=' . $order }}" class="link">Quantité</th>
                     <th class="tableCell">Actions</th>
                 </tr>
@@ -159,7 +159,7 @@
                             <td class="tableCell max-[800px]:hidden">{{ number_format($investissement->frais_transaction, 2, ',', ' ') }} €</td>
 
                             <!-- Montant hors frais -->
-                            <td class="tableCell">{{ number_format(($investissement->montant_transaction - $investissement->frais_transaction), 2, ',', ' ') }} €</td>
+                            <td class="tableCell max-[690px]:hidden">{{ number_format(($investissement->montant_transaction - $investissement->frais_transaction), 2, ',', ' ') }} €</td>
 
                             <!-- Quantité acheté -->
                             <td class="tableCell">{{ $investissement->quantite }}</td>
