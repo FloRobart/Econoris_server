@@ -829,6 +829,7 @@ class PrivateController extends Controller
             'nom_actif' => 'required|string|max:255',
             'montant_transaction' => 'required|numeric|min:0',
             'frais_transaction' => 'required|numeric|min:0',
+            'quantite' => 'required|numeric|min:0'
         ], [
             'date_transaction.required' => 'La date est obligatoire.',
             'date_transaction.date' => 'La date doit être une date.',
@@ -844,7 +845,10 @@ class PrivateController extends Controller
             'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
             'frais_transaction.required' => 'Les frais sont obligatoires.',
             'frais_transaction.numeric' => 'Les frais doivent être un nombre.',
-            'frais_transaction.min' => 'Les frais doivent être supérieurs ou égaux à 0.'
+            'frais_transaction.min' => 'Les frais doivent être supérieurs ou égaux à 0.',
+            'quantite.required' => 'La quantité est obligatoire.',
+            'quantite.numeric' => 'La quantité doit être un nombre.',
+            'quantite.min' => 'La quantité doit être supérieure ou égale à 0.'
         ]);
 
         /* Message de confirmation */
@@ -872,6 +876,7 @@ class PrivateController extends Controller
         $investissement->nom_actif           = ucfirst($request->nom_actif);
         $investissement->montant_transaction = $request->montant_transaction;
         $investissement->frais_transaction   = $request->frais_transaction;
+        $investissement->quantite            = $request->quantite;
 
         if ($investissement->save()) {
             return back()->with('success', 'L\'investissement a bien été ajouté 👍.')->with('message', $message);
@@ -897,6 +902,7 @@ class PrivateController extends Controller
             'nom_actif' => 'required|string|max:255',
             'montant_transaction' => 'required|numeric|min:0',
             'frais_transaction' => 'required|numeric|min:0',
+            'quantite' => 'required|numeric|min:0'
         ], [
             'id.required' => 'L\'id est obligatoire.',
             'id.numeric' => 'L\'id doit être un nombre.',
@@ -916,7 +922,10 @@ class PrivateController extends Controller
             'montant_transaction.min' => 'Le montant doit être supérieur ou égal à 0.',
             'frais_transaction.required' => 'Les frais sont obligatoires.',
             'frais_transaction.numeric' => 'Les frais doivent être un nombre.',
-            'frais_transaction.min' => 'Les frais doivent être supérieurs ou égaux à 0.'
+            'frais_transaction.min' => 'Les frais doivent être supérieurs ou égaux à 0.',
+            'quantite.required' => 'La quantité est obligatoire.',
+            'quantite.numeric' => 'La quantité doit être un nombre.',
+            'quantite.min' => 'La quantité doit être supérieure ou égale à 0.'
         ]);
 
         /* Message de confirmation */
@@ -935,6 +944,7 @@ class PrivateController extends Controller
         $investissement->nom_actif           = ucfirst($request->nom_actif);
         $investissement->montant_transaction = $request->montant_transaction;
         $investissement->frais_transaction   = $request->frais_transaction;
+        $investissement->quantite            = $request->quantite;
 
         if ($investissement->save()) {
             return back()->with('success', 'L\'investissement a bien été modifié 👍.')->with('message', $message);

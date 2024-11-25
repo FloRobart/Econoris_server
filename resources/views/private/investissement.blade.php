@@ -160,7 +160,7 @@
                                 <div class="smallRowCenterContainer">
                                     @if (!str_contains(strtolower(URL::current()), 'type/investissements'))
                                         <!-- Modifier -->
-                                        <button onclick="editInvestissement('{{ strftime('%Y-%m-%d', strtotime($investissement->date_transaction)) }}', '{{ str_replace('\'', '\\\'', $investissement->nom_actif) }}', '{{ $investissement->montant_transaction }}', '{{ $investissement->frais_transaction }}', '{{ $investissement->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
+                                        <button onclick="editInvestissement('{{ strftime('%Y-%m-%d', strtotime($investissement->date_transaction)) }}', '{{ str_replace('\'', '\\\'', $investissement->nom_actif) }}', '{{ $investissement->montant_transaction }}', '{{ $investissement->frais_transaction }}', '{{ $investissement->quantite }}', '{{ $investissement->id }}')" class="smallRowCenterContainer w-fit smallTextReverse font-bold bgBleuLogo hover:bgBleuFonce focus:normalScale rounded-lg min-[500px]:rounded-xl py-1 px-1 min-[500px]:px-2">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="tinySizeIcons">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                             </svg>
@@ -192,6 +192,7 @@
                         <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'actif"                          class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText" @if (str_contains(strtolower(URL::current()), 'nom_actif')) value="{{ $investissements->first()->nom_actif }}" @endif>
                         <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant investie" min="0"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                         <input id="frais_transaction"   name="frais_transaction"   required type="number" step="0.01" placeholder="Montant des frais" min="0" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                        <input id="quantite"            name="quantite"            required type="number" step="0.01" placeholder="Quantité" min="0"          class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     </div>
                     <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                     <div class="w-full tableRowTop"></div>
@@ -210,7 +211,7 @@
 <script>
     oldId = 0;
     /* Fonction pour modifier un investissement */
-    function editInvestissement(date, nom_actif, montant, frais, id) {
+    function editInvestissement(date, nom_actif, montant, frais, quantite, id) {
         /* Affichage du formulaire */
         hidden = document.getElementById('form').classList.contains('hidden');
         if (hidden || oldId == id) {
@@ -225,6 +226,7 @@
         document.getElementById('nom_actif').value = nom_actif;
         document.getElementById('montant_transaction').value = montant;
         document.getElementById('frais_transaction').value = frais;
+        document.getElementById('quantite').value = quantite;
 
         if (document.getElementById('id') != null) {
             document.getElementById('id').remove();
