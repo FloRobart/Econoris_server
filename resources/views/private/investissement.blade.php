@@ -53,6 +53,11 @@
         <div class="rowCenterContainer">
             <span class="normalText text-center">Montant total hors frais de transaction : <span class="normalTextBleuLogo font-bold">{{ number_format($investissements->sum('montant_transaction') - $investissements->sum('frais_transaction'), 2, ',', ' ') }} €</span></span>
         </div>
+
+        <!-- Nombre total d'actifs achetés -->
+        <div class="rowCenterContainer">
+            <span class="normalText text-center">Nombre total d'actifs achetés : <span class="normalTextBleuLogo font-bold">{{ $investissements->sum('quantite') }}</span></span>
+        </div>
     </div>
 
     <!-- Barre de séparation -->
@@ -69,6 +74,7 @@
                     <th class="tableCell" title="Trier les investissements par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date du virement</a></th>
                     <th class="tableCell" title="Trier les investissements par nom @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de l'actif</a></th>
                     <th class="tableCell" title="Trier les investissements par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant investie</a></th>
+                    <th class="tableCell">Montant unitaire</th>
                     <th class="tableCell" title="Trier les investissements par frais de transaction @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=frais_transaction' . '&order=' . $order }}" class="link">Montant des frais</a></th>
                     <th class="tableCell">Montant hors frais</th>
                     <th class="tableCell" title="Trier les investissements par quantité @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=quantite'. '&order=' . $order }}" class="link">Quantité</th>
@@ -145,6 +151,9 @@
                                     @endif
                                 @endif
                             @endif
+
+                            <!-- Montant unitaire -->
+                            <td class="tableCell">{{ $investissement->quantite != 0 ? number_format(($investissement->montant_transaction/$investissement->quantite), 2, ',', ' ') : '-' }} €</td>
 
                             <!-- Montant des frais -->
                             <td class="tableCell">{{ number_format($investissement->frais_transaction, 2, ',', ' ') }} €</td>
