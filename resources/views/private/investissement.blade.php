@@ -66,11 +66,12 @@
             <thead class="w-full">
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
-                    <th class="tableCell" title="Trier les investissements par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction'    . '&order=' . $order }}" class="link">Date du virement</a></th>
-                    <th class="tableCell" title="Trier les investissements par nom @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=nom_actif'           . '&order=' . $order }}" class="link">Nom de l'actif</a></th>
+                    <th class="tableCell" title="Trier les investissements par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}" class="link">Date du virement</a></th>
+                    <th class="tableCell" title="Trier les investissements par nom @if ($order == 'asc') alphabétique @else anti-alphabétique @endif"><a href="{{ URL::current() . '?sort=nom_actif' . '&order=' . $order }}" class="link">Nom de l'actif</a></th>
                     <th class="tableCell" title="Trier les investissements par montant @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=montant_transaction' . '&order=' . $order }}" class="link">Montant investie</a></th>
-                    <th class="tableCell" title="Trier les investissements par frais de transaction @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=frais_transaction'   . '&order=' . $order }}" class="link">Montant des frais</a></th>
+                    <th class="tableCell" title="Trier les investissements par frais de transaction @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=frais_transaction' . '&order=' . $order }}" class="link">Montant des frais</a></th>
                     <th class="tableCell">Montant hors frais</th>
+                    <th class="tableCell" title="Trier les investissements par quantité @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=quantite'. '&order=' . $order }}" class="link">Quantité</th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
@@ -150,6 +151,9 @@
 
                             <!-- Montant hors frais -->
                             <td class="tableCell">{{ number_format(($investissement->montant_transaction - $investissement->frais_transaction), 2, ',', ' ') }} €</td>
+
+                            <!-- Quantité acheté -->
+                            <td class="tableCell">{{ $investissement->quantite }}</td>
                             
                             <!-- Actions -->
                             <td class="tableCell px-1 min-[460px]:px-2 min-[500px]:px-4 py-2">

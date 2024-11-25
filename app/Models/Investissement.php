@@ -21,6 +21,7 @@ class Investissement extends Model
         'montant_transaction',
         'frais_transaction',
         'type_investissement',
-        'nom_actif'
+        'nom_actif',
+        'quantite',
     ];
 }
