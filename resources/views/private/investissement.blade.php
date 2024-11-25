@@ -153,7 +153,7 @@
                             @endif
 
                             <!-- Montant unitaire -->
-                            <td class="tableCell">{{ $investissement->quantite != 0 ? number_format(($investissement->montant_transaction/$investissement->quantite), 2, ',', ' ') : '-' }} €</td>
+                            <td class="tableCell">{{ $investissement->quantite != 0 ? number_format((($investissement->montant_transaction - $investissement->frais_transaction)/$investissement->quantite), 2, ',', ' ') : '-' }} €</td>
 
                             <!-- Montant des frais -->
                             <td class="tableCell">{{ number_format($investissement->frais_transaction, 2, ',', ' ') }} €</td>
