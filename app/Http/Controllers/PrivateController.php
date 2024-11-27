@@ -940,7 +940,7 @@ class PrivateController extends Controller
         $investissement->quantite            = $request->quantite;
 
         if ($investissement->save()) {
-            return back()->with('success', 'L\'investissement a bien été modifié 👍.')->with('message', $message);
+            return back()->with('success', 'L\'investissement a bien été modifié 👍.');
         } else {
             return back()->with('error', 'Une erreur est survenue lors de la modification de l\'investissement ❌.');
         }
