@@ -201,7 +201,7 @@
                         <input id="nom_actif"           name="nom_actif"           required type="text" placeholder="Nom de l'actif"                          class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText" @if (str_contains(strtolower(URL::current()), 'nom_actif')) value="{{ $investissements->first()->nom_actif }}" @endif>
                         <input id="montant_transaction" name="montant_transaction" required type="number" step="0.01" placeholder="Montant investie" min="0"  class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                         <input id="frais_transaction"   name="frais_transaction"   required type="number" step="0.01" placeholder="Montant des frais" min="0" class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
-                        <input id="quantite"            name="quantite"            required type="number" step="0.00001" placeholder="Quantité" min="0"       class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
+                        <input id="quantite"            name="quantite"            required type="number" step="0.000001" placeholder="Quantité" min="0"       class="w-[55%] mx-2 min-[500px]:mx-4 my-2 text-center inputForm smallText">
                     </div>
                     <button id="formButton" class="buttonForm mx-2 min-[500px]:mx-4 my-2">Ajouter</button>
                     <div class="w-full tableRowTop"></div>

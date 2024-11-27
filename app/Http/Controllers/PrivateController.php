@@ -928,13 +928,6 @@ class PrivateController extends Controller
             'quantite.min' => 'La quantité doit être supérieure ou égale à 0.'
         ]);
 
-        /* Message de confirmation */
-        if (Investissement::where('date_transaction', $request->date_transaction)->where('type_investissement', $request->type_investissement)->where('nom_actif', $request->nom_actif)->where('montant_transaction', $request->montant_transaction)->where('frais_transaction', $request->frais_transaction)->first()) {
-            $message = 'Attention, un investissement en ' . $request->type_investissement . ' similaire a déjà été ajouté pour cette date. 🤔';
-        } else {
-            $message = '';
-        }
-
         /* Modification de l'investissement */
         $investissement = Investissement::find($request->id);
         if ($investissement->user_id != Auth::user()->id) { back()->with('error', 'L\'investissement ne vous appartient pas ❌.'); }
