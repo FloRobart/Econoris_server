@@ -11,20 +11,11 @@
 
 @section('content')
 <!-- Titre de la page -->
-<livewire:page-title :title="'Revenus'" />
+@include('components.page-title', ['title' => 'Revenus'])
 
 <!-- Messages d'erreur et de succès -->
 <div class="colCenterContainer mt-8 px-4">
-    @if ($errors->any())
-        <div class="rowCenterContainer">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li class="normalTextError text-center">{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-    <livewire:information-message />
+    @include('components.information-message')
 </div>
 
 
@@ -80,7 +71,7 @@
     </div>
 
     <!-- Barre de séparation -->
-    <livewire:horizontal-separation />
+    @include('components.horizontal-separation')
 
     <!-- Détails des revenues mois par mois -->
     <h2 class="w-full bigTextBleuLogo text-center">Détails des Revenus</h2>
