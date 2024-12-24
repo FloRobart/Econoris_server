@@ -1509,7 +1509,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'date_emprunt';
+        $sort = $request->query('sort') ?? 'date_debut';
         $order = $request->query('order') ?? 'desc';
 
         $emprunts = PrivateController::getEmprunts('', '', $sort, $order);
@@ -1527,7 +1527,7 @@ class PrivateController extends Controller
     {
         setlocale(LC_ALL, 'fr_FR.UTF8', 'fr_FR','fr','fr','fra','fr_FR@euro');
 
-        $sort = $request->query('sort') ?? 'date_emprunt';
+        $sort = $request->query('sort') ?? 'date_debut';
         $order = $request->query('order') ?? 'desc';
 
         $emprunts = PrivateController::getEmprunts('', $banque, $sort, $order);
