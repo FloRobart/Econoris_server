@@ -39,10 +39,10 @@ Route::middleware(['auth', VerifIP::class])->group(function () {
     /* Salaires */
     /*----------*/
     /* Affichage des salaires */
-    Route::get('/salaires', [PrivateController::class, 'salaires'])->name('salaires');
-    Route::get('/salaires/date/{date}', [PrivateController::class, 'salairesDate'])->name('salaires.date');
-    Route::get('/salaires/employeur/{employeur}', [PrivateController::class, 'salairesEmployeur'])->name('salaires.employeur');
-    Route::get('/salaires/date/{date}/employeur/{employeur}', [PrivateController::class, 'salairesDateEmployeur'])->name('salaires.date.employeur');
+    Route::get('/revenus', [PrivateController::class, 'salaires'])->name('salaires');
+    Route::get('/revenus/date/{date}', [PrivateController::class, 'salairesDate'])->name('salaires.date');
+    Route::get('/revenus/employeur/{employeur}', [PrivateController::class, 'salairesEmployeur'])->name('salaires.employeur');
+    Route::get('/revenus/date/{date}/employeur/{employeur}', [PrivateController::class, 'salairesDateEmployeur'])->name('salaires.date.employeur');
 
     /* Édition des salaires */
     Route::post('/salaire/add', [PrivateController::class, 'addSalaire'])->name('salaire.add');

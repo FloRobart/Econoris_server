@@ -63,27 +63,27 @@
             {
                 $breadcrumb = [
                     /* Niveau 1 */
-                    'salaires' => route('salaires'),
-                    'epargnes' => route('epargnes'),
+                    'revenus'         => route('salaires'),
+                    'epargnes'        => route('epargnes'),
                     'investissements' => route('investissements'),
-                    'abonnements' => route('abonnements'),
-                    'emprunts' => route('emprunts'),
-                    'depenses' => route('depenses'),
-                    'prets' => route('prets'),
-                    'horaires' => route('horaires'),
-                    
+                    'abonnements'     => route('abonnements'),
+                    'emprunts'        => route('emprunts'),
+                    'depenses'        => route('depenses'),
+                    'prets'           => route('prets'),
+                    'horaires'        => route('horaires'),
+
                     /* Niveau 2 */
                     'abonnements_histories' => route('abonnements_histories'),
                     'emprunts_histories' => route('emprunts_histories'),
-                    'date' => parseUrl($urlPath, 'date'),
+                    parseUrl($urlPath, 'date'          , 1) => parseUrl($urlPath, 'date'),
 
                     /* Niveau 3 */
-                    'employeur' => parseUrl($urlPath, 'employeur'),
-                    'banque' => parseUrl($urlPath, 'banque'),
-                    'compte' => parseUrl($urlPath, 'compte'),
-                    'type' => parseUrl($urlPath, 'type'),
-                    'nom_actif' => parseUrl($urlPath, 'nom_actif'),
-                    'nom_emprunteur' => parseUrl($urlPath, 'nom_emprunteur'),
+                    parseUrl($urlPath, 'employeur'     , 1) => parseUrl($urlPath, 'employeur'),
+                    parseUrl($urlPath, 'banque'        , 1) => parseUrl($urlPath, 'banque'),
+                    parseUrl($urlPath, 'compte'        , 1) => parseUrl($urlPath, 'compte'),
+                    parseUrl($urlPath, 'type'          , 1) => parseUrl($urlPath, 'type'),
+                    parseUrl($urlPath, 'nom_actif'     , 1) => parseUrl($urlPath, 'nom_actif'),
+                    parseUrl($urlPath, 'nom_emprunteur', 1) => parseUrl($urlPath, 'nom_emprunteur'),
 
                     /* Niveau 4 */
                     'abonnement_actif' => parseUrl($urlPath, 'abonnement_actif'),
@@ -91,15 +91,22 @@
             }
 
 
-            function parseUrl(string $url, string $limit)
+            /**
+             * Fonction permettant de récupérer une partie de l'URL
+             * @param string $url : URL à analyser
+             * @param string $limit : Mot-clé à rechercher pour couper l'URL
+             * @param int $end : 0 pour récupérer l'URL, 1 pour récupérer le dernier élément de l'URL
+             * @return string : URL modifiée
+             */
+            function parseUrl(string $url, string $limit, int $end = 0)
             {
                 $urlArray = explode('/', $url);
-                $limitNumber = array_search($limit, $urlArray) == false ? count($urlArray) : (array_search($limit, $urlArray) + 2);
+                $limitNumber = array_search($limit, $urlArray) == false ? ($end == 0 ? count($urlArray) : -1) : (array_search($limit, $urlArray) + 2);
 
                 $urlArray = array_slice($urlArray, 0, $limitNumber);
-                $urlArray = implode('/', $urlArray);
+                $urlArray = $end == 0 ? implode('/', $urlArray) : end($urlArray);
 
-                return $urlArray;
+                return $limitNumber == -1 ? null : $urlArray;
             }
         @endphp
 
@@ -109,8 +116,8 @@
             @include('components.breadcrumb-link', ['name' => 'Éconoris', 'link' => route('accueil')])
 
             @foreach ($breadcrumb as $key => $value)
-                @if (str_contains(strtolower($urlPath), $key))
-                    @include('components.breadcrumb-link', ['name' => ucfirst($key), 'link' => $value])
+                @if (str_contains(strtolower($urlPath), strtolower($key)) && $key != "")
+                    @include('components.breadcrumb-link', ['name' => ucfirst(urldecode($key)), 'link' => $value])
                 @endif
             @endforeach
         </div>
