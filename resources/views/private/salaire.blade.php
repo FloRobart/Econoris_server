@@ -86,8 +86,8 @@
                     <th class="tableCell max-[850px]:hidden" title="Afficher toutes les épargnes"><a href="{{ route('epargnes') }}" class="link">Épargné</a></th>
                     <th class="tableCell max-[850px]:hidden" title="Afficher tous les investissements"><a href="{{ route('investissements') }}" class="link">Investie</a></th>
                     <th class="tableCell max-[850px]:hidden" title="Afficher tous les abonnements"><a href="{{ route('abonnements') }}" class="link">Abonnements</a></th>
-                    <th class="tableCell" title="Afficher toutes les dépenses"><a href="{{ route('depenses') }}" class="link">Dépenses</a></th>
-                    <th class="tableCell" title="Argent qui peut être dépensé">Dépenses possibles</th>
+                    <th class="tableCell" title="Afficher toutes les dépenses du mois"><a href="{{ route('depenses') }}" class="link">Dépenses</a></th>
+                    <th class="tableCell" title="Argent qui peut être dépensé dans le mois">Dépenses possibles</th>
                     <th class="tableCell" title="Pourcentage d'argent dépensé par rapport aux revenues">%</th>
                     <th class="tableCell">Actions</th>
                 </tr>
@@ -102,7 +102,7 @@
                             @if ($oldSalaire == null || date("m-Y", strtotime($oldSalaire->date_transaction)) != date("m-Y", strtotime($salaire->date_transaction)))
                                 <tr class="tableRow smallText text-center">
                                     <!-- Date du virement -->
-                                    <td class="tableCell" title="Afficher les revenues du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%d %B %Y',strtotime($salaire->date_transaction)); }}</a></td>
+                                    <td class="tableCell" title="Afficher les revenues du mois de {{ strftime('%B %Y', strtotime($salaire->date_transaction)) }}"><a href="@if (str_contains(strtolower(URL::current()), 'employeur')) {{ route('salaires.date.employeur', [$salaire->date_transaction, $salaire->employeur]) }} @else {{ route('salaires.date', $salaire->date_transaction) }} @endif" class="link">{{ strftime('%B %Y',strtotime($salaire->date_transaction)); }}</a></td>
                                     
                                     <!-- Montant du revenues -->
                                     {{-- Calcul du montant des revenues du mois --}}
