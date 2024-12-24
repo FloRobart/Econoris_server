@@ -98,12 +98,12 @@
                 <tr class="tableRow smallText text-center font-bold">
                     @php request()->get('order') == 'asc' ? $order = 'desc' : $order = 'asc'; @endphp
                     <th class="tableCell" title="Trier par date @if ($order == 'asc') croissante @else décroissante @endif"><a href="{{ URL::current() . '?sort=date_transaction' . '&order=' . $order }}">Date</a></th>
-                    <th class="tableCell" title="Trier par heure de début de travail @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=heure_matin' . '&order=' . $order }}">Heure de début</a></th>
-                    <th class="tableCell">Durée de la pause du midi</th>
-                    <th class="tableCell" title="Trier par heure de fin de travail @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=heure_soir' . '&order=' . $order }}">Heure de fin</a></th>
-                    <th class="tableCell">Nombre d'heure travaillé</th>
-                    <th class="tableCell">Nombre d'heure dans la semaine</th>
-                    <th class="tableCell max-md:hidden">Nombre d'heure dans le mois</th>
+                    <th class="tableCell" title="Trier par heure de début de travail @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=heure_matin' . '&order=' . $order }}">Heure début</a></th>
+                    <th class="tableCell">Durée pause midi</th>
+                    <th class="tableCell" title="Trier par heure de fin de travail @if ($order == 'asc') croissant @else décroissant @endif"><a href="{{ URL::current() . '?sort=heure_soir' . '&order=' . $order }}">Heure fin</a></th>
+                    <th class="tableCell" title="Nombre d'heure travaillé dans la journée">Horaire journée</th>
+                    <th class="tableCell" title="Nombre d'heure dans la semaine">Horaire semaine</th>
+                    <th class="tableCell max-md:hidden" title="Nombre d'heure dans le mois">Horaire mois</th>
                     <th class="tableCell">Actions</th>
                 </tr>
             </thead>
