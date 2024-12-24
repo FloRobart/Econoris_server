@@ -61,9 +61,9 @@
     <!-- Barre de séparation -->
     @include('components.horizontal-separation')
 
-    <!-- Détails des épargne mois par mois -->
+    <!-- Détails des épargne -->
     <div class="colCenterContainer">
-        <h2 class="w-full bigTextBleuLogo text-center mb-3">Détails des épargnes mois par mois</h2>
+        <h2 class="w-full bigTextBleuLogo text-center mb-3">Détails des épargnes</h2>
         <table class="w-full mt-2">
             <!-- Entête du tableau -->
             <thead class="w-full">
