@@ -1,7 +1,3 @@
-<script type="module">
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.4.1/+esm'
-</script>
-
 # Éconoris
 
 # Table des matières
