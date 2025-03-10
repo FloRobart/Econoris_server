@@ -1,10 +1,10 @@
 {
   "name": "econoris",
   "version": "2.0.0",
-  "description": "",
+  "description": "Éconoris est une application web de gestion de finances personnelles.",
   "main": "index.js",
   "scripts": {
-    "dev": "npx tsx src/index",
+    "dev": "tsx src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/FloRobart/Econoris.git"
   },
   "author": "FloRobart",
-  "license": "ISC",
+  "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/FloRobart/Econoris/issues"
   },
@@ -28,6 +28,7 @@
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
+    "path": "^0.12.7",
     "strftime": "^0.10.3"
   }
 }
