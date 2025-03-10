@@ -52,6 +52,8 @@ F --> |GET/POST: HTTP| C
 - Frameworks et librairies :
   - [ExpressJS](https://www.npmjs.com/package/express)
   - [dotenv](https://www.npmjs.com/package/dotenv)
+  - [strftime](https://www.npmjs.com/package/strftime)
+  - [ejs](https://www.npmjs.com/package/ejs)
 
 # Installation
 

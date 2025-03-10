@@ -1,8 +1,12 @@
-import { Express } from 'express';
+import { Express, Request, Response } from 'express';
 
-
-export function initRoutes(app: Express) {
-    app.get('/', (req, res) => {
+/**
+ * Permet d'initialiser les routes de l'application
+ * @param app Application Express
+ * @returns void
+ */
+export function initRoutes(app: Express): void {
+    app.get('/', (req: Request, res: Response) => {
         res.send('Hello World!')
     });
 }
