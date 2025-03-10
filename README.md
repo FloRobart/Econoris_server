@@ -2,6 +2,9 @@
 
 # Table des matières
 
+<details>
+<summary>Expand contents</summary>
+
 - [Éconoris](#éconoris)
 - [Table des matières](#table-des-matières)
 - [Présentation](#présentation)
@@ -12,6 +15,8 @@
 - [Autheur](#autheur)
 - [Report de bug et suggestions](#report-de-bug-et-suggestions)
 - [License](#license)
+
+</details>
 
 # Présentation
 
@@ -26,6 +31,15 @@ A[Hard] -->|Text| B(Round)
 B --> C{Decision}
 C -->|One| D[Result 1]
 C -->|Two| E[Result 2]
+
+Alice->>John: Hello John, how are you?
+loop HealthCheck
+    John->>John: Fight against hypochondria
+end
+Note right of John: Rational thoughts!
+John-->>Alice: Great!
+John->>Bob: How about you?
+Bob-->>John: Jolly good!
 ```
 
 # Technologies utilisées
@@ -34,7 +48,7 @@ C -->|Two| E[Result 2]
 
 # Autheur
 
-Finance dashboard est un projet open-source développé seulement par [Floris Robart](https://florobart.github.io/)
+Éconoris est un projet open-source développé seulement par [Floris Robart](https://florobart.github.io/)
 
 # Report de bug et suggestions
 
@@ -44,4 +58,4 @@ Si vous avez une une **suggestion**, une **idée**, une **amélioration**, ou un
 
 # License
 
-Finance dashboard est un projet open-source sous licence [GNU General Public License v3.0](https://opensource.org/licenses/GPL-3.0).
+Éconoris est un projet open-source sous licence [GNU General Public License v3.0](https://opensource.org/licenses/GPL-3.0).
