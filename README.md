@@ -46,7 +46,7 @@ F --> |GET/POST: HTTP| C
 Éconoris est une application web développée avec les technologies suivantes :
 
 - Langages :
-  - [TypeScript](https://developer.mozilla.org/fr/docs/Web/JavaScript)
+  - [JavaScript (TypeScript)](https://developer.mozilla.org/fr/docs/Web/JavaScript)
   - [*HTML*](https://developer.mozilla.org/fr/docs/Web/HTML)
   - [*CSS*](https://developer.mozilla.org/fr/docs/Web/CSS)
 - Frameworks et librairies :
