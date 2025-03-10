@@ -20,6 +20,10 @@
 
 # Présentation
 
+Éconoris est une application web de gestion de finances personnelles. Elle permet de suivre ses dépenses, ses revenus, ses investissements, ses horaires et bien d'autre chose.
+
+Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de comptabilité professionel ni même l'application de votre banque. Elle est plutôt déstinée à vous aider à mieux gérer vos finances personnelles, à suivre vos dépenses, vos revenus, vos abonnements, vos investissements et autres.
+
 # Fonctionnalités
 
 # Architecture
@@ -27,17 +31,27 @@
 ```mermaid
 flowchart LR
 
-A[fa:fa-table Base de données] <-->|SELECT: SQL| B[fa:fa-server Models]
-A <-->|UPDATE: SQL| B
+A[fa:fa-table Base de données] <--> |SELECT: SQL| B[fa:fa-server Models]
+A <--> |UPDATE: SQL| B
 B <--> C[fa:fa-cogs Controllers]
-C -->|IF view=ON| D[fa:fa-eye Views]
-C -->|IF view=OFF| E[fa:fa-database Données Brutes]
-D -->|HTML: HTTP| F[fa:fa-user-circle-o Client]
-E -->|JSON: HTTP| F
-F -->|GET/POST: HTTP| C
+C --> |IF view=ON| D[fa:fa-eye Views]
+C --> |IF view=OFF| E[fa:fa-database Données Brutes]
+D --> |HTML: HTTP| F[fa:fa-user-circle-o Client]
+E --> |JSON: HTTP| F
+F --> |GET/POST: HTTP| C
 ```
 
 # Technologies utilisées
+
+Éconoris est une application web développée avec les technologies suivantes :
+
+- Langages :
+  - [TypeScript](https://developer.mozilla.org/fr/docs/Web/JavaScript)
+  - [*HTML*](https://developer.mozilla.org/fr/docs/Web/HTML)
+  - [*CSS*](https://developer.mozilla.org/fr/docs/Web/CSS)
+- Frameworks et librairies :
+  - [ExpressJS](https://www.npmjs.com/package/express)
+  - [dotenv](https://www.npmjs.com/package/dotenv)
 
 # Installation
 
