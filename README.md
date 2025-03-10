@@ -28,7 +28,8 @@
 flowchart LR
 
 A[Base de données] <-->|SQL| B[Models]
-B ==> C[Controllers]
+A -->|SELECT| B
+B --> C[Controllers]
 C -->|HTTP view=ON| D[Views]
 C -->|HTTP view=OFF| E[Données Brutes]
 D -->|HTML| F[Client]
