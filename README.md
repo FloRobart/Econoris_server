@@ -54,6 +54,8 @@ F --> |GET/POST: HTTP| C
   - [dotenv](https://www.npmjs.com/package/dotenv)
   - [strftime](https://www.npmjs.com/package/strftime)
   - [ejs](https://www.npmjs.com/package/ejs)
+- Base de données :
+  - [PostgreSQL](https://www.postgresql.org/)
 
 # Installation
 
