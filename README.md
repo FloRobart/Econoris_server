@@ -29,12 +29,12 @@ flowchart LR
 
 A[Base de données] <-->|SELECT: SQL| B[Models]
 A <-->|UPDATE: SQL| B
-B --> C[Controllers]
+B <--> C[Controllers]
 C -->|IF view=ON| D[Views]
 C -->|IF view=OFF| E[Données Brutes]
 D -->|HTML: HTTP| F[Client]
 E -->|JSON: HTTP| F
-F -->|HTTP| C
+F -->|GET/POST: HTTP| C
 ```
 
 # Technologies utilisées
