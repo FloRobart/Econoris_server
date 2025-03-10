@@ -28,9 +28,11 @@
 flowchart LR
 
 A[Base de données] <-->|SQL| B[Models]
-B --> C[Controllers]
+B ==> C[Controllers]
 C -->|HTTP view=ON| D[Views]
 C -->|HTTP view=OFF| E[Données Brutes]
+D -->|HTML| F[Client]
+E -->|JSON| F
 ```
 
 # Technologies utilisées
