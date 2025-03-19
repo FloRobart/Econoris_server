@@ -29,7 +29,7 @@ Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de c
 # Architecture
 
 ```mermaid
-flowchart LR
+flowchart BT
 
 A[fa:fa-table Base de données] <--> |SELECT: SQL| B[fa:fa-server Models]
 A <--> |UPDATE: SQL| B
