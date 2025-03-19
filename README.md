@@ -26,6 +26,18 @@ Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de c
 
 # Fonctionnalités
 
+- [x] Gestion des dépenses
+- [x] Gestion des revenus
+- [x] Gestion des investissements
+- [x] Gestion des abonnements
+- [x] Gestion des horaires
+- [x] Gestion automatique des revenues en fonction des horaires et du taux horaire
+- [x] Gestion automatique des dépenses en fonction des abonnements
+- [x] Indice de satisfaction financière
+- [x] Conseils financiers
+- [x] Gestion des objectifs financiers
+- [x] Gestion des prêts
+
 # Architecture
 
 ```mermaid
@@ -61,7 +73,7 @@ F --> |GET/POST: HTTP| C
 
 # Autheur
 
-Éconoris est un projet open-source développé seulement par [Floris Robart](https://florobart.github.io/)
+Éconoris est un projet open-source développé uniquement par [Floris Robart](https://florobart.github.io/)
 
 # Report de bug et suggestions
 
