@@ -9,7 +9,11 @@
 - [Table des matières](#table-des-matières)
 - [Présentation](#présentation)
 - [Fonctionnalités](#fonctionnalités)
-- [Architecture](#architecture)
+- [Architecture de l'application](#architecture-de-lapplication)
+- [Architecture de la base de données](#architecture-de-la-base-de-données)
+  - [Modèle Conceptuel de Données (MCD)](#modèle-conceptuel-de-données-mcd)
+  - [Modèle Logique de Données (MLD)](#modèle-logique-de-données-mld)
+- [Routes](#routes)
 - [Technologies utilisées](#technologies-utilisées)
 - [Installation](#installation)
 - [Autheur](#autheur)
@@ -38,7 +42,7 @@ Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de c
 - [x] Gestion des objectifs financiers
 - [x] Gestion des prêts
 
-# Architecture
+# Architecture de l'application
 
 ```mermaid
 flowchart BT
@@ -53,6 +57,72 @@ E --> |JSON: HTTP| F
 F --> |GET/POST: HTTP| C
 ```
 
+# Architecture de la base de données
+
+## Modèle Conceptuel de Données (MCD)
+
+```mermaid
+classDiagram
+  direction TB
+
+  class users{
+    **id** : Interger
+    **_name** : Varchar
+    **_password** : Varchar
+    **email** : Varchar
+    **pp** : Bytea
+    **mac_adresse** : Macaddr
+    **ip_adresse** : Inet
+    **created_at** : Timestamp
+  }
+
+  class operations{
+    **id** : Interger
+    **_date** : Date
+    **amount** : Numeric
+    **source** : Varchar
+    **dest** : Varchar
+    **costs** : Numeric
+    **categ** : Varchar
+    **validate** : Boolean
+    **redundancy** : Varchar
+  }
+
+  class loans {
+    **id** : Interger
+    **_date** : Date
+    **borrower** : Varchar
+    **amount** : Numeric
+    **refunded_amount** : Numeric
+    **loan_reason** : Varchar
+  }
+
+  class timetable{
+    **id** : Interger
+    **_date** : Date
+    **hours_number** : Numeric
+    **hourly_rate** : Numeric
+  }
+
+  users "1..1" -- "0..*" operations
+  users "1..1" -- "0..*" timetable
+  users "1..1" -- "0..*" loans
+```
+
+## Modèle Logique de Données (MLD)
+
+- **users**(<u>id</u>, _name, _password, email, pp, mac_adresse, ip_adresse, created_at)
+- **operations**(<u>id</u>, _date, amount, source, dest, costs, categ, validate, redundancy, #user_id)
+- **loans**(<u>id</u>, _date, borrower, amount, refunded_amount, loan_reason, #user_id)
+- **timetable**(<u>id</u>, _date, hours_number, hourly_rate, #user_id)
+
+# Routes
+
+| Méthode | Route | Données retournés |
+|:-------:|:-----:|:------------------|
+| GET     | /     | Page d'accueil |
+| GET     | /     | Page d'accueil |
+
 # Technologies utilisées
 
 Éconoris est une application web développée avec les technologies suivantes :
@@ -66,10 +136,14 @@ F --> |GET/POST: HTTP| C
   - [dotenv](https://www.npmjs.com/package/dotenv)
   - [strftime](https://www.npmjs.com/package/strftime)
   - [ejs](https://www.npmjs.com/package/ejs)
+  - [path](https://www.npmjs.com/package/path)
+  - [node postgres](https://www.npmjs.com/package/pg)
 - Base de données :
   - [PostgreSQL](https://www.postgresql.org/)
 
 # Installation
+
+comming soon...
 
 # Autheur
 
