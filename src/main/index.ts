@@ -16,6 +16,7 @@ const ADMIN_EMAIL: string = process.env.ADMIN_EMAIL || "";
 /*=============*/
 /* Application */
 /*=============*/
+const server = require('http').createServer();
 const app = express();
 
 /* Configuration */
@@ -32,6 +33,6 @@ initRoutes(app);
 
 
 /* Écoute du server */
-app.listen(APP_PORT, () => {
-  console.log("Serveur disponible sur l'url :", APP_URL + ":" + APP_PORT);
+server.listen(APP_PORT, () => {
+    console.log("Serveur disponible sur l'url :", APP_URL + ":" + APP_PORT);
 })

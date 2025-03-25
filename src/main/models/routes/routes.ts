@@ -20,6 +20,4 @@ export function initRoutes(app: Express): void {
             email: app.locals.email
         });
     });
-
-    
 }
