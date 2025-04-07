@@ -14,6 +14,12 @@
   - [Modèle Conceptuel de Données (MCD)](#modèle-conceptuel-de-données-mcd)
   - [Modèle Logique de Données (MLD)](#modèle-logique-de-données-mld)
 - [Routes](#routes)
+  - [Routes parameters](#routes-parameters)
+    - [Parameters GET /get/operations/all](#parameters-get-getoperationsall)
+    - [Parameters POST /get/operations/all](#parameters-post-getoperationsall)
+    - [Parameters POST /get/operations/partial](#parameters-post-getoperationspartial)
+  - [Routes Data returned](#routes-data-returned)
+    - [Data GET /get/operations/all](#data-get-getoperationsall)
 - [Technologies utilisées](#technologies-utilisées)
 - [Installation](#installation)
 - [Autheur](#autheur)
@@ -45,15 +51,12 @@ Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de c
 # Architecture de l'application
 
 ```mermaid
-flowchart BT
+flowchart RL
 
 A[(Base de données)] <--> |SELECT: SQL| B[Models]
 A <--> |UPDATE: SQL| B
 B <==> C[Controllers]
-C -.-> |IF view=ON| D[[Views]]
-C -.-> |IF view=OFF| E[[Données Brutes]]
-D --> |HTML: HTTP| F{Client}
-E --> |JSON: HTTP| F
+C -.-> |JSON: HTTP<br>Données Brutes| F{Client}
 F --> |GET/POST: HTTP| C
 ```
 
@@ -67,8 +70,8 @@ classDiagram
 
   class users{
     **id** : Interger
-    **_name** : Varchar
-    **_password** : Varchar
+    **users_name** : Varchar
+    **users_password** : Varchar
     **email** : Varchar
     **pp** : Bytea
     **mac_adresse** : Macaddr
@@ -78,7 +81,7 @@ classDiagram
 
   class operations{
     **id** : Interger
-    **_date** : Date
+    **operations_date** : Date
     **amount** : Numeric
     **source** : Varchar
     **dest** : Varchar
@@ -90,7 +93,7 @@ classDiagram
 
   class loans {
     **id** : Interger
-    **_date** : Date
+    **loans_date** : Date
     **borrower** : Varchar
     **amount** : Numeric
     **refunded_amount** : Numeric
@@ -99,7 +102,7 @@ classDiagram
 
   class timetable{
     **id** : Interger
-    **_date** : Date
+    **timetable_date** : Date
     **hours_number** : Numeric
     **hourly_rate** : Numeric
   }
@@ -112,16 +115,107 @@ classDiagram
 ## Modèle Logique de Données (MLD)
 
 - **users**(<u>id</u>, _name, _password, email, pp, mac_adresse, ip_adresse, created_at)
-- **operations**(<u>id</u>, _date, amount, source, dest, costs, categ, validate, redundancy, #user_id)
-- **loans**(<u>id</u>, _date, borrower, amount, refunded_amount, loan_reason, #user_id)
-- **timetable**(<u>id</u>, _date, hours_number, hourly_rate, #user_id)
+- **operations**(<u>id</u>, operations_date, amount, source, dest, costs, categ, validate, redundancy, #user_id)
+- **loans**(<u>id</u>, loans_date, borrower, amount, refunded_amount, loan_reason, #user_id)
+- **timetable**(<u>id</u>, timetable_date, hours_number, hourly_rate, #user_id)
 
 # Routes
 
-| Méthode | Route | Données retournés |
-|:-------:|:-----:|:------------------|
-| GET     | /     | Page d'accueil |
-| GET     | /     | Page d'accueil |
+| Route | Méthode | Parameters | Données retournés |
+|:-------:|:-----:|:-----------|:------------------|
+| /get/operations/all | GET | [Routes parameters](#parameters-get-getoperationsall) | JSON \| [Routes Data returned](#data-get-getoperationsall) |
+| /get/operations/all | POST | [Routes parameters](#parameters-post-getoperationsall) | JSON \| [Same as GET request](#data-get-getoperationsall) |
+| /get/operations/partial | POST | [Routes parameters](#parameters-post-getoperationspartial) | JSON \| [Routes Data returned](#data-get-getoperationsall) |
+
+## Routes parameters
+
+### Parameters GET /get/operations/all
+
+- **id**: number
+- **operations_date**: date -> format(YYYY-mm-jj)
+- **amount**: float
+- **source**: string
+- **dest**: string
+- **costs**: float
+- **categ**: string
+- **validated**: boolean
+- **redundancy**: string -> format(???)
+- **user_id**: int
+- **strict**: boolean
+- **limit**: int
+- **offset**: int
+- **orderBy**: string -> format(???)
+- **distinct**: boolean
+- **countOnly**: boolean
+
+Exemple de requête GET:
+
+```http
+GET /get/operations/all?id=1&operations_date=2023-10-01&amount=100.0&source=banque&dest=courses&costs=0.0&categ=courses&validated=true&redundancy=null&user_id=1
+```
+
+### Parameters POST /get/operations/all
+
+- **id**: number
+- **operations_date**: date -> format(YYYY-mm-jj)
+- **amount**: float
+- **source**: string
+- **dest**: string
+- **costs**: float
+- **categ**: string
+- **validated**: boolean
+- **redundancy**: string -> format(???)
+- **user_id**: int
+- **strict**: boolean
+- **limit**: int
+- **offset**: int
+- **orderBy**: string -> format(???)
+- **distinct**: boolean
+- **countOnly**: boolean
+
+Exemple de requête POST:
+
+```http
+POST /get/operations/all
+Content-Type: application/json
+{
+  "id": 1,
+  "operations_date": "2023-10-01",
+  "amount": 100.0,
+  "source": "banque",
+  "dest": "courses",
+  "costs": 0.0,
+  "categ": "courses",
+  "validated": true,
+  "redundancy": null,
+  "user_id": 1
+}
+```
+
+### Parameters POST /get/operations/partial
+
+
+
+## Routes Data returned
+
+### Data GET /get/operations/all
+
+```json
+[
+  {
+    "id": 1,
+    "operations_date": "2023-10-01",
+    "amount": 100.0,
+    "source": "banque",
+    "dest": "courses",
+    "costs": 0.0,
+    "categ": "courses",
+    "validated": true,
+    "redundancy": null,
+    "user_id": 1
+  }
+]
+```
 
 # Technologies utilisées
 

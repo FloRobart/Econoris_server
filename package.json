@@ -2,16 +2,16 @@
   "name": "econoris",
   "version": "2.0.0",
   "description": "Éconoris est une application web de gestion de finances personnelles.",
-  "main": "index.js",
+  "main": "src/main/index.ts",
   "scripts": {
-    "dev": "tsx src",
-    "test": "jest",
+    "dev": "tsx src/main",
+    "test": "jest src/tests --detectOpenHandles",
     "build-db": "docker build -t econoris-db-image ./Database --build-arg",
-    "run-db": "docker run --name econoris-db-container -e POSTGRES_PASSWORD=postgres -d econoris-db-image",
+    "run-db": "docker run --name econoris-db-container -p 5432:5432 -e POSTGRES_PASSWORD=postgres -d econoris-db-image",
     "stop-db": "docker container stop econoris-db-container",
     "rm-db": "docker container rm econoris-db-container && docker image rm econoris-db-image",
     "log-db": "docker logs econoris-db-container",
-    "test-db": "docker exec -it econoris-db-container psql -U postgres"
+    "test-db": "psql -U postgres -h localhost econoris"
   },
   "repository": {
     "type": "git",
@@ -30,6 +30,7 @@
     "@types/pg": "^8.11.11",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.6",
+    "ts-node": "^10.9.2",
     "tsc": "^2.0.4",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"

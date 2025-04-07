@@ -2,9 +2,9 @@
 import express from 'express';
 import path from 'path';
 import http from 'http';
-import { initRoutes } from './models/routes/routes';
+import { initRoutes } from './models/routes';
 import { normalizePort } from './models/utils';
-import { connectToDatabase } from './models/db/connection';
+import { connectToDatabase } from './models/database';
 require('dotenv').config();
 
 /* Constantes */
@@ -24,6 +24,7 @@ const app = express();
 const server = http.createServer(app);
 
 /* Configuration */
+app.use(express.json());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.locals.title = APP_NAME;
@@ -36,7 +37,6 @@ connectToDatabase();
 
 /* Initialisation des routes */
 initRoutes(app);
-
 
 /* Écoute du server */
 server.listen(APP_PORT, () => {
