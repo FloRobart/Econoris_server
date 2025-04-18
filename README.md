@@ -53,11 +53,10 @@ Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de c
 ```mermaid
 flowchart RL
 
-A[(Base de données)] <--> |SELECT: SQL| B[Models]
-A <--> |UPDATE: SQL| B
+A[(Database)] <--> |SQL| B[Models]
 B <==> C[Controllers]
-C -.-> |JSON: HTTP<br>Données Brutes| F{Client}
-F --> |GET/POST/PUT/DELETE: HTTP| C
+C -.-> |HTTP Response: JSON| F{Client}
+F --> |HTTP Request| C
 ```
 
 # Architecture de la base de données
