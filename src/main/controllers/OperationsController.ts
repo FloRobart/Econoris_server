@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prepareQuery, executeQuery, QueryTable } from "../models/database";
-import { Tables, Columns } from "../models/constantes";
+import { Tables, OperationsColumns } from "../models/constantes";
 
 
 
@@ -35,49 +35,16 @@ import { Tables, Columns } from "../models/constantes";
  *     ]
  * }
  */
-export async function getOperations(req: Request, res: Response): Promise<Response<any, Record<string, any>>> {
-    const request = JSON.parse(JSON.stringify(req.method == "GET" ? req.query : req.body));
-    const jsonParam = req.method == "GET" ? { whereValues: [] } : JSON.parse(JSON.stringify(req.body));
-    const table = req.params.table;
-    if (!Tables.includes(table)) { return res.status(400).json({"error": "Table not found"}); }
-
-    /* Add keys from query to the request */
-    if (req.method == "GET") {
-        const logicalOperator = request.logicalOperator instanceof Array ? (request.logicalOperator[request.logicalOperator.length - 1]) : (request.logicalOperator?.toUpperCase());
-        const comparisonOperator = request.comparisonOperator instanceof Array ? (request.comparisonOperator[request.comparisonOperator.length - 1]) : (request.comparisonOperator);
-        jsonParam.limit = request.limit;
-        jsonParam.offset = request.offset;
-
-        delete request.logicalOperator;
-        delete request.comparisonOperator;
-        delete request.limit;
-        delete request.offset;
-
-        for (const key in request) {
-            if (Columns[table].includes(key)) {
-                let value = request[key] instanceof Array ? request[key][request[key].length - 1] : request[key];
-                if (value == undefined) { continue; }
-
-                jsonParam.whereValues.push({
-                    key: key,
-                    comparisonOperator: comparisonOperator,
-                    value: value,
-                    logicalOperator: logicalOperator
-                });
-            }
-        }
-    }
-
-    const preparedQuery = prepareQuery("SELECT", table as QueryTable, jsonParam);
-    if (preparedQuery === null) { return res.status(500).json({"error": "verifying the parameters passed in the url"}); }
+export async function getOperations(jsonParam: any): Promise<any[]|string> {
+    const preparedQuery = prepareQuery("SELECT", "operations", jsonParam);
+    if (preparedQuery === null) { return JSON.stringify({"error": "verifying the parameters passed in the url"}); }
 
     const rows = await executeQuery(preparedQuery);
 
-    console.log("rows :", rows);
     if (rows === null) {
-        return res.status(500).json({"error": "verifying the parameters passed in the url"});
+        return JSON.stringify({"error": "Database error"});
     } else {
-        return res.status(rows.length == 0 ? 204 : 200).json(rows);
+        return rows;
     }
 }
 
@@ -166,4 +133,41 @@ export async function deleteOperation(req: Request, res: Response): Promise<Resp
     } else {
         return res.status(200).json(rows);
     }
+}
+
+
+/**
+ * Transform Query parameters to JSON object
+ */
+export function parseQuery(requestQuery: any, requestParam: any): any {
+    const limit = parseInt(requestQuery.limit);
+    const offset = parseInt(requestQuery.offset);
+
+    let jsonParam = {
+        key: ["*"],
+        limit: limit != undefined ? (limit >= 0 ? limit : null) : null,
+        offset: offset != undefined ? (offset >= 0 ? offset : 0) : 0,
+        whereValues: []
+    };
+
+
+
+
+    if (OperationsColumns.includes(key)) {
+        let value = request[key] instanceof Array ? request[key][request[key].length - 1] : request[key];
+        if (value == undefined) { continue; }
+
+        jsonParam.whereValues.push({
+            key: "???",
+            comparisonOperator: "???",
+            value: "???",
+            logicalOperator: "???"
+        });
+    }
+
+    return jsonParam;
+}
+
+export function parseBody() {
+
 }

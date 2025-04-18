@@ -1,5 +1,5 @@
 import { Express, Request, Response } from "express";
-import { createOperation, deleteOperation, getOperations, updateOperation } from "../controllers/OperationsController";
+import { createOperation, deleteOperation, getOperations, updateOperation, parseQuery } from "../controllers/OperationsController";
 
 
 
@@ -65,7 +65,20 @@ export function initOperationsRoutes(app: Express): void {
      *             schema:
      *               $ref: "#/components/schemas/Error"
      */
-    app.get('/operations', async (req: Request, res: Response) => { getOperations(req, res); });
+    app.get('/operations', async (req: Request, res: Response) => {
+        const request = JSON.parse(JSON.stringify(req.method == "GET" ? req.query : req.body));
+        //const jsonParam = req.method == "GET" ? { whereValues: [] } : JSON.parse(JSON.stringify(req.body));
+
+        const jsonParam = parseQuery(request)
+
+        const rows = getOperations(jsonParam);
+
+        if (rows === null || !(rows instanceof Array)) {
+            res.status(500).json({"error": "verifying the parameters passed in the url"});
+        } else {
+            res.status(rows.length == 0 ? 204 : 200).json(rows);
+        }
+    });
 
     /**
      * @swagger
