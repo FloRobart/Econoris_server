@@ -8,14 +8,5 @@ import { prepareQuery, executeQuery } from "../models/database";
  * @returns void
  */
 export function initLoansRoutes(app: Express): void {
-    /*=============*/
-    /*     GET     */
-    /*=============*/
-    
-
-
-    /*==============*/
-    /*     POST     */
-    /*==============*/
     
 }
