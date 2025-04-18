@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { connectToDatabase, closeDatabaseConnection, executeQuery } from "../../main/models/database";
-import { getOperations } from "../../main/routes/operation.routes";
+import { getOperations } from "../../main/controllers/OperationsController";
 require('dotenv').config();
 
 const DB_HOST = process.env.DB_HOST;
