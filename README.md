@@ -26,11 +26,11 @@
 
 ## Présentation
 
-**Finance dashboard** est une application web de gestion de finances personnelles. Elle permet de suivre ses dépenses, ses revenus, ses investissements et bien d'autre chose.
+**Finance dashboard** est une API web de gestion de finances personnelles. Elle permet de suivre ses dépenses, ses revenus, ses investissements et bien d'autre chose.
 
-Toute-fois, cette application n'est pas déstinée à remplacer un logiciel de comptabilité professionel ni même l'application de votre banque. Elle est plutôt déstinée à vous aider à mieux gérer vos finances personnelles, à suivre vos dépenses, vos revenus, vos abonnements, vos investissements et autres.
+Toute-fois, cette API n'est pas déstinée à remplacer un logiciel de comptabilité professionel ni même l'application de votre banque. Elle est plutôt déstinée à vous aider à mieux gérer vos finances personnelles, à suivre vos dépenses, vos revenus, vos abonnements, vos investissements et autres.
 
-Finance dashboard à été conçue pour être utilisé par plusieurs personnes, c'est pourquoi elle permet de créer plusieurs comptes utilisateurs. Chaque utilisateur peut donc avoir son propre compte et gérer ses finances personnelles de manière indépendante. Si vous êtes seul à utiliser l'application et que vous ne voulez pas créer de compte utilisateur, vous devrez modifier le code source (ce qui est tout à fait possible).
+Finance dashboard à été conçue pour être utilisé par plusieurs personnes, c'est pourquoi elle permet de créer plusieurs comptes utilisateurs. Chaque utilisateur peut donc avoir son propre compte et gérer ses finances personnelles de manière indépendante. Si vous êtes seul à utiliser l'API et que vous ne voulez pas créer de compte utilisateur, vous devrez modifier le code source (ce qui est tout à fait possible).
 
 **Finance dashboard** n'est pas disponible en ligne, si vous voulez l'utiliser, vous devrez l'installer sur votre propre serveur. Si vous voulez créer un serveur personnel vous pouvez suivre les instructions de ma documentation sur la [création d'un serveur personnel](https://florobart.github.io/Documentations/src/doc_creation_serveur_local.html). Si vous avez déjà un serveur personnel, vous pouvez suivre les [instructions d'installation de **Finance dashboard**](#installation).
 
