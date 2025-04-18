@@ -1,9 +1,9 @@
 -- Création de la table timetable
 CREATE TABLE timetable (
-    id SERIAL PRIMARY KEY NOT NULL,
-    timetable_date DATE DEFAULT CURRENT_DATE,
-    hours_number NUMERIC(4, 2) NOT NULL,
-    hourly_rate NUMERIC(10, 2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    user_id INTEGER REFERENCES users(id)
+    timetable_id SERIAL PRIMARY KEY NOT NULL,
+    timetable_timetabledate DATE DEFAULT CURRENT_DATE,
+    timetable_hoursnumber NUMERIC(4, 2) NOT NULL,
+    timetable_hourlyrate NUMERIC(10, 2) NOT NULL,
+    timetable_createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    timetable_userid INTEGER
 );
