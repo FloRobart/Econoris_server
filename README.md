@@ -57,7 +57,7 @@ A[(Base de données)] <--> |SELECT: SQL| B[Models]
 A <--> |UPDATE: SQL| B
 B <==> C[Controllers]
 C -.-> |JSON: HTTP<br>Données Brutes| F{Client}
-F --> |GET/POST: HTTP| C
+F --> |GET/POST/PUT/DELETE: HTTP| C
 ```
 
 # Architecture de la base de données
@@ -67,17 +67,6 @@ F --> |GET/POST: HTTP| C
 ```mermaid
 classDiagram
   direction TB
-
-  class users{
-    **id** : Interger
-    **users_name** : Varchar
-    **users_password** : Varchar
-    **email** : Varchar
-    **pp** : Bytea
-    **mac_adresse** : Macaddr
-    **ip_adresse** : Inet
-    **created_at** : Timestamp
-  }
 
   class operations{
     **id** : Interger
@@ -106,116 +95,26 @@ classDiagram
     **hours_number** : Numeric
     **hourly_rate** : Numeric
   }
-
-  users "1..1" -- "0..*" operations
-  users "1..1" -- "0..*" timetable
-  users "1..1" -- "0..*" loans
 ```
 
 ## Modèle Logique de Données (MLD)
 
-- **users**(<u>id</u>, _name, _password, email, pp, mac_adresse, ip_adresse, created_at)
-- **operations**(<u>id</u>, operations_date, amount, source, dest, costs, categ, validate, redundancy, #user_id)
-- **loans**(<u>id</u>, loans_date, borrower, amount, refunded_amount, loan_reason, #user_id)
-- **timetable**(<u>id</u>, timetable_date, hours_number, hourly_rate, #user_id)
+- **operations**(<u>operations_id</u>, operations_date, operations_amount, operations_source, operations_dest, operations_costs, operations_categ, operations_validate, operations_redundancy, loans_createdat, operations_userid)
+- **loans**(<u>loans_id</u>, loans_date, loans_borrower, loans_amount, loans_refundedamount, loans_loanreason, loans_createdat, loans_userid)
+- **timetable**(<u>timetable_id</u>, timetable_date, timetable_hoursnumber, timetable_hourlyrate, timetable_createdat, timetable_userid)
 
-# Routes
+# Routes available
 
-| Route | Méthode | Parameters | Données retournés |
-|:-------:|:-----:|:-----------|:------------------|
-| /get/operations/all | GET | [Routes parameters](#parameters-get-getoperationsall) | JSON \| [Routes Data returned](#data-get-getoperationsall) |
-| /get/operations/all | POST | [Routes parameters](#parameters-post-getoperationsall) | JSON \| [Same as GET request](#data-get-getoperationsall) |
-| /get/operations/partial | POST | [Routes parameters](#parameters-post-getoperationspartial) | JSON \| [Routes Data returned](#data-get-getoperationsall) |
+**For full documentation please see [https://domaine.name/api-docs](#routes-available) or read '`/docs/swagger.json`' in [Swagger editor](https://editor.swagger.io/)**
 
-## Routes parameters
-
-### Parameters GET /get/operations/all
-
-- **id**: number
-- **operations_date**: date -> format(YYYY-mm-jj)
-- **amount**: float
-- **source**: string
-- **dest**: string
-- **costs**: float
-- **categ**: string
-- **validated**: boolean
-- **redundancy**: string -> format(???)
-- **user_id**: int
-- **strict**: boolean
-- **limit**: int
-- **offset**: int
-- **orderBy**: string -> format(???)
-- **distinct**: boolean
-- **countOnly**: boolean
-
-Exemple de requête GET:
-
-```http
-GET /get/operations/all?id=1&operations_date=2023-10-01&amount=100.0&source=banque&dest=courses&costs=0.0&categ=courses&validated=true&redundancy=null&user_id=1
-```
-
-### Parameters POST /get/operations/all
-
-- **id**: number
-- **operations_date**: date -> format(YYYY-mm-jj)
-- **amount**: float
-- **source**: string
-- **dest**: string
-- **costs**: float
-- **categ**: string
-- **validated**: boolean
-- **redundancy**: string -> format(???)
-- **user_id**: int
-- **strict**: boolean
-- **limit**: int
-- **offset**: int
-- **orderBy**: string -> format(???)
-- **distinct**: boolean
-- **countOnly**: boolean
-
-Exemple de requête POST:
-
-```http
-POST /get/operations/all
-Content-Type: application/json
-{
-  "id": 1,
-  "operations_date": "2023-10-01",
-  "amount": 100.0,
-  "source": "banque",
-  "dest": "courses",
-  "costs": 0.0,
-  "categ": "courses",
-  "validated": true,
-  "redundancy": null,
-  "user_id": 1
-}
-```
-
-### Parameters POST /get/operations/partial
-
-
-
-## Routes Data returned
-
-### Data GET /get/operations/all
-
-```json
-[
-  {
-    "id": 1,
-    "operations_date": "2023-10-01",
-    "amount": 100.0,
-    "source": "banque",
-    "dest": "courses",
-    "costs": 0.0,
-    "categ": "courses",
-    "validated": true,
-    "redundancy": null,
-    "user_id": 1
-  }
-]
-```
+| Action | Méthode | Route | Type de données retournée | Description |
+|:------:|:-------:|:------|:--------------------------|:------------|
+| Select | GET | /operations | JSON | Get all operations |
+| Select | POST | /operations/get | JSON | Get a part of the operations |
+| Create | POST | /operations | JSON | Create one or multiple operations |
+| Create | POST | /operation | JSON | Create only one operation |
+| Update | PUT | /operations | JSON | Update one or multiple operations |
+| Delete | DELETE | /operations | JSON | Delete one or multiple operations |
 
 # Technologies utilisées
 
@@ -229,11 +128,12 @@ Content-Type: application/json
   - [ExpressJS](https://www.npmjs.com/package/express)
   - [dotenv](https://www.npmjs.com/package/dotenv)
   - [strftime](https://www.npmjs.com/package/strftime)
-  - [ejs](https://www.npmjs.com/package/ejs)
   - [path](https://www.npmjs.com/package/path)
   - [node postgres](https://www.npmjs.com/package/pg)
 - Base de données :
   - [PostgreSQL](https://www.postgresql.org/)
+- Deployement :
+  - [Docker](https://www.docker.com/)
 
 # Installation
 
