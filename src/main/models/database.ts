@@ -241,8 +241,9 @@ function prepareDelete(table: QueryTable, whereValues: {}, strict: boolean = tru
 
 
 /**
- * Normalizes the key by removing the prefix
- * @param key 
+ * Normalizes the key by adding the prefix of the table if it is not already present
+ * @param key The key to normalize
+ * @param table The table to normalize the key for
  * @returns 
  */
 function normalyzeKey(key: OperationsType|LoansType|TimetableType, table: QueryTable): string {
