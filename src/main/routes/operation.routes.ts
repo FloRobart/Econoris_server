@@ -64,12 +64,8 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.get('/operations', async (req: Request, res: Response) => {
         const table: QueryTable = "operations";
-        console.log("req.query :", req.query);
         const jsonRequest = Controller.parseSelectUrl(table, req.query);
         const jsonResponse = await Controller.executeSelect(table, jsonRequest);
-        
-        console.log("jsonrequest :", jsonRequest);
-        console.log("jsonresponse :", jsonResponse);
 
         res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
     });
