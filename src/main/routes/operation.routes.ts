@@ -1,5 +1,5 @@
 import { Express, Request, Response } from "express";
-import * as Controller from "../controllers/Controller";
+import * as SelectController from "../controllers/SelectController";
 import { QueryTable } from "../models/types";
 
 
@@ -64,8 +64,8 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.get('/operations', async (req: Request, res: Response) => {
         const table: QueryTable = "operations";
-        const jsonRequest = Controller.parseSelectUrl(table, req.query);
-        const jsonResponse = await Controller.executeSelect(table, jsonRequest);
+        const jsonRequest = SelectController.parseSelectUrl(table, req.query);
+        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
         res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
     });
@@ -133,8 +133,8 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.get('/operation/:id', async (req: Request, res: Response) => {
         const table: QueryTable = "operations";
-        const jsonRequest = Controller.parseSelectUrl(table, { ...req.params, ...req.query });
-        const jsonResponse = await Controller.executeSelect(table, jsonRequest);
+        const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query });
+        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
         res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
     });
@@ -183,8 +183,8 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.post('/operations/get', async (req: Request, res: Response) => {
         const table: QueryTable = "operations";
-        const jsonRequest = Controller.correctedJsonSelectRequest(table, req.body);
-        const jsonResponse = await Controller.executeSelect(table, jsonRequest);
+        const jsonRequest = SelectController.correctedJsonSelectRequest(table, req.body);
+        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
         res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
     });
