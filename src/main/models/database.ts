@@ -1,45 +1,11 @@
 import pg from 'pg';
-import { Columns } from "./constantes";
+import { Query, QueryTable, WhereValuesType, OperationsType, LoansType, TimetableType, JSONRequest } from "./types";
 
 const { Client } = pg;
 let client: pg.Client;
 
 
 
-/*=======*/
-/* Types */
-/*=======*/
-export type QueryType = "SELECT" | "INSERT" | "UPDATE" | "DELETE";
-export type QueryTable = "users" | "operations" | "loans" | "timetable";
-export type Query = { text: string; values: (string | number | boolean | null)[]; };
-export type AggregationType = "SUM" | "AVG" | "COUNT" | "DISTINCT" | "MAX" | "MIN";
-export type ComparisonOperatorType = "=" | ">" | "<" | "<=" | ">=" | "<>" | "!=" | "LIKE";
-export type LogicalOperatorType = "AND" | "OR";
-export type WhereValuesType = {
-    key: UsersType|OperationsType|LoansType|TimetableType,
-    comparisonOperator?: ComparisonOperatorType,
-    value: string|number|boolean|null,
-    logicalOperator?: LogicalOperatorType
-};
-
-/* Operations types */
-export type OperationsType = "*"|"id"           |"date"           |"name"           |"amount"           |"source"           |"dest"           |"costs"           |"categ"           |"validated"           |"redundancy"           |"createdat"           |"userid"|
-                                 "operations_id"|"operations_date"|"operations_name"|"operations_amount"|"operations_source"|"operations_dest"|"operations_costs"|"operations_categ"|"operations_validated"|"operations_redundancy"|"operations_createdat"|"operations_userid";
-/* Users types */
-export type UsersType = "*"|"id"      |"name"      |"password"      |"email"      |"pp"      |"macadresse"      |"ipadresse"      |"scheduletime"      |"createdat"|
-                            "users_id"|"users_name"|"users_password"|"users_email"|"users_pp"|"users_macadresse"|"users_ipadresse"|"users_scheduletime"|"users_createdat";
-/* Loans types */
-export type LoansType = "*"|"id"      |"date"      |"borrower"      |"amount"      |"refundedamount"      |"loanreason"      |"createdat"      |"userid"|
-                            "loans_id"|"loans_date"|"loans_borrower"|"loans_amount"|"loans_refundedamount"|"loans_loanreason"|"loans_createdat"|"loans_userid";
-/* Timetable types */
-export type TimetableType = "*"|"id"          |"timetabledate"          |"hoursnumber"          |"hourlyrate"          |"createdat"          |"userid"|
-                                "timetable_id"|"timetable_timetabledate"|"timetable_hoursnumber"|"timetable_hourlyrate"|"timetable_createdat"|"timetable_userid";
-
-
-
-/*==========*/
-/* Function */
-/*==========*/
 /**
  * Connects the server to the database
  * @async
@@ -106,65 +72,44 @@ export async function executeQuery(query: Query): Promise<any[]|null> {
 
 
 /**
- * Prepares a query for execution
- * @param queryType 
- * @param table 
- * @param whereValues 
- * @returns The prepared query with the values. If the query type is not supported, it returns an empty Query object.
- */
-export function prepareQuery(queryType: QueryType, table: QueryTable, jsonParam: { key: (UsersType|OperationsType|LoansType|TimetableType)[], aggregation?: AggregationType, limit?: number, offset?: number, whereValues?: WhereValuesType[], updateValues?: [[]] }): Query {
-    /* Validation des paramètres */
-
-    /* Redirection */    
-    if (queryType == "SELECT") {
-        let keys: (UsersType|OperationsType|LoansType|TimetableType)[] = jsonParam.key || ["*"];
-        let whereValues: WhereValuesType[] = jsonParam.whereValues || [];
-        let limit: number = jsonParam.limit || null;
-        let offset: number = jsonParam.offset || 0;
-        let aggregation: AggregationType = jsonParam.aggregation;
-
-        return prepareSelect(table, keys, whereValues, limit, offset, aggregation);
-    } else if (queryType == "INSERT") {
-        let keys: (UsersType|OperationsType|LoansType|TimetableType)[] = jsonParam.key || [];
-        let updateValues = jsonParam.updateValues || [];
-
-        //return prepareInsert(table);
-    } else if (queryType == "UPDATE") {
-        //return prepareUpdate(table, keys, whereValues);
-    } else if (queryType == "DELETE") {
-        //return prepareDelete(table, whereValues, strict);
-    } else if (queryType == "DISTINCT" || queryType == "SUM" || queryType == "AVG") {
-        // return prepareSelect(table, whereValues, strict, limit, offset, false, liaison, selectValues, queryType);
-    }
-
-    return { text: "", values: [] };
-}
-
-
-/**
- * Prepares a select query for execution
+ * 
  * @param table The table to select from
- * @param whereValues The values to use in the query
- * @param strict Whether to use strict comparison or not
- * @param limit The maximum number of rows to return
- * @param offset The number of rows to skip before starting to return rows
- * @param orderBy The column to order the results by
- * @param countOnly Whether to count the number of rows only
- * @param aggregation 'SUM', 'AVG', 'COUNT', 'DISTINCT', 'MAX', 'MIN'
- * @param comparisonOperator '=', '>', '<', '<=', '>=', '<>', '!=', 'LIKE'
- * @param logicalOperator 'AND', 'OR', 'NOT'
+ * @param jsonRequest Valid JSON object with the structure shown in the example
  * @returns The prepared query with the values
+ * @example
+ * {
+ *     "keys": ["*"],
+ *     "aggregation": undefined,
+ *     "limit": n,
+ *     "offset": n,
+ *     "whereValues": [
+ *         {
+ *             "key": "x",
+ *             "comparisonOperator": "x",
+ *             "value": "x|n",
+ *             "logicalOperator": "x"
+ *         },
+ *     ],
+ *     "warnings": [
+ *        "Description of the warnings -> action executed",
+ *        ...
+ *     ],
+ *     "errors": [
+ *        "Description of the error",
+ *        ...
+ *     ]
+ * }
  */
-function prepareSelect(table: QueryTable, selectValues: (UsersType|OperationsType|LoansType|TimetableType)[], whereValues: WhereValuesType[], limit: number = null, offset: number = 0, aggregation?: AggregationType): Query {
+export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Query {
     let query = "SELECT";
     let values: (string|number|boolean|null)[] = [];
 
     /* Select */
-    for (const index in selectValues) {
-        query += aggregation ? ` ${aggregation}(` : " ";
-        query += selectValues[index] != "*" ? ((!selectValues[index].includes("_") ? `${table}_` : "") + `${selectValues[index]} AS ${selectValues[index]}`) : "*";
-        query += aggregation ? `) AS sum_${selectValues[index]}` : "";
-        query += ","
+    for (const index in jsonRequest.keys) {
+        const key = normalyzeKey(jsonRequest.keys[index], table);
+        query += jsonRequest.aggregation ? ` ${jsonRequest.aggregation}(` : " ";
+        query += key;
+        query += jsonRequest.aggregation ? `) AS ${jsonRequest.aggregation}_${key},` : ",";
     }
     query = query.slice(0, -1); // Remove the last comma
 
@@ -172,24 +117,23 @@ function prepareSelect(table: QueryTable, selectValues: (UsersType|OperationsTyp
     query += ` FROM ${table}`;
 
     /* Where */
-    for (const index in whereValues) {
-        const whereObject = whereValues[index];
-        const value = whereObject.value;
-        if (Columns[table].includes(whereObject.key) && whereObject.key != "*" && value !== undefined && value !== null && value !== "") {
-            query += parseInt(index) == 0 ? " WHERE" : "";
-            const key = normalyzeKey(whereObject.key, table);
-            const comparisonOperator = whereObject.comparisonOperator || "=";
-            const logicalOperator = whereObject.logicalOperator || "AND";
+    for (const index in jsonRequest.whereValues) {
+        const whereObject        = jsonRequest.whereValues[index];
+        const key                = normalyzeKey(whereObject.key, table);
+        const comparisonOperator = whereObject.comparisonOperator || "=";
+        const value              = whereObject.value;
+        const logicalOperator    = whereObject.logicalOperator || "AND";
 
-            query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
-            query += parseInt(index) != whereValues.length - 1 ? logicalOperator : "";
-            values.push(comparisonOperator == "LIKE" ? `%${value}%` : value);
-        }
+        query += parseInt(index) == 0 ? " WHERE" : "";
+
+        query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
+        query += parseInt(index) != jsonRequest.whereValues.length - 1 ? logicalOperator : "";
+        values.push(comparisonOperator == "LIKE" ? `%${value}%` : value);
     }
 
     query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2};`;
-    values.push(limit >= 0 ? limit : null);
-    values.push(offset >= 0 ? offset : 0);
+    values.push(jsonRequest.limit as number|null);
+    values.push(jsonRequest.offset as number);
 
     console.log("select query  :", query);
     console.log("select values :", values);
@@ -301,6 +245,7 @@ function prepareDelete(table: QueryTable, whereValues: {}, strict: boolean = tru
  * @param key 
  * @returns 
  */
-function normalyzeKey(key: UsersType|OperationsType|LoansType|TimetableType, table: QueryTable): string {
+function normalyzeKey(key: OperationsType|LoansType|TimetableType, table: QueryTable): string {
+    if (key == "*") return key;
     return key.includes(`${table}_`) ? key : `${table}_${key}`;
 }

@@ -1,5 +1,6 @@
 import { Express, Request, Response } from "express";
-import { createOperation, deleteOperation, getOperations, updateOperation, parseQuery } from "../controllers/OperationsController";
+import * as Controller from "../controllers/Controller";
+import { QueryTable } from "../models/types";
 
 
 
@@ -17,9 +18,74 @@ export function initOperationsRoutes(app: Express): void {
      * /operations:
      *   get:
      *     summary: Get all operations
+     *     description: Get all operations; You can filter the results with the parameters in the query string
      *     tags:
      *       - Operations
      *     parameters:
+     *       - in: query
+     *         name: limit
+     *         description: Limit the number of results
+     *         required: false
+     *         example: 10
+     *         schema:
+     *           type: integer
+     *       - in: query
+     *         name: offset
+     *         description: Offset the results
+     *         required: false
+     *         example: 0
+     *         schema:
+     *           type: integer
+     *     responses:
+     *       200:
+     *         description: List of operations
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#components/schemas/OperationResponseBody"
+     *       204:
+     *         description: No results found in database
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#components/schemas/OperationResponseBodyEmpty"
+     *       400:
+     *         description: Bad request. Change your request for to fix this error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/Error"
+     *       500:
+     *         description: Internal server error. Please create an issue on Github
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
+     */
+    app.get('/operations', async (req: Request, res: Response) => {
+        const table: QueryTable = "operations";
+        const jsonRequest = Controller.parseSelectUrl(table, req.query);
+        const jsonResponse = await Controller.executeSelect(table, jsonRequest);
+
+        res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
+    });
+
+    /**
+     * @swagger
+     * /operation/{id}:
+     *   get:
+     *     summary: Get operation with id
+     *     tags:
+     *       - Operations
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         description: ID of the operation
+     *         required: true
+     *         schema:
+     *           type: integer
+     *           minimum: 1
+     *           example: 1
      *       - in: query
      *         name: limit
      *         description: Limit the number of results
@@ -63,21 +129,14 @@ export function initOperationsRoutes(app: Express): void {
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: "#/components/schemas/Error"
+     *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
      */
-    app.get('/operations', async (req: Request, res: Response) => {
-        const request = JSON.parse(JSON.stringify(req.method == "GET" ? req.query : req.body));
-        //const jsonParam = req.method == "GET" ? { whereValues: [] } : JSON.parse(JSON.stringify(req.body));
+    app.get('/operation/:id', async (req: Request, res: Response) => {
+        const table: QueryTable = "operations";
+        const jsonRequest = Controller.parseSelectUrl(table, { ...req.params, ...req.query });
+        const jsonResponse = await Controller.executeSelect(table, jsonRequest);
 
-        const jsonParam = parseQuery(request)
-
-        const rows = getOperations(jsonParam);
-
-        if (rows === null || !(rows instanceof Array)) {
-            res.status(500).json({"error": "verifying the parameters passed in the url"});
-        } else {
-            res.status(rows.length == 0 ? 204 : 200).json(rows);
-        }
+        res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
     });
 
     /**
@@ -120,9 +179,15 @@ export function initOperationsRoutes(app: Express): void {
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: "#/components/schemas/Error"
+     *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
      */
-    app.post('/operations/get', async (req: Request, res: Response) => { getOperations(req, res); });
+    app.post('/operations/get', async (req: Request, res: Response) => {
+        const table: QueryTable = "operations";
+        const jsonRequest = Controller.correctedJsonSelectRequest(table, req.body);
+        const jsonResponse = await Controller.executeSelect(table, jsonRequest);
+
+        res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
+    });
 
 
     /*========*/
@@ -166,7 +231,9 @@ export function initOperationsRoutes(app: Express): void {
      *             schema:
      *               $ref: "#/components/schemas/Error"
      */
-    app.post('/operations', async (req: Request, res: Response) => { createOperation(req, res); });
+    app.post('/operations', async (req: Request, res: Response) => {
+
+    });
 
     /**
      * @swagger
@@ -202,7 +269,9 @@ export function initOperationsRoutes(app: Express): void {
      *             schema:
      *               $ref: "#/components/schemas/Error"
      */
-    app.post('/operation', async (req: Request, res: Response) => { createOperation(req, res); });
+    app.post('/operation', async (req: Request, res: Response) => {
+
+    });
 
 
     /*========*/
@@ -253,7 +322,9 @@ export function initOperationsRoutes(app: Express): void {
      *             schema:
      *               $ref: "#/components/schemas/Error"
      */
-    app.put('/operations', async (req: Request, res: Response) => { updateOperation(req, res); });
+    app.put('/operations', async (req: Request, res: Response) => {
+
+    });
 
 
     /*========*/
@@ -304,5 +375,7 @@ export function initOperationsRoutes(app: Express): void {
      *             schema:
      *               $ref: "#/components/schemas/Error"
      */
-    app.delete('/operations', async (req: Request, res: Response) => { deleteOperation(req, res); });
+    app.delete('/operations', async (req: Request, res: Response) => {
+
+    });
 }
