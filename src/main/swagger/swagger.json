@@ -271,7 +271,7 @@
                 }
             }
         },
-        "/operations/{id}": {
+        "/operation/{id}": {
             "get": {
                 "summary": "Get operation with id",
                 "tags": [
@@ -353,7 +353,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Error"
+                                    "$ref": "#/components/schemas/OperationResponseBodyEmpty"
                                 }
                             }
                         }
@@ -418,7 +418,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Error"
+                                    "$ref": "#/components/schemas/OperationResponseBodyEmpty"
                                 }
                             }
                         }
