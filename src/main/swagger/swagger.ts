@@ -81,6 +81,8 @@
  *             enum: ["id","date","name","amount","source","dest","costs","categ","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_dest","operations_costs","operations_categ","operations_validated","operations_redundancy"]
  *         aggregation:
  *           type: string
+ *           enum: [SUM, AVG, COUNT, MIN, MAX]
+ *           example: SUM
  *         limit:
  *           type: integer
  *         offset:
@@ -143,6 +145,35 @@
  *                 example: AND
  *     OperationRequestBodyDelete:
  *       $ref: "#/components/schemas/OperationsWhereValues"
+ *     OperationResponseBody:
+ *       type: object
+ *       properties:
+ *         rows:
+ *           type: array
+ *           items:
+ *             $ref: "#components/schemas/Operations"
+ *         warnings:
+ *           type: array
+ *           items:
+ *             type: string
+ *             example: "???"
+ *         errors:
+ *           $ref: "#components/schemas/Error"
+ *     OperationResponseBodyEmpty:
+ *       type: object
+ *       properties:
+ *         rows:
+ *           type: array
+ *           items:
+ *             type: string
+ *           example: []
+ *         warnings:
+ *           type: array
+ *           items:
+ *             type: string
+ *             example: "???"
+ *         errors:
+ *           $ref: "#components/schemas/Error"
  *     OperationsKeysValues:
  *       type: object
  *       required:
@@ -257,19 +288,8 @@
  * components:
  *   schemas:
  *     Error:
- *       type: object
- *       required:
- *         - error_code
- *         - error_message
- *       properties:
- *         error_code:
- *           type: integer
- *           enum: [0, 1, 2, 3, 4]
- *           example: 2
- *         error_message:
- *           type: string
- *           enum: ["???", "???", "???", "???", "???"]
- *           example: "???"
- *         error_stacktrace:
- *           type: string
+ *       type: array
+ *       items:
+ *         type: string
+ *         example: "???"
  */
