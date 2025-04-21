@@ -131,7 +131,7 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Que
         values.push(comparisonOperator == "LIKE" ? `%${value}%` : value);
     }
 
-    query += ` LIMIT $${values.length + 1} OFFSET $${values.length + 2};`;
+    query += `LIMIT $${values.length + 1} OFFSET $${values.length + 2};`;
     values.push(jsonRequest.limit as number|null);
     values.push(jsonRequest.offset as number);
 

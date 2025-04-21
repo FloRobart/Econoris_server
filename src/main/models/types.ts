@@ -37,3 +37,5 @@ export type LoansType = "*"|"id"      |"date"      |"borrower"      |"amount"   
 /* Timetable types */
 export type TimetableType = "*"|"id"          |"timetabledate"          |"hoursnumber"          |"hourlyrate"          |"createdat"          |"userid"|
                                 "timetable_id"|"timetable_timetabledate"|"timetable_hoursnumber"|"timetable_hourlyrate"|"timetable_createdat"|"timetable_userid";
+
+export type ColumnsType = OperationsType|LoansType|TimetableType;

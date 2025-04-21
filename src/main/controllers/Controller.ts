@@ -1,5 +1,5 @@
 import { executeQuery, getSelectQuery } from "../models/database";
-import { JSONRequest, JSONResponse, QueryTable } from "../models/types";
+import { JSONRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
 import * as Constantes from "../models/constantes";
 
 
@@ -110,7 +110,7 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
     let limit: any = request.limit || null;
     let offset: any = request.offset || 0;
     let comparisonOperator = request.comparisonOperator || "=";
-    let logicalOperator = request.logicalOperator || "AND";
+    let logicalOperator = request.logicalOperator?.toUpperCase() || "AND";
 
     /* Verify limit */
     limit = limit instanceof Array ? limit[limit.length - 1] : limit;
@@ -120,18 +120,7 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
     offset = offset instanceof Array ? offset[offset.length - 1] : offset;
     offset = !Number.isNaN(parseInt(offset, 10)) ? parseInt(offset, 10) : 0;
 
-    /* Verify comparison operator */
-    if (!Constantes.ComparisonOperator.includes(comparisonOperator)) {
-        comparisonOperator = "=";
-        request.warnings.push("Comparison operator : " + comparisonOperator + " not in " + Constantes.ComparisonOperator + " -> replaced by '='");
-    }
-
-    /* Verify logical operator */
-    if (!Constantes.LogicalOperator.includes(logicalOperator)) {
-        logicalOperator = "AND";
-        request.warnings.push("Logical operator : " + logicalOperator + " not in " + Constantes.LogicalOperator + " -> replaced by 'AND'");
-    }
-
+    /* JSON Request */
     let jsonRequest: JSONRequest = {
         keys: ["*"],
         aggregation: undefined,
@@ -142,28 +131,42 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
         errors: []
     };
 
+    /* Verify comparison operator */
+    if (!Constantes.ComparisonOperator.includes(comparisonOperator)) {
+        jsonRequest.warnings.push("Comparison operator : '" + comparisonOperator + "' not in [" + Constantes.ComparisonOperator + "] -> replaced by '='");
+        comparisonOperator = "=";
+    }
 
-    if (request !== undefined) {
-        for (const index in request) {
-            const key = request[index].key;
-            const value = request[index].value;
+    /* Verify logical operator */
+    if (!Constantes.LogicalOperator.includes(logicalOperator)) {
+        jsonRequest.warnings.push("Logical operator : '" + logicalOperator + "' not in [" + Constantes.LogicalOperator + "] -> replaced by 'AND'");
+        logicalOperator = "AND";
+    }
 
-            if (key == undefined || value == undefined) {
-                jsonRequest.warnings.push( key == undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
-                continue;
-            }
+    /* Verify keys */
+    delete request.limit;
+    delete request.offset;
+    delete request.comparisonOperator;
+    delete request.logicalOperator;
 
-            if (Constantes.Columns[table].includes(key)) {
-                jsonRequest.whereValues.push({
-                    key: key,
-                    comparisonOperator: comparisonOperator,
-                    value: value,
-                    logicalOperator: logicalOperator
-                });
-            } else {
-                jsonRequest.warnings.push("Key not found in table " + table + " : " + key + "-> ignored");
-            }
+    for (let key in request) {
+        let value = request[key];
+        key = key.toLowerCase();
 
+        if (key === undefined || value === undefined) {
+            jsonRequest.warnings.push( key === undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
+            continue;
+        }
+
+        if (Constantes.Columns[table].includes(key)) {
+            jsonRequest.whereValues.push({
+                key: key as ColumnsType,
+                comparisonOperator: comparisonOperator,
+                value: value instanceof Array ? value[value.length - 1] : value,
+                logicalOperator: logicalOperator
+            });
+        } else {
+            jsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
         }
     }
 
@@ -202,13 +205,13 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
  */
 export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONRequest): JSONRequest {
     let newJsonRequest: JSONRequest = {
-        keys: jsonRequest.keys || ["*"],
-        aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation) ? jsonRequest.aggregation : undefined,
+        keys: [],
+        aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase()) ? jsonRequest.aggregation : undefined,
         limit: jsonRequest.limit || null,
         offset: jsonRequest.offset || 0,
         whereValues: [],
-        warnings: [],
-        errors: []
+        warnings: jsonRequest.warnings || [],
+        errors: jsonRequest.errors || []
     };
 
     /* Verify limit */
@@ -223,33 +226,33 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONR
 
     /* Verify keys */
     for (const index in jsonRequest.keys) {
-        const key = jsonRequest.keys[index];
-        if (key == undefined) {
+        const key = jsonRequest.keys[index]?.toLowerCase();
+        if (key === undefined) {
             newJsonRequest.warnings.push("key n°" + index + " undefined -> ignored");
             continue;
         }
 
         if (Constantes.Columns[table].includes(key) || key == "*") {
-            newJsonRequest.keys.push(key);
+            newJsonRequest.keys.push(key as ColumnsType);
         } else {
-            newJsonRequest.warnings.push("Key : " + key + " not in " + Constantes.Columns[table] + " and not '*' -> ignored");
+            newJsonRequest.warnings.push("Key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
         }
     }
 
-    if (newJsonRequest.keys.length == 0) {
+    if (newJsonRequest.keys.length === 0) {
         newJsonRequest.warnings.push("No key found -> '*' added");
         newJsonRequest.keys.push("*");
     }
 
     /* Verify where values */
     for (const index in jsonRequest.whereValues) {
-        const key = jsonRequest.whereValues[index].key;
+        const key = jsonRequest.whereValues[index].key?.toLowerCase();
         const value = jsonRequest.whereValues[index].value;
         const comparisonOperator = jsonRequest.whereValues[index].comparisonOperator;
-        const logicalOperator = jsonRequest.whereValues[index].logicalOperator;
+        const logicalOperator = jsonRequest.whereValues[index].logicalOperator?.toUpperCase();
 
-        if (key == undefined || value == undefined) {
-            newJsonRequest.warnings.push( key == undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
+        if (key === undefined || value === undefined) {
+            newJsonRequest.warnings.push( key === undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
             continue;
         }
 
@@ -257,19 +260,19 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONR
             if (Constantes.ComparisonOperator.includes(comparisonOperator) || comparisonOperator == undefined) {
                 if (Constantes.LogicalOperator.includes(logicalOperator) || logicalOperator == undefined) {
                     newJsonRequest.whereValues.push({
-                        key: key,
+                        key: key as ColumnsType,
                         comparisonOperator: comparisonOperator || "=",
                         value: value,
-                        logicalOperator: logicalOperator || "AND"
+                        logicalOperator: (logicalOperator || "AND") as LogicalOperatorType
                     });
                 } else {
-                    newJsonRequest.warnings.push("Logical operator : " + logicalOperator + " not in " + Constantes.LogicalOperator + " for key : " + key + " -> replaced by 'AND'");
+                    newJsonRequest.warnings.push("Logical operator : '" + logicalOperator + "' not in [" + Constantes.LogicalOperator + "] for key : '" + key + "' -> replaced by 'AND'");
                 }
             } else {
-                jsonRequest.warnings.push("Comparison operator : " + comparisonOperator + " not in " + Constantes.ComparisonOperator + " for key : " + key + " -> replaced by '='");
+                newJsonRequest.warnings.push("Comparison operator : '" + comparisonOperator + "' not in [" + Constantes.ComparisonOperator + "] for key : '" + key + "' -> replaced by '='");
             }
         } else {
-            jsonRequest.warnings.push("Key : " + key + " not in " + Constantes.Columns[table] + " -> ignored");
+            newJsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
         }
     }
 
