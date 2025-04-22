@@ -67,7 +67,7 @@ export function initOperationsRoutes(app: Express): void {
         const jsonRequest = SelectController.parseSelectUrl(table, req.query);
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
-        res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
+        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
     });
 
     /**
@@ -136,7 +136,7 @@ export function initOperationsRoutes(app: Express): void {
         const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query });
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
-        res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
+        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
     });
 
     /**
@@ -186,7 +186,7 @@ export function initOperationsRoutes(app: Express): void {
         const jsonRequest = SelectController.correctedJsonSelectRequest(table, req.body);
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
-        res.status(jsonResponse.errors.length > 0 ? 500 : (jsonResponse.rows.length == 0 ? 204 : 200)).json(jsonResponse);
+        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
     });
 
 

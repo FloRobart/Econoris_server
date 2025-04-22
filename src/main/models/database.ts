@@ -109,12 +109,12 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Que
         const key = normalyzeKey(jsonRequest.keys[index], table);
         query += jsonRequest.aggregation ? ` ${jsonRequest.aggregation}(` : " ";
         query += key;
-        query += jsonRequest.aggregation ? `) AS ${jsonRequest.aggregation}_${key},` : ",";
+        query += jsonRequest.aggregation ? `) AS ${jsonRequest.aggregation.toLowerCase()}_${key == "*" ? "all" : key},` : ",";
     }
     query = query.slice(0, -1); // Remove the last comma
 
     /* From */
-    query += ` FROM ${table}`;
+    query += ` FROM ${table} `;
 
     /* Where */
     for (const index in jsonRequest.whereValues) {
@@ -124,7 +124,7 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Que
         const value              = whereObject.value;
         const logicalOperator    = whereObject.logicalOperator || "AND";
 
-        query += parseInt(index) == 0 ? " WHERE" : "";
+        query += parseInt(index) == 0 ? "WHERE" : "";
 
         query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
         query += parseInt(index) != jsonRequest.whereValues.length - 1 ? logicalOperator : "";
