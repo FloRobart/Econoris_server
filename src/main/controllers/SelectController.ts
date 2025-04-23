@@ -1,6 +1,7 @@
 import { executeQuery, getSelectQuery } from "../models/database";
 import { JSONRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
 import * as Constantes from "../models/constantes";
+import { createJsonResponse } from "./Controller";
 
 
 
@@ -65,11 +66,7 @@ import * as Constantes from "../models/constantes";
 export async function executeSelect(table: QueryTable, jsonRequest: JSONRequest): Promise<JSONResponse> {
     const rows = await executeQuery(getSelectQuery(table, jsonRequest));
 
-    const jsonResponse = {
-        rows: rows || [],
-        warnings: jsonRequest.warnings || [],
-        errors: jsonRequest.errors || [],
-    }
+    const jsonResponse = createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
 
     if (rows === null) { jsonResponse.errors.push("An unknown error occurred while executing the query"); }
 
