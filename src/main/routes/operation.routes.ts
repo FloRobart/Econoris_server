@@ -106,18 +106,13 @@ export function initOperationsRoutes(app: Express): void {
      *         content:
      *           application/json:
      *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: "#components/schemas/Operations"
+     *               $ref: "#components/schemas/OperationResponseBody"
      *       204:
      *         description: No results found in database
      *         content:
      *           application/json:
      *             schema:
-     *              type: array
-     *              items:
-     *                type: string
-     *              example: []
+     *               $ref: "#components/schemas/OperationResponseBodyEmpty"
      *       400:
      *         description: Bad request. Change your request for to fix this error
      *         content:
@@ -156,18 +151,13 @@ export function initOperationsRoutes(app: Express): void {
      *         content:
      *           application/json:
      *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: "#components/schemas/Operations"
+     *               $ref: "#components/schemas/OperationResponseBody"
      *       204:
      *         description: No results found in database
      *         content:
      *           application/json:
      *             schema:
-     *              type: array
-     *              items:
-     *                type: string
-     *              example: []
+     *               $ref: "#components/schemas/OperationResponseBodyEmpty"
      *       400:
      *         description: Bad request. Change your request for to fix this error
      *         content:

@@ -156,7 +156,8 @@
  *           type: array
  *           items:
  *             type: string
- *             example: "???"
+ *             Description: "Description of the warnings -> action executed"
+ *             example: "Logical operator : 'example' not in [AND,OR] for key : 'id' -> replaced by 'AND'"
  *         errors:
  *           $ref: "#components/schemas/Error"
  *     OperationResponseBodyEmpty:
@@ -171,7 +172,8 @@
  *           type: array
  *           items:
  *             type: string
- *             example: "???"
+ *             Description: "Description of the warnings -> action executed"
+ *             example: "Logical operator : 'example' not in [AND,OR] for key : 'id' -> replaced by 'AND'"
  *         errors:
  *           $ref: "#components/schemas/Error"
  *     OperationsKeysValues:
