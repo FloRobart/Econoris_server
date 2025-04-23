@@ -224,12 +224,12 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONR
     /* Verify keys */
     for (const index in jsonRequest.keys) {
         const key = jsonRequest.keys[index]?.toLowerCase();
-        if (key === undefined) {
-            newJsonRequest.warnings.push("key n°" + index + " undefined -> ignored");
+        if (key === undefined || key === null || key === "") {
+            newJsonRequest.warnings.push("key n°" + index + " undefined, null or empty -> ignored");
             continue;
         }
 
-        if (Constantes.Columns[table].includes(key) || key == "*") {
+        if (Constantes.Columns[table].includes(key) || key === "*") {
             newJsonRequest.keys.push(key as ColumnsType);
         } else {
             newJsonRequest.warnings.push("Key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
@@ -248,8 +248,8 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONR
         const comparisonOperator = jsonRequest.whereValues[index].comparisonOperator;
         const logicalOperator = jsonRequest.whereValues[index].logicalOperator?.toUpperCase();
 
-        if (key === undefined || value === undefined) {
-            newJsonRequest.warnings.push( key === undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
+        if (key === undefined || key === null || key === "" || value === undefined || value === null || value === "") {
+            newJsonRequest.warnings.push((key === undefined || key === null || key === "") ? ("Key undefined, null or empty for value : '" + value + "' -> ignored") : ("Value undefined, null or empty for key : '" + key + "' -> ignored"));
             continue;
         }
 

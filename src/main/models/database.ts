@@ -109,7 +109,7 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Que
         const key = normalyzeKey(jsonRequest.keys[index], table);
         query += jsonRequest.aggregation ? ` ${jsonRequest.aggregation}(` : " ";
         query += key;
-        query += jsonRequest.aggregation ? `) AS ${jsonRequest.aggregation.toLowerCase()}_${key == "*" ? "all" : key},` : ",";
+        query += jsonRequest.aggregation ? `) AS ${jsonRequest.aggregation.toLowerCase()}_${key === "*" ? "all" : key},` : ",";
     }
     query = query.slice(0, -1); // Remove the last comma
 
@@ -124,11 +124,11 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Que
         const value              = whereObject.value;
         const logicalOperator    = whereObject.logicalOperator || "AND";
 
-        query += parseInt(index) == 0 ? "WHERE" : "";
+        query += parseInt(index) === 0 ? "WHERE" : "";
 
         query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
-        query += parseInt(index) != jsonRequest.whereValues.length - 1 ? logicalOperator : "";
-        values.push(comparisonOperator == "LIKE" ? `%${value}%` : value);
+        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : "";
+        values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
     }
 
     query += `LIMIT $${values.length + 1} OFFSET $${values.length + 2};`;
