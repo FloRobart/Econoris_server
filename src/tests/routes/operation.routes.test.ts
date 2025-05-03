@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { connectToDatabase, closeDatabaseConnection, executeQuery } from "../../main/models/database";
+import * as SelectController from "../../main/controllers/SelectController";
 import http from "http";
 require('dotenv').config();
 
@@ -10,6 +11,16 @@ const DB_PORT = process.env.DB_PORT;
 const DB_NAME = process.env.DB_NAME;
 
 describe("Operations routes test", () => {
+    const operations = [
+        { operations_id: 1, operations_name: 'Operation 1', operations_amount: "100.00", operations_source: "Source A", operations_dest: "Dest B", operations_costs: "10.00", operations_categ: "Categ A", operations_validated: true , operations_redundancy: null, operations_userid: 1 },
+        { operations_id: 2, operations_name: 'Operation 2', operations_amount: "200.00", operations_source: "Source A", operations_dest: "Dest A", operations_costs: "20.00", operations_categ: "Categ B", operations_validated: true , operations_redundancy: null, operations_userid: 2 },
+        { operations_id: 3, operations_name: 'Operation 3', operations_amount: "150.00", operations_source: "Source C", operations_dest: "Dest C", operations_costs: "15.00", operations_categ: "Categ B", operations_validated: true , operations_redundancy: null, operations_userid: 1 },
+        { operations_id: 4, operations_name: 'Operation 4', operations_amount: "250.00", operations_source: "Source D", operations_dest: "Dest A", operations_costs: "25.00", operations_categ: "Categ B", operations_validated: false, operations_redundancy: null, operations_userid: 2 },
+        { operations_id: 5, operations_name: 'Operation 5', operations_amount: "300.00", operations_source: "Source E", operations_dest: "Dest B", operations_costs: "30.00", operations_categ: "Categ C", operations_validated: true , operations_redundancy: null, operations_userid: 1 },
+        { operations_id: 6, operations_name: 'Operation 6', operations_amount: "400.00", operations_source: "Source F", operations_dest: "Dest C", operations_costs: "25.00", operations_categ: "Categ C", operations_validated: false, operations_redundancy: null, operations_userid: 2 }
+    ];
+
+
 
     beforeAll(async () => {
         /* Connect database */
@@ -117,65 +128,27 @@ describe("Operations routes test", () => {
 
 
     /**
-     * @test routes /get/operations/all
+     * @test routes GET /operations
      */
-    test("Get all operation", async () => {
-        http.get('http://localhost:8000/operations', res => {
-            let data = [];
-            const headerDate = res.headers && res.headers.date ? res.headers.date : 'no response date';
-            console.log('Status Code:', res.statusCode);
-            console.log('Date in Response header:', headerDate);
-            
-            res.on('data', chunk => {
-                data.push(chunk);
-            });
-            
-            res.on('end', () => {
-                console.log('Response ended: ');
-                const users = JSON.parse(Buffer.concat(data).toString());
-
-                console.log('Response data: ', users);
-            });
-        }).on('error', err => {
-            console.log('Error: ', err.message);
-        });
-        // const response = await getOperations({ method: "GET", query: {}, body: {}, params: {"table": "operations"}, headers: {}, get: jest.fn() } as unknown as Request, { status: (code: number) => ({ json: (data: any) => data }) } as Response);
-        // const jsonResponse = JSON.parse(JSON.stringify(response));
-
-        // /* Check response */
-        // expect(response).toBeInstanceOf(Array);
-        // expect(response).toHaveLength(6);
-    
-        // jsonResponse.forEach((operation: Object) => {
-        //     expect(operation).toHaveProperty('operations_date');
-        //     expect(operation).toHaveProperty('operations_createdat');
-        // });
-
-        // expect(response).toEqual(
-        //     expect.arrayContaining([
-        //         expect.objectContaining({ operations_id: 1, operations_name: 'Operation 1', operations_amount: "100.00", operations_source: "Source A", operations_dest: "Dest B", operations_costs: "10.00", operations_categ: "Categ A", operations_validated: true , operations_redundancy: null, operations_userid: 1 }),
-        //         expect.objectContaining({ operations_id: 2, operations_name: 'Operation 2', operations_amount: "200.00", operations_source: "Source A", operations_dest: "Dest A", operations_costs: "20.00", operations_categ: "Categ B", operations_validated: true , operations_redundancy: null, operations_userid: 2 }),
-        //         expect.objectContaining({ operations_id: 3, operations_name: 'Operation 3', operations_amount: "150.00", operations_source: "Source C", operations_dest: "Dest C", operations_costs: "15.00", operations_categ: "Categ B", operations_validated: true , operations_redundancy: null, operations_userid: 1 }),
-        //         expect.objectContaining({ operations_id: 4, operations_name: 'Operation 4', operations_amount: "250.00", operations_source: "Source D", operations_dest: "Dest A", operations_costs: "25.00", operations_categ: "Categ B", operations_validated: false, operations_redundancy: null, operations_userid: 2 }),
-        //         expect.objectContaining({ operations_id: 5, operations_name: 'Operation 5', operations_amount: "300.00", operations_source: "Source E", operations_dest: "Dest B", operations_costs: "30.00", operations_categ: "Categ C", operations_validated: true , operations_redundancy: null, operations_userid: 1 }),
-        //         expect.objectContaining({ operations_id: 6, operations_name: 'Operation 6', operations_amount: "400.00", operations_source: "Source F", operations_dest: "Dest C", operations_costs: "25.00", operations_categ: "Categ C", operations_validated: false, operations_redundancy: null, operations_userid: 2 })
-        //     ])
-        // );
+    test.skip("Test GET '/operations'", async () => {
+        const table = "operations";
+        const jsonRequest = SelectController.parseSelectUrl(table, {});
+        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
     });
 
     /**
-     * @test routes /get/operations/all with query
+     * @test routes GET /operation/:id
      */
-    test.skip("Get all operation where query'", async () => {
-        const operations = [
-            { operations_id: 1, operations_name: 'Operation 1', operations_amount: "100.00", operations_source: "Source A", operations_dest: "Dest B", operations_costs: "10.00", operations_categ: "Categ A", operations_validated: true , operations_redundancy: null, operations_userid: 1 },
-            { operations_id: 2, operations_name: 'Operation 2', operations_amount: "200.00", operations_source: "Source A", operations_dest: "Dest A", operations_costs: "20.00", operations_categ: "Categ B", operations_validated: true , operations_redundancy: null, operations_userid: 2 },
-            { operations_id: 3, operations_name: 'Operation 3', operations_amount: "150.00", operations_source: "Source C", operations_dest: "Dest C", operations_costs: "15.00", operations_categ: "Categ B", operations_validated: true , operations_redundancy: null, operations_userid: 1 },
-            { operations_id: 4, operations_name: 'Operation 4', operations_amount: "250.00", operations_source: "Source D", operations_dest: "Dest A", operations_costs: "25.00", operations_categ: "Categ B", operations_validated: false, operations_redundancy: null, operations_userid: 2 },
-            { operations_id: 5, operations_name: 'Operation 5', operations_amount: "300.00", operations_source: "Source E", operations_dest: "Dest B", operations_costs: "30.00", operations_categ: "Categ C", operations_validated: true , operations_redundancy: null, operations_userid: 1 },
-            { operations_id: 6, operations_name: 'Operation 6', operations_amount: "400.00", operations_source: "Source F", operations_dest: "Dest C", operations_costs: "25.00", operations_categ: "Categ C", operations_validated: false, operations_redundancy: null, operations_userid: 2 }
-        ];
+    test.skip("Test GET '/operation/:id'", async () => {
+        const table = "operations";
+        const jsonRequest = SelectController.parseSelectUrl(table, {});
+        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
+    });
 
+    /**
+     * @test routes POST /operations/get
+     */
+    test("Test POST '/operations/get", async () => {
         const queries = [
             /* Ordered Test */
 
@@ -217,16 +190,20 @@ describe("Operations routes test", () => {
         for (let i = 0; i < queries.length; i++) {
             console.log("i :", i);
 
-            const query = queries[i];
-            const response = "";//await getOperations({ method: "GET", query: query, body: {}, params: {}, headers: {}, get: jest.fn() } as unknown as Request, { status: (code: number) => ({ json: (data: any) => data }) } as Response);
+            const jsonRequest = SelectController.parseSelectUrl("operations", queries[i]);
+            const response = await SelectController.executeSelect("operations", jsonRequest);
             const jsonResponse = JSON.parse(JSON.stringify(response));
             const expectedResponse = queriesResponses[i] || [];
 
-            /* Check response */
-            expect(response).toBeInstanceOf(Array);
-            expect(response).toHaveLength(expectedResponse.length);
+            expect(jsonResponse).toHaveProperty("rows");
+            expect(jsonResponse).toHaveProperty("warnings");
+            expect(jsonResponse).toHaveProperty("errors");
+
+            /* Check response rows */
+            expect(jsonResponse.rows).toBeInstanceOf(Array);
+            expect(jsonResponse.rows).toHaveLength(expectedResponse.length);
         
-            jsonResponse.forEach((operation: Object) => {
+            jsonResponse.rows.forEach((operation: Object) => {
                 if (expectedResponse.length > 0) {
                     expect(operation).toHaveProperty('operations_date');
                     expect(operation).toHaveProperty('operations_createdat');
@@ -235,7 +212,7 @@ describe("Operations routes test", () => {
 
             for (let j = 0; j < expectedResponse.length; j++) {
                 const element = expectedResponse[j];
-                expect(response).toEqual(
+                expect(jsonResponse.rows).toEqual(
                     expect.arrayContaining([
                         expect.objectContaining(element),
                     ])

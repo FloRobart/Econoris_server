@@ -2,7 +2,7 @@
 import express from 'express';
 import path from 'path';
 import http from 'http';
-import { initRoutes } from './models/routes';
+import { initRoutes } from './routes/routes';
 import { normalizePort } from './models/utils';
 import { connectToDatabase } from './models/database';
 import fs from 'node:fs';

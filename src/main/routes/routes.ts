@@ -1,5 +1,5 @@
 import { Express } from "express";
-import { initOperationsRoutes } from "../routes/operation.routes";
+import { initOperationsRoutes } from "./operation.routes";
 
 
 /**

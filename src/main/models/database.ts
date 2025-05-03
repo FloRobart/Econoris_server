@@ -147,7 +147,7 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Que
  * @param insertValues The values to insert
  * @returns The prepared query with the values
  */
-function prepareInsert(table: QueryTable, insertValues: WhereValuesType[]): Query {
+function getInsertQuery(table: QueryTable, insertValues: WhereValuesType[]): Query {
     let query = `INSERT INTO ${table} (`;
     let values: (string|number|boolean|null)[] = [];
     const insertedKeys: string[] = [];
