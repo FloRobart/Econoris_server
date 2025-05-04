@@ -69,7 +69,7 @@ describe("Operations routes test", () => {
                         operations_dest VARCHAR(255),
                         operations_costs NUMERIC(12, 2) DEFAULT 0.0,
                         operations_categ VARCHAR(255),
-                        operations_validated BOOLEAN NOT NULL,
+                        operations_validated BOOLEAN DEFAULT TRUE,
                         operations_redundancy VARCHAR(25),
                         operations_createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         operations_userid INTEGER
@@ -103,19 +103,19 @@ describe("Operations routes test", () => {
         await executeQuery({
             text:  `-- Insertion des opérations de test
                 INSERT INTO operations (operations_date, operations_name, operations_amount, operations_source, operations_dest, operations_costs, operations_categ, operations_validated, operations_redundancy, operations_userid) VALUES
-                    ('2023-10-01', 'Operation 1', 100.00, 'Source A', 'Dest B', 10.00, 'Categ A', true, null, 1),
-                    ('2023-10-02', 'Operation 2', 200.00, 'Source A', 'Dest A', 20.00, 'Categ B', true, null, 2),
-                    ('2023-10-03', 'Operation 3', 150.00, 'Source C', 'Dest C', 15.00, 'Categ B', true, null, 1),
-                    ('2023-10-04', 'Operation 4', 250.00, 'Source D', 'Dest A', 25.00, 'Categ B', false, null, 2),
-                    ('2023-10-05', 'Operation 5', 300.00, 'Source E', 'Dest B', 30.00, 'Categ C', true, null, 1),
-                    ('2023-10-06', 'Operation 6', 400.00, 'Source F', 'Dest C', 25.00, 'Categ C', false, null, 2);
+                    ('2025-10-01', 'Operation 1', 100.00, 'Source A', 'Dest B', 10.00, 'Categ A', true, null, 1),
+                    ('2025-10-02', 'Operation 2', 200.00, 'Source A', 'Dest A', 20.00, 'Categ B', true, null, 2),
+                    ('2025-10-03', 'Operation 3', 150.00, 'Source C', 'Dest C', 15.00, 'Categ B', true, null, 1),
+                    ('2025-10-04', 'Operation 4', 250.00, 'Source D', 'Dest A', 25.00, 'Categ B', false, null, 2),
+                    ('2025-10-05', 'Operation 5', 300.00, 'Source E', 'Dest B', 30.00, 'Categ C', true, null, 1),
+                    ('2025-10-06', 'Operation 6', 400.00, 'Source F', 'Dest C', 25.00, 'Categ C', false, null, 2);
 
                 -- Insertion loans de test
                 INSERT INTO loans (loans_date, loans_borrower, loans_amount, loans_refundedamount, loans_loanreason, loans_userid) VALUES
-                    ('2023-10-01', 'User 1', 1000.00, 0.00, 'Loan for project A', 1),
-                    ('2023-10-02', 'User 2', 2000.00, 500.00, 'Loan for project B', 2),
-                    ('2023-10-03', 'User 1', 1500.00, 300.00, 'Loan for project C', 1),
-                    ('2023-10-04', 'User 2', 2500.00, 1000.00, 'Loan for project D', 2);`
+                    ('2025-10-01', 'User 1', 1000.00, 0.00, 'Loan for project A', 1),
+                    ('2025-10-02', 'User 2', 2000.00, 500.00, 'Loan for project B', 2),
+                    ('2025-10-03', 'User 1', 1500.00, 300.00, 'Loan for project C', 1),
+                    ('2025-10-04', 'User 2', 2500.00, 1000.00, 'Loan for project D', 2);`
             , values: []
         });
     });
@@ -126,38 +126,17 @@ describe("Operations routes test", () => {
 
 
 
-
     /**
-     * @test routes GET /operations
+     * @test 
      */
-    test.skip("Test GET '/operations'", async () => {
-        const table = "operations";
-        const jsonRequest = SelectController.parseSelectUrl(table, {});
-        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
-    });
-
-    /**
-     * @test routes GET /operation/:id
-     */
-    test.skip("Test GET '/operation/:id'", async () => {
-        const table = "operations";
-        const jsonRequest = SelectController.parseSelectUrl(table, {});
-        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
-    });
-
-    /**
-     * @test routes POST /operations/get
-     */
-    test("Test POST '/operations/get", async () => {
+    test("Test operations", async () => {
         const queries = [
-            /* Ordered Test */
-
-            /* Random Test */
+            /* Random Tests */
             /*  1 */ {"dest": "Dest A"},
             /*  2 */ {"operations_name": "Operation 5"},
             /*  3 */ {"validated": true},
             /*  4 */ {"userid": 1},
-            /*  5 */ {"operations_date": "2023-10-06"},
+            /*  5 */ {"operations_date": "2025-10-06"},
             /*  6 */ {"source": "Source D", "dest": "Dest A"},
             /*  7 */ {"amount": "200.00", "source": "Source A", "dest": "Dest A"},
             /*  8 */ {"amount": "200.00", "source": "Source A", "dest": "Dest D"},
@@ -166,12 +145,37 @@ describe("Operations routes test", () => {
             /* 11 */ {"operations_date": null, "operations_name": null, "amount": null, "source": null, "dest": null, "costs": null, "categ": null, "validated": null, "redundancy": null, "createdat": null, "userid": null},
             /* 12 */ {"fakeArg": "fakeValue"},
             /* 13 */ {"costs": "25.00", "categ": "Categ B", "validated": false, "redundancy": "", "userid": 2},
+            /* 14 */ {"dest": ["Dest C", "Dest A", "Dest B"]},
+
+            /* Column Tests */
+            /* 15 */ {},
+            /* 16 */ {"id": 1},
+            /* 17 */ {"operations_id": 2},
+            /* 18 */ {"name": "Operation 1"},
+            /* 19 */ {"operations_name": "Operation 2"},
+            /* 20 */ {"amount": "200"},
+            /* 21 */ {"operations_amount": "200.0"},
+            /* 22 */ {"source": "Source A"},
+            /* 23 */ {"operations_source": "Source C"},
+            /* 24 */ {"dest": "Dest B"},
+            /* 25 */ {"operations_dest": "Dest B"},
+            /* 26 */ {"costs": "25.00"},
+            /* 27 */ {"operations_costs": "25.00"},
+            /* 28 */ {"categ": "Categ B"},
+            /* 29 */ {"operations_categ": "Categ C"},
+            /* 30 */ {"validated": true},
+            /* 31 */ {"operations_validated": false},
+            /* 32 */ {"redundancy": null},
+            /* 33 */ {"operations_redundancy": null},
+            /* 34 */ {"userid": 1},
+            /* 35 */ {"operations_userid": 2},
+
+            /* Body Tests */
+
         ];
 
         const queriesResponses = [
-            /* Ordered Test */
-
-            /* Random Test */
+            /* Random Tests result */
             /*  1 */ [ operations[1], operations[3] ],
             /*  2 */ [ operations[4] ],
             /*  3 */ [ operations[0], operations[1], operations[2], operations[4] ],
@@ -185,15 +189,41 @@ describe("Operations routes test", () => {
             /* 11 */ [ operations[0], operations[1], operations[2], operations[3], operations[4], operations[5] ],
             /* 12 */ [ operations[0], operations[1], operations[2], operations[3], operations[4], operations[5] ],
             /* 13 */ [ operations[3] ],
+            /* 14 */ [ operations[0], operations[4] ],
+
+            /* Column Tests result */
+            /* 15 */ [ operations[0], operations[1], operations[2], operations[3], operations[4], operations[5] ],
+            /* 16 */ [ operations[0] ],
+            /* 17 */ [ operations[1] ],
+            /* 18 */ [ operations[0] ],
+            /* 19 */ [ operations[1] ],
+            /* 20 */ [ operations[1] ],
+            /* 21 */ [ operations[1] ],
+            /* 22 */ [ operations[0], operations[1] ],
+            /* 23 */ [ operations[2] ],
+            /* 24 */ [ operations[0], operations[4] ],
+            /* 25 */ [ operations[0], operations[4] ],
+            /* 26 */ [ operations[3], operations[5] ],
+            /* 27 */ [ operations[3], operations[5] ],
+            /* 28 */ [ operations[1], operations[2], operations[3] ],
+            /* 29 */ [ operations[4], operations[5] ],
+            /* 30 */ [ operations[0], operations[1], operations[2], operations[4] ],
+            /* 31 */ [ operations[3], operations[5] ],
+            /* 32 */ [ operations[0], operations[1], operations[2], operations[3], operations[4], operations[5] ],
+            /* 33 */ [ operations[0], operations[1], operations[2], operations[3], operations[4], operations[5] ],
+            /* 34 */ [ operations[0], operations[2], operations[4] ],
+            /* 35 */ [ operations[1], operations[3], operations[5] ],
         ];
 
         for (let i = 0; i < queries.length; i++) {
             console.log("i :", i);
 
+            /* Route code */
             const jsonRequest = SelectController.parseSelectUrl("operations", queries[i]);
             const response = await SelectController.executeSelect("operations", jsonRequest);
             const jsonResponse = JSON.parse(JSON.stringify(response));
             const expectedResponse = queriesResponses[i] || [];
+            /* End route code */
 
             expect(jsonResponse).toHaveProperty("rows");
             expect(jsonResponse).toHaveProperty("warnings");

@@ -8,7 +8,7 @@ CREATE TABLE operations (
     operations_dest VARCHAR(255),
     operations_costs NUMERIC(12, 2) DEFAULT 0.0,
     operations_categ VARCHAR(255),
-    operations_validated BOOLEAN NOT NULL,
+    operations_validated BOOLEAN DEFAULT TRUE,
     operations_redundancy VARCHAR(25),
     operations_createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     operations_userid INTEGER

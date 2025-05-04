@@ -63,6 +63,7 @@ export function initOperationsRoutes(app: Express): void {
      *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
      */
     app.get('/operations', async (req: Request, res: Response) => {
+        /* If you modify this code, also modify the Swagger documentation and unit tests */
         const table: QueryTable = "operations";
         const jsonRequest = SelectController.parseSelectUrl(table, req.query);
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
@@ -72,7 +73,7 @@ export function initOperationsRoutes(app: Express): void {
 
     /**
      * @swagger
-     * /operation/{id}:
+     * /operation/id/{id}:
      *   get:
      *     summary: Get operation with id
      *     tags:
@@ -126,7 +127,8 @@ export function initOperationsRoutes(app: Express): void {
      *             schema:
      *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
      */
-    app.get('/operation/:id', async (req: Request, res: Response) => {
+    app.get('/operation/id/:id', async (req: Request, res: Response) => {
+        /* If you modify this code, also modify the Swagger documentation and unit tests */
         const table: QueryTable = "operations";
         const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query });
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
@@ -172,6 +174,7 @@ export function initOperationsRoutes(app: Express): void {
      *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
      */
     app.post('/operations/get', async (req: Request, res: Response) => {
+        /* If you modify this code, also modify the Swagger documentation and unit tests */
         const table: QueryTable = "operations";
         const jsonRequest = SelectController.correctedJsonSelectRequest(table, req.body);
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
