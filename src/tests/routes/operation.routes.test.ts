@@ -200,9 +200,6 @@ describe("Operations routes test", () => {
         test("Test SELECT Operations " + (i+1), async () => {
             /* Route code */
             const jsonRequest = SelectController.parseSelectUrl("operations", queries[i]);
-            console.log("query :", queries[i]);
-            console.log("jsonRequest :", jsonRequest);
-            
             const response = await SelectController.executeSelect("operations", jsonRequest);
             const jsonResponse = JSON.parse(JSON.stringify(response));
             const expectedResponse = queriesResponses[i] || [];

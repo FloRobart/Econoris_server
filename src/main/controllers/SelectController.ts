@@ -201,8 +201,6 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
  * }
  */
 export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONRequest): JSONRequest {
-    console.log(" [⚙️] JSON Request : ", jsonRequest);
-
     let newJsonRequest: JSONRequest = {
         keys: [],
         aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase()) ? jsonRequest.aggregation : undefined,
