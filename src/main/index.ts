@@ -5,6 +5,7 @@ import http from 'http';
 import { initRoutes } from './routes/routes';
 import { normalizePort } from './models/utils';
 import { connectToDatabase } from './models/database';
+import { clone } from './controllers/Controller';
 import fs from 'node:fs';
 require('dotenv').config();
 
@@ -83,6 +84,8 @@ try {
 /* Écoute du server */
 server.listen(APP_PORT, () => {
     console.log(" [✅] Server running at PORT :", APP_PORT, "!");
+    console.log(" [✅] Server running at URL :", APP_URL, "!");
+    console.log(" [✅] Server documentation at URL :", APP_URL + ":" + APP_PORT + "/api-docs", "!");
 }).on("error", (error) => {
     console.error(" [❌] FAILED STARTING SERVER\n");
     throw new Error(error.message);

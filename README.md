@@ -66,9 +66,9 @@ classDiagram
     **operations_date** : Date
     **amount** : Numeric
     **source** : Varchar
-    **dest** : Varchar
+    **destination** : Varchar
     **costs** : Numeric
-    **categ** : Varchar
+    **category** : Varchar
     **validate** : Boolean
     **redundancy** : Varchar
   }
@@ -92,7 +92,7 @@ classDiagram
 
 ## Modèle Logique de Données (MLD)
 
-- **operations**(<u>operations_id</u>, operations_date, operations_amount, operations_source, operations_dest, operations_costs, operations_categ, operations_validate, operations_redundancy, loans_createdat, operations_userid)
+- **operations**(<u>operations_id</u>, operations_date, operations_amount, operations_source, operations_destination, operations_costs, operations_category, operations_validate, operations_redundancy, loans_createdat, operations_userid)
 - **loans**(<u>loans_id</u>, loans_date, loans_borrower, loans_amount, loans_refundedamount, loans_loanreason, loans_createdat, loans_userid)
 - **timetable**(<u>timetable_id</u>, timetable_date, timetable_hoursnumber, timetable_hourlyrate, timetable_createdat, timetable_userid)
 

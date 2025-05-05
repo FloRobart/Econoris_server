@@ -53,13 +53,13 @@
  *         operations_source:
  *           type: string
  *           example: "Source A"
- *         operations_dest:
+ *         operations_destination:
  *           type: string
  *           example: "Dest A"
  *         operations_costs:
  *           type: number
  *           example: 10.00
- *         operations_categ:
+ *         operations_category:
  *           type: string
  *           example: "Category A"
  *         operations_validated:
@@ -78,7 +78,7 @@
  *           type: array
  *           items:
  *             type: string
- *             enum: ["id","date","name","amount","source","dest","costs","categ","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_dest","operations_costs","operations_categ","operations_validated","operations_redundancy"]
+ *             enum: ["id","date","name","amount","source","destination","costs","category","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_destination","operations_costs","operations_category","operations_validated","operations_redundancy"]
  *         aggregation:
  *           type: string
  *           enum: [SUM, AVG, COUNT, MIN, MAX]
@@ -97,7 +97,7 @@
  *             properties:
  *               key:
  *                 type: string
- *                 enum: ["id","date","name","amount","source","dest","costs","categ","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_dest","operations_costs","operations_categ","operations_validated","operations_redundancy"]
+ *                 enum: ["id","date","name","amount","source","destination","costs","category","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_destination","operations_costs","operations_category","operations_validated","operations_redundancy"]
  *               comparisonOperator:
  *                 type: string
  *                 enum: ["=", "!=", "<>", "<", ">", "<=", ">=", "LIKE"]
@@ -132,7 +132,7 @@
  *             properties:
  *               key:
  *                 type: string
- *                 enum: ["id","date","name","amount","source","dest","costs","categ","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_dest","operations_costs","operations_categ","operations_validated","operations_redundancy"]
+ *                 enum: ["id","date","name","amount","source","destination","costs","category","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_destination","operations_costs","operations_category","operations_validated","operations_redundancy"]
  *               comparisonOperator:
  *                 type: string
  *                 enum: ["=", "!=", "<>", "<", ">", "<=", ">=", "LIKE"]
@@ -184,7 +184,7 @@
  *       properties:
  *         key:
  *           type: string
- *           enum: ["date","name","amount","source","dest","costs","categ","validated","redundancy","operations_date","operations_name","operations_amount","operations_source","operations_dest","operations_costs","operations_categ","operations_validated","operations_redundancy"]
+ *           enum: ["date","name","amount","source","destination","costs","category","validated","redundancy","operations_date","operations_name","operations_amount","operations_source","operations_destination","operations_costs","operations_category","operations_validated","operations_redundancy"]
  *         value:
  *           oneOf:
  *             - type: string
@@ -204,7 +204,7 @@
  *             properties:
  *               key:
  *                 type: string
- *                 enum: ["id","date","name","amount","source","dest","costs","categ","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_dest","operations_costs","operations_categ","operations_validated","operations_redundancy"]
+ *                 enum: ["id","date","name","amount","source","destination","costs","category","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_destination","operations_costs","operations_category","operations_validated","operations_redundancy"]
  *               comparisonOperator:
  *                 type: string
  *                 enum: ["=", "!=", "<>", "<", ">", "<=", ">=", "LIKE"]

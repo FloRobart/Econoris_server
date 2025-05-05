@@ -1,7 +1,7 @@
 import { executeQuery, getSelectQuery } from "../models/database";
 import { JSONRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
 import * as Constantes from "../models/constantes";
-import { createJsonResponse } from "./Controller";
+import { createJsonResponse, clone } from "./Controller";
 
 
 
@@ -201,14 +201,16 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
  * }
  */
 export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONRequest): JSONRequest {
+    console.log(" [⚙️] JSON Request : ", jsonRequest);
+
     let newJsonRequest: JSONRequest = {
         keys: [],
         aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase()) ? jsonRequest.aggregation : undefined,
-        limit: jsonRequest.limit || null,
-        offset: jsonRequest.offset || 0,
+        limit: clone(jsonRequest.limit) || null,
+        offset: clone(jsonRequest.offset) || 0,
         whereValues: [],
-        warnings: jsonRequest.warnings || [],
-        errors: jsonRequest.errors || []
+        warnings: clone(jsonRequest.warnings) || [],
+        errors: clone(jsonRequest.errors) || []
     };
 
     /* Verify limit */
@@ -230,7 +232,7 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONR
         }
 
         if (Constantes.Columns[table].includes(key) || key === "*") {
-            newJsonRequest.keys.push(key as ColumnsType);
+            newJsonRequest.keys.push(clone(key) as ColumnsType);
         } else {
             newJsonRequest.warnings.push("Key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
         }
@@ -243,10 +245,10 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONR
 
     /* Verify where values */
     for (const index in jsonRequest.whereValues) {
-        const key = jsonRequest.whereValues[index].key?.toLowerCase();
-        const value = jsonRequest.whereValues[index].value;
-        const comparisonOperator = jsonRequest.whereValues[index].comparisonOperator;
-        const logicalOperator = jsonRequest.whereValues[index].logicalOperator?.toUpperCase();
+        const key = clone(jsonRequest.whereValues[index].key?.toLowerCase());
+        const value = clone(jsonRequest.whereValues[index].value);
+        const comparisonOperator = clone(jsonRequest.whereValues[index].comparisonOperator);
+        const logicalOperator = clone(jsonRequest.whereValues[index].logicalOperator?.toUpperCase());
 
         if (key === undefined || key === null || key === "" || value === undefined || value === null || value === "") {
             newJsonRequest.warnings.push((key === undefined || key === null || key === "") ? ("Key undefined, null or empty for value : '" + value + "' -> ignored") : ("Value undefined, null or empty for key : '" + key + "' -> ignored"));

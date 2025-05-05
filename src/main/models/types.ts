@@ -28,8 +28,8 @@ export type WhereValuesType = {
 };
 
 /* Operations types */
-export type OperationsType = "*"|"id"           |"date"           |"name"           |"amount"           |"source"           |"dest"           |"costs"           |"categ"           |"validated"           |"redundancy"           |"createdat"           |"userid"|
-                                 "operations_id"|"operations_date"|"operations_name"|"operations_amount"|"operations_source"|"operations_dest"|"operations_costs"|"operations_categ"|"operations_validated"|"operations_redundancy"|"operations_createdat"|"operations_userid";
+export type OperationsType = "*"|"id"           |"date"           |"name"           |"amount"           |"source"           |"destination"           |"costs"           |"category"           |"validated"           |"redundancy"           |"createdat"           |"userid"|
+                                 "operations_id"|"operations_date"|"operations_name"|"operations_amount"|"operations_source"|"operations_destination"|"operations_costs"|"operations_category"|"operations_validated"|"operations_redundancy"|"operations_createdat"|"operations_userid";
 
 /* Loans types */
 export type LoansType = "*"|"id"      |"date"      |"borrower"      |"amount"      |"refundedamount"      |"loanreason"      |"createdat"      |"userid"|

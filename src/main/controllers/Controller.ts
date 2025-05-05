@@ -3,6 +3,16 @@ import { JSONResponse } from "../models/types";
 
 
 /**
+ * Clone an object or array.
+ * @param element The object or array to be cloned.
+ * @returns A deep clone of the input object or array.
+ */
+export function clone(element: any): any {
+    if (element === undefined) { return undefined; }
+    return JSON.parse(JSON.stringify(element));
+}
+
+/**
  * Create a JSON response object.
  * @param rows Array of rows to be included in the response.
  * @param warnings Array of warning messages to be included in the response.
