@@ -1,5 +1,6 @@
 import { Express, Request, Response } from "express";
 import * as SelectController from "../controllers/SelectController";
+import * as InsertController from "../controllers/InsertController";
 import { QueryTable } from "../models/types";
 
 
@@ -10,6 +11,8 @@ import { QueryTable } from "../models/types";
  * @returns void
  */
 export function initOperationsRoutes(app: Express): void {
+    const table: QueryTable = "operations";
+
     /*========*/
     /* Select */
     /*========*/
@@ -64,7 +67,6 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.get('/operations', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const table: QueryTable = "operations";
         const jsonRequest = SelectController.parseSelectUrl(table, req.query);
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
@@ -129,7 +131,6 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.get('/operation/id/:id', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const table: QueryTable = "operations";
         const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query });
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
@@ -175,7 +176,6 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.post('/operations/get', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const table: QueryTable = "operations";
         const jsonRequest = SelectController.correctedJsonSelectRequest(table, req.body);
         const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
 
@@ -184,7 +184,7 @@ export function initOperationsRoutes(app: Express): void {
 
 
     /*========*/
-    /* Create */
+    /* Insert */
     /*========*/
     /**
      * @swagger
@@ -196,21 +196,26 @@ export function initOperationsRoutes(app: Express): void {
      *     parameters:
      *       - in: body
      *         name: operations
-     *         description: Operations to create. One array = One operation
+     *         description: |
+     *           Operations to create
+     *           <br>
+     *           You can create multiple operations at once as follows: {keys: ["key1", "key2"], values: [["value1-forKey1", "value2-forKey2"], ["value3-forKey1", "value4-forKey2"]]}. The keys and values must be in the same order.
      *         required: true
      *         schema:
-     *           type: array
-     *           items:
-     *             $ref: "#/components/schemas/OperationRequestBodyCreate"
+     *           $ref: "#/components/schemas/OperationRequestBodyInsert"
      *     responses:
      *       200:
      *         description: Operations created
      *         content:
      *           application/json:
      *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: "#components/schemas/Operations"
+     *               $ref: "#components/schemas/OperationResponseBody"
+     *       204:
+     *         description: Operations created but no operations returned
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#components/schemas/OperationResponseBodyEmpty"
      *       400:
      *         description: Bad request. Change your request for to fix this error
      *         content:
@@ -225,45 +230,11 @@ export function initOperationsRoutes(app: Express): void {
      *               $ref: "#/components/schemas/Error"
      */
     app.post('/operations', async (req: Request, res: Response) => {
+        /* If you modify this code, also modify the Swagger documentation and unit tests */
+        const jsonRequest = InsertController.correctedJsonInsertRequest(table, req.body);
+        const jsonResponse = await InsertController.executeInsert(table, jsonRequest);
 
-    });
-
-    /**
-     * @swagger
-     * /operation:
-     *   post:
-     *     summary: Create only one operation
-     *     tags:
-     *       - Operations
-     *     parameters:
-     *       - in: body
-     *         name: operations
-     *         description: Operation to create.
-     *         required: true
-     *         schema:
-     *           $ref: "#/components/schemas/OperationRequestBodyCreate"
-     *     responses:
-     *       200:
-     *         description: Operations created
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: "#components/schemas/Operations"
-     *       400:
-     *         description: Bad request. Change your request for to fix this error
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: "#/components/schemas/Error"
-     *       500:
-     *         description: Internal server error. Please create an issue on Github
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: "#/components/schemas/Error"
-     */
-    app.post('/operation', async (req: Request, res: Response) => {
-
+        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
     });
 
 

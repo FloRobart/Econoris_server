@@ -1,5 +1,5 @@
 import { executeQuery, getSelectQuery } from "../models/database";
-import { JSONRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
+import { JSONSelectRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
 import * as Constantes from "../models/constantes";
 import { createJsonResponse, clone } from "./Controller";
 
@@ -63,7 +63,7 @@ import { createJsonResponse, clone } from "./Controller";
  *         ...
  *     ]
  */
-export async function executeSelect(table: QueryTable, jsonRequest: JSONRequest): Promise<JSONResponse> {
+export async function executeSelect(table: QueryTable, jsonRequest: JSONSelectRequest): Promise<JSONResponse> {
     const rows = await executeQuery(getSelectQuery(table, jsonRequest));
 
     const jsonResponse = createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
@@ -103,7 +103,7 @@ export async function executeSelect(table: QueryTable, jsonRequest: JSONRequest)
  *     ]
  * }
  */
-export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
+export function parseSelectUrl(table: QueryTable, request: any): JSONSelectRequest {
     let limit: any = request.limit || null;
     let offset: any = request.offset || 0;
     let comparisonOperator = request.comparisonOperator || "=";
@@ -118,7 +118,7 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
     offset = !Number.isNaN(parseInt(offset, 10)) ? parseInt(offset, 10) : 0;
 
     /* JSON Request */
-    let jsonRequest: JSONRequest = {
+    let jsonRequest: JSONSelectRequest = {
         keys: ["*"],
         aggregation: undefined,
         limit: (limit >= 0 ? limit : null),
@@ -200,8 +200,8 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONRequest {
  *     ]
  * }
  */
-export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONRequest): JSONRequest {
-    let newJsonRequest: JSONRequest = {
+export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelectRequest): JSONSelectRequest {
+    let newJsonRequest: JSONSelectRequest = {
         keys: [],
         aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase()) ? jsonRequest.aggregation : undefined,
         limit: clone(jsonRequest.limit) || null,

@@ -1,5 +1,6 @@
 import pg from 'pg';
-import { Query, QueryTable, WhereValuesType, OperationsType, LoansType, TimetableType, JSONRequest } from "./types";
+import { Query, QueryTable, WhereValuesType, OperationsType, LoansType, TimetableType, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
+import { json } from 'node:stream/consumers';
 
 const { Client } = pg;
 let client: pg.Client;
@@ -72,7 +73,7 @@ export async function executeQuery(query: Query): Promise<any[]|null> {
 
 
 /**
- * 
+ * Prepares an select query for execution
  * @param table The table to select from
  * @param jsonRequest Valid JSON object with the structure shown in the example
  * @returns The prepared query with the values
@@ -100,7 +101,7 @@ export async function executeQuery(query: Query): Promise<any[]|null> {
  *     ]
  * }
  */
-export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Query {
+export function getSelectQuery(table: QueryTable, jsonRequest: JSONSelectRequest): Query {
     let query = "SELECT";
     let values: (string|number|boolean|null)[] = [];
 
@@ -135,8 +136,6 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Que
     values.push(jsonRequest.limit as number|null);
     values.push(jsonRequest.offset as number);
 
-    console.log("select query  :", query);
-    console.log("select values :", values);
     return { text: query, values: values };
 }
 
@@ -144,39 +143,60 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONRequest): Que
 /**
  * Prepares an insert query for execution
  * @param table The table to insert into
- * @param insertValues The values to insert
+ * @param jsonRequest Valid JSON object with the structure shown in the example
  * @returns The prepared query with the values
+ * @example
+ * {
+ *     "returnedKeys": [
+ *         "*"
+ *     ],
+ *     "insertions": [
+ *         {
+ *             "key": "value",
+ *             "key": "value",
+ *             ...
+ *         }
+ *     ],
+ *     "warnings": [
+ *        "Description of the warnings -> action executed",
+ *        ...
+ *     ],
+ *     "errors": [
+ *        "Description of the error",
+ *        ...
+ *     ]
+ * }
  */
-function getInsertQuery(table: QueryTable, insertValues: WhereValuesType[]): Query {
-    let query = `INSERT INTO ${table} (`;
+export function getInsertQuery(table: QueryTable, jsonRequest: JSONInsertRequest): Query {
+    let query = "";
     let values: (string|number|boolean|null)[] = [];
-    const insertedKeys: string[] = [];
 
-    for (const index in insertValues) {
-        const insertObject = insertValues[index];
-        const value = insertObject.value;
-        if (insertObject.key != "*" && value !== undefined && value !== null && value !== "") {
-            const key = (!insertObject.key.includes("_") ? `${table}_` : "") + `${insertObject.key}`;
-            query += `${key}, `;
-            values.push(value);
-            insertedKeys.push(key);
-        }
+    const insertObject = jsonRequest.insertions[0];
+    query += `INSERT INTO ${table} (`
+    for (const key in insertObject) {
+        query += `${normalyzeKey(key as ColumnsType, table)}, `;
     }
     query = query.slice(0, -2); // Remove the last comma and space
+
     query += ") VALUES (";
-
-    for (let i = 0; i < values.length; i++) {
-        if (i % insertedKeys.length == 0 && i != 0) {
-            query += "), ("
-        }
-        query += `$${i + 1}, `;
+    for (const key in insertObject) {
+        const value = insertObject[key];
+        query += `$${values.length + 1}, `;
+        values.push(value);
     }
-        
     query = query.slice(0, -2); // Remove the last comma and space
-    query += ") RETURNING *;";
 
-    console.log("insert query  :", query);
-    console.log("insert values :", values);
+    query += ") RETURNING ";
+    for (const key in jsonRequest.returnedKeys) {
+        let returnedKey = jsonRequest.returnedKeys[key];
+        if (jsonRequest.returnedKeys[key] !== "*") {
+            returnedKey = normalyzeKey(jsonRequest.returnedKeys[key], table) as ColumnsType;
+        }
+        query += `${returnedKey}, `;
+    }
+    query = query.slice(0, -2); // Remove the last comma and space
+    query += ";";
+
     return { text: query, values: values };
 }
 
@@ -246,7 +266,7 @@ function prepareDelete(table: QueryTable, whereValues: {}, strict: boolean = tru
  * @param table The table to normalize the key for
  * @returns 
  */
-function normalyzeKey(key: OperationsType|LoansType|TimetableType, table: QueryTable): string {
+function normalyzeKey(key: ColumnsType, table: QueryTable): string {
     if (key == "*") return key;
     return key.includes(`${table}_`) ? key : `${table}_${key}`;
 }

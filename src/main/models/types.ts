@@ -1,9 +1,16 @@
-export type JSONRequest = {
+export type JSONSelectRequest = {
     keys: (OperationsType|LoansType|TimetableType)[],
     aggregation?: string,
     limit: number|null|number[]|string|string[],
     offset: number|number[]|string|string[],
     whereValues: WhereValuesType[],
+    warnings: string[],
+    errors: string[]
+}
+
+export type JSONInsertRequest = {
+    returnedKeys: (OperationsType|LoansType|TimetableType|"*")[]|null,
+    insertions: any,
     warnings: string[],
     errors: string[]
 }

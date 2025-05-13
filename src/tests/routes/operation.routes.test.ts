@@ -1,7 +1,7 @@
 import { connectToDatabase, closeDatabaseConnection, executeQuery } from "../../main/models/database";
 import * as SelectController from "../../main/controllers/SelectController";
 import { clone } from "../../main/controllers/Controller";
-import { JSONRequest } from "../../main/models/types";
+import { JSONSelectRequest } from "../../main/models/types";
 require('dotenv').config();
 
 
