@@ -51,7 +51,7 @@ const swaggerOptions = {
             },
         ],
     },
-    apis: [`${__dirname}/routes/*.ts`, `${__dirname}/swagger/swagger.ts`], // files containing annotations as above
+    apis: [`${__dirname}/routes/*.ts`, `${__dirname}/swagger/*.ts`], // files containing annotations as above
 };
   
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -85,7 +85,7 @@ try {
 server.listen(APP_PORT, () => {
     console.log(" [✅] Server running at PORT :", APP_PORT, "!");
     console.log(" [✅] Server running at URL :", APP_URL, "!");
-    console.log(" [✅] Server documentation at URL :", APP_URL + ":" + APP_PORT + "/api-docs", "!");
+    console.log(" [✅] Server documentation running at URL :", APP_URL + ":" + APP_PORT + "/api-docs", "!");
 }).on("error", (error) => {
     console.error(" [❌] FAILED STARTING SERVER\n");
     throw new Error(error.message);
