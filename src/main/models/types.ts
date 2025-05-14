@@ -15,6 +15,13 @@ export type JSONInsertRequest = {
     errors: string[]
 }
 
+export type JSONUpdateRequest = {
+    keysValues: any,
+    whereValues: WhereValuesType[],
+    warnings: string[],
+    errors: string[]
+}
+
 export type JSONResponse = {
     rows: any[],
     warnings: string[],

@@ -1,4 +1,6 @@
 import { JSONResponse } from "../models/types";
+import { WhereValuesType, LogicalOperatorType, QueryTable, ColumnsType } from "../models/types";
+import * as Constantes from "../models/constantes";
 
 
 
@@ -43,4 +45,72 @@ export function createJsonResponse(rows?: any[], warnings?: string[], errors?: s
         warnings: warnings || [],
         errors: errors || [],
     };
+}
+
+/**
+ * Correct whereValues structure (displayed in the example)
+ * @param whereValues Table of object displayed in the example
+ * @returns Object with with the Response structure displayed in the example
+ * @example
+ * whereValues
+ * {
+ *     "key": "x",
+ *     "comparisonOperator": "x",
+ *     "value": "x|n",
+ *     "logicalOperator": "x"
+ * }
+ * 
+ * Response
+ * {
+ *     whereValues: [
+ *         {
+ *             "key": "x",
+ *             "comparisonOperator": "x",
+ *             "value": "x|n",
+ *             "logicalOperator": "x"
+ *         },
+ *         ...
+ *     ],
+ *     warnings: [
+ *         "warning",
+ *         ...
+ *     ]
+ * }
+ */
+export function correctWhereValues(table: QueryTable, whereValues: WhereValuesType[]): { whereValues: WhereValuesType[], warnings: string[] } {
+    const newWhereValues: WhereValuesType[] = [];
+    const warnings: string[] = [];
+
+    for (const index in whereValues) {
+            const key = clone(whereValues[index].key?.toLowerCase());
+            const value = clone(whereValues[index].value);
+            const comparisonOperator = clone(whereValues[index].comparisonOperator);
+            const logicalOperator = clone(whereValues[index].logicalOperator?.toUpperCase());
+    
+            if (key === undefined || key === null || key === "" || value === undefined || value === null || value === "") {
+                warnings.push((key === undefined || key === null || key === "") ? ("Key undefined, null or empty for value : '" + value + "' -> ignored") : ("Value undefined, null or empty for key : '" + key + "' -> ignored"));
+                continue;
+            }
+    
+            if (Constantes.Columns[table].includes(key)) {
+                if (Constantes.ComparisonOperator.includes(comparisonOperator) || comparisonOperator == undefined) {
+                    if (Constantes.LogicalOperator.includes(logicalOperator) || logicalOperator == undefined) {
+                        newWhereValues.push({
+                            key: key as ColumnsType,
+                            comparisonOperator: comparisonOperator || "=",
+                            value: value,
+                            logicalOperator: (logicalOperator || "AND") as LogicalOperatorType
+                        });
+                    } else {
+                        warnings.push("Logical operator : '" + logicalOperator + "' not in [" + Constantes.LogicalOperator + "] for key : '" + key + "' -> replaced by 'AND'");
+                    }
+                } else {
+                    warnings.push("Comparison operator : '" + comparisonOperator + "' not in [" + Constantes.ComparisonOperator + "] for key : '" + key + "' -> replaced by '='");
+                }
+            } else {
+                warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
+            }
+        }
+
+    return { whereValues: newWhereValues, warnings: warnings};
 }

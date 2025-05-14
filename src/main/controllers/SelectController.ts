@@ -52,7 +52,8 @@ import { createJsonResponse, clone } from "./Controller";
  *             "key": "value",
  *             "key": "value",
  *             ...
- *         }
+ *         },
+ *         ...
  *     ],
  *     "warnings": [
  *         "Description of the warnings -> action executed",
@@ -65,12 +66,9 @@ import { createJsonResponse, clone } from "./Controller";
  */
 export async function executeSelect(table: QueryTable, jsonRequest: JSONSelectRequest): Promise<JSONResponse> {
     const rows = await executeQuery(getSelectQuery(table, jsonRequest));
+    if (rows === null) { jsonRequest.errors.push("An unknown error occurred while executing the query"); }
 
-    const jsonResponse = createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
-
-    if (rows === null) { jsonResponse.errors.push("An unknown error occurred while executing the query"); }
-
-    return jsonResponse;
+    return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
 }
 
 
@@ -92,6 +90,7 @@ export async function executeSelect(table: QueryTable, jsonRequest: JSONSelectRe
  *             "value": "x|n",
  *             "logicalOperator": "x"
  *         },
+ *         ...
  *     ],
  *     "warnings": [
  *        "Description of the warnings -> action executed",
@@ -189,6 +188,7 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONSelectReque
  *             "value": "x|n",
  *             "logicalOperator": "x"
  *         },
+ *         ...
  *     ],
  *     "warnings": [
  *        "Description of the warnings -> action executed",

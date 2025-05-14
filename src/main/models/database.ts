@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { Query, QueryTable, WhereValuesType, OperationsType, LoansType, TimetableType, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
+import { Query, QueryTable, JSONUpdateRequest, WhereValuesType, OperationsType, LoansType, TimetableType, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
 import { json } from 'node:stream/consumers';
 
 const { Client } = pg;
@@ -204,31 +204,58 @@ export function getInsertQuery(table: QueryTable, jsonRequest: JSONInsertRequest
 /**
  * Prepares an update query for execution
  * @param table The table to update
- * @param whereValues The values to update
+ * @param jsonRequest Valid JSON object with the structure shown in the example
  * @returns The prepared query with the values
+ * @example
+ * {
+ *     "keysValues": {
+ *         "key1": "value1",
+ *         "key2": "value2",
+ *         ...
+ *     },
+ *     "whereValues": [
+ *         {
+ *             "key": "x",
+ *             "comparisonOperator": "x",
+ *             "value": "x|n",
+ *             "logicalOperator": "x"
+ *         },
+ *         ...
+ *     ],
+ *     "warnings": [
+ *        "Description of the warnings -> action executed",
+ *        ...
+ *     ],
+ *     "errors": [
+ *        "Description of the error",
+ *        ...
+ *     ]
+ * }
  */
-function prepareUpdate(table: QueryTable, whereValues: {}, updateValues: {}): Query {
+export function getUpdateQuery(table: QueryTable, jsonRequest: JSONUpdateRequest): Query {
     let query = `UPDATE ${table} SET `;
     let values: (string|number|boolean|null)[] = [];
 
-    if (!updateValues) { return { text: "", values: [] }; }
-
-    for (const key in updateValues) {
-        if (updateValues[key] !== undefined) {
-            query += `${key}=$${values.length + 1}, `;
-            values.push(updateValues[key]);
-        }
+    for (const key in jsonRequest.keysValues) {
+        query += `${normalyzeKey(key as ColumnsType, table)}=$${values.length+1}, `;
+        values.push(jsonRequest.keysValues[key]);
     }
     query = query.slice(0, -2); // Remove the last comma and space
 
-    query += ` WHERE 1=1`;
-    for (const key in whereValues) {
-        if (whereValues[key] !== undefined) {
-            query += ` AND ${key}=$${values.length + 1}`;
-            values.push(whereValues[key]);
-        }
+    /* Where */
+    for (const index in jsonRequest.whereValues) {
+        const whereObject        = jsonRequest.whereValues[index];
+        const key                = normalyzeKey(whereObject.key, table);
+        const comparisonOperator = whereObject.comparisonOperator || "=";
+        const value              = whereObject.value;
+        const logicalOperator    = whereObject.logicalOperator || "AND";
+
+        query += parseInt(index) === 0 ? " WHERE" : "";
+
+        query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
+        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : ";";
+        values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
     }
-    query += ` RETURNING *;`;
 
     console.log("update query  :", query);
     console.log("update values :", values);

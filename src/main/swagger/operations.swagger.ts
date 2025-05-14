@@ -203,11 +203,31 @@
  *         - keys
  *         - whereValues
  *       properties:
- *         keys:
- *           type: array
- *           items:
- *             type: string
- *             enum: ["*", "id","date","name","amount","source","destination","costs","category","validated","redundancy","operations_id","operations_date","operations_name","operations_amount","operations_source","operations_destination","operations_costs","operations_category","operations_validated","operations_redundancy"]
+ *         keysValues:
+ *           type: object
+ *           required:
+ *             - date
+ *             - name
+ *             - amount
+ *           properties:
+ *             date:
+ *               type: string
+ *             name:
+ *               type: string
+ *             amount:
+ *               type: integer
+ *             source:
+ *               type: string
+ *             destination:
+ *               type: string
+ *             costs:
+ *               type: integer
+ *             category:
+ *               type: string
+ *             validated:
+ *               type: boolean
+ *             redundancy:
+ *               type: string
  *         whereValues:
  *           type: array
  *           items:

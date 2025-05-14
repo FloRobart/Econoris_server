@@ -1,7 +1,9 @@
 import { Express, Request, Response } from "express";
+import { createJsonResponse } from "../controllers/Controller";
 import * as SelectController from "../controllers/SelectController";
 import * as InsertController from "../controllers/InsertController";
-import { QueryTable } from "../models/types";
+import * as UpdateController from "../controllers/UpdateController";
+import { QueryTable, JSONResponse } from "../models/types";
 
 
 
@@ -261,18 +263,13 @@ export function initOperationsRoutes(app: Express): void {
      *         content:
      *           application/json:
      *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: "#components/schemas/Operations"
+     *               $ref: "#components/schemas/OperationResponseBody"
      *       204:
-     *         description: No operations updated
+     *         description: No results found in database
      *         content:
      *           application/json:
      *             schema:
-     *              type: array
-     *              items:
-     *                type: string
-     *              example: []
+     *               $ref: "#components/schemas/OperationResponseBodyEmpty"
      *       400:
      *         description: Bad request. Change your request for to fix this error
      *         content:
@@ -284,10 +281,19 @@ export function initOperationsRoutes(app: Express): void {
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: "#/components/schemas/Error"
+     *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
      */
     app.put('/operations', async (req: Request, res: Response) => {
+        /* If you modify this code, also modify the Swagger documentation and unit tests */
+        const jsonRequest = UpdateController.correctedJsonUpdateRequest(table, req.body);
+        let jsonResponse: JSONResponse;
+        if (jsonRequest.errors.length > 0) {
+            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+        } else {
+            jsonResponse = await UpdateController.executeUpdate(table, jsonRequest);
+        }
 
+        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
     });
 
 
