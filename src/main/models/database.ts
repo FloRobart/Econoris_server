@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { Query, QueryTable, JSONUpdateRequest, WhereValuesType, OperationsType, LoansType, TimetableType, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
+import { Query, QueryTable, JSONUpdateRequest, JSONDeleteRequest, WhereValuesType, OperationsType, LoansType, TimetableType, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
 import { json } from 'node:stream/consumers';
 
 const { Client } = pg;
@@ -253,7 +253,7 @@ export function getUpdateQuery(table: QueryTable, jsonRequest: JSONUpdateRequest
         query += parseInt(index) === 0 ? " WHERE" : "";
 
         query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
-        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : ";";
+        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : " RETURNING *;";
         values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
     }
 
@@ -268,18 +268,45 @@ export function getUpdateQuery(table: QueryTable, jsonRequest: JSONUpdateRequest
  * @param table The table to delete from
  * @param whereValues The values to delete
  * @returns The prepared query with the values
+ * @example
+ * {
+ *     "whereValues": [
+ *         {
+ *             "key": "x",
+ *             "comparisonOperator": "x",
+ *             "value": "x|n",
+ *             "logicalOperator": "x"
+ *         },
+ *         ...
+ *     ],
+ *     "warnings": [
+ *        "Description of the warnings -> action executed",
+ *        ...
+ *     ],
+ *     "errors": [
+ *        "Description of the error",
+ *        ...
+ *     ]
+ * }
  */
-function prepareDelete(table: QueryTable, whereValues: {}, strict: boolean = true): Query {
+export function getDeleteQuery(table: QueryTable, jsonRequest: JSONDeleteRequest): Query {
     let query = `DELETE FROM ${table} WHERE 1=1`;
     let values: (string|number|boolean|null)[] = [];
 
-    for (const key in whereValues) {
-        if (whereValues[key] !== undefined) {
-            query += strict ? ` AND ${key}=$${values.length + 1}` : ` AND ${key} LIKE $${values.length + 1}`;
-            values.push(strict ? whereValues[key] : "%" + whereValues[key] + "%");
-        }
+    /* Where */
+    for (const index in jsonRequest.whereValues) {
+        const whereObject        = jsonRequest.whereValues[index];
+        const key                = normalyzeKey(whereObject.key, table);
+        const comparisonOperator = whereObject.comparisonOperator || "=";
+        const value              = whereObject.value;
+        const logicalOperator    = whereObject.logicalOperator || "AND";
+
+        query += parseInt(index) === 0 ? " WHERE" : "";
+
+        query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
+        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : " RETURNING *;";
+        values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
     }
-    query += ` RETURNING *;`;
 
     console.log("delete query  :", query);
     console.log("delete values :", values);

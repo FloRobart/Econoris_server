@@ -22,6 +22,12 @@ export type JSONUpdateRequest = {
     errors: string[]
 }
 
+export type JSONDeleteRequest = {
+    whereValues: WhereValuesType[],
+    warnings: string[],
+    errors: string[]
+}
+
 export type JSONResponse = {
     rows: any[],
     warnings: string[],

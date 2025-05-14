@@ -6,7 +6,7 @@ import { createJsonResponse, clone } from "./Controller";
 
 
 /**
- * Get all operations corresponding at parameters
+ * Insert all operations corresponding at parameters
  * @async
  * @param jsonRequest JSON object with structure shown in the example (JSON Request)
  * @returns JSON object with the structure shown in the example (JSON Response)

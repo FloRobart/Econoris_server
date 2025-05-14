@@ -3,6 +3,7 @@ import { createJsonResponse } from "../controllers/Controller";
 import * as SelectController from "../controllers/SelectController";
 import * as InsertController from "../controllers/InsertController";
 import * as UpdateController from "../controllers/UpdateController";
+import * as DeleteController from "../controllers/DeleteController";
 import { QueryTable, JSONResponse } from "../models/types";
 
 
@@ -70,7 +71,13 @@ export function initOperationsRoutes(app: Express): void {
     app.get('/operations', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const jsonRequest = SelectController.parseSelectUrl(table, req.query);
-        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
+
+        let jsonResponse: JSONResponse;
+        if (jsonRequest.errors.length > 0) {
+            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+        } else {
+            jsonResponse = await SelectController.executeSelect(table, jsonRequest);
+        }
 
         res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
     });
@@ -134,7 +141,13 @@ export function initOperationsRoutes(app: Express): void {
     app.get('/operation/id/:id', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query });
-        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
+
+        let jsonResponse: JSONResponse;
+        if (jsonRequest.errors.length > 0) {
+            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+        } else {
+            jsonResponse = await SelectController.executeSelect(table, jsonRequest);
+        }
 
         res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
     });
@@ -179,7 +192,13 @@ export function initOperationsRoutes(app: Express): void {
     app.post('/operations/get', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const jsonRequest = SelectController.correctedJsonSelectRequest(table, req.body);
-        const jsonResponse = await SelectController.executeSelect(table, jsonRequest);
+
+        let jsonResponse: JSONResponse;
+        if (jsonRequest.errors.length > 0) {
+            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+        } else {
+            jsonResponse = await SelectController.executeSelect(table, jsonRequest);
+        }
 
         res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
     });
@@ -234,7 +253,13 @@ export function initOperationsRoutes(app: Express): void {
     app.post('/operations', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const jsonRequest = InsertController.correctedJsonInsertRequest(table, req.body);
-        const jsonResponse = await InsertController.executeInsert(table, jsonRequest);
+
+        let jsonResponse: JSONResponse;
+        if (jsonRequest.errors.length > 0) {
+            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+        } else {
+            jsonResponse = await InsertController.executeInsert(table, jsonRequest);
+        }
 
         res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
     });
@@ -286,6 +311,7 @@ export function initOperationsRoutes(app: Express): void {
     app.put('/operations', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const jsonRequest = UpdateController.correctedJsonUpdateRequest(table, req.body);
+
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
             jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
@@ -316,22 +342,17 @@ export function initOperationsRoutes(app: Express): void {
      *           $ref: "#/components/schemas/OperationRequestBodyDelete"
      *     responses:
      *       200:
-     *         description: Operations deleted
+     *         description: Operations updated
      *         content:
      *           application/json:
      *             schema:
-     *               type: array
-     *               items:
-     *                 $ref: "#components/schemas/Operations"
+     *               $ref: "#components/schemas/OperationResponseBody"
      *       204:
-     *         description: No operations deleted
+     *         description: No results found in database
      *         content:
      *           application/json:
      *             schema:
-     *              type: array
-     *              items:
-     *                type: string
-     *              example: []
+     *               $ref: "#components/schemas/OperationResponseBodyEmpty"
      *       400:
      *         description: Bad request. Change your request for to fix this error
      *         content:
@@ -343,9 +364,75 @@ export function initOperationsRoutes(app: Express): void {
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: "#/components/schemas/Error"
+     *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
      */
     app.delete('/operations', async (req: Request, res: Response) => {
+        /* If you modify this code, also modify the Swagger documentation and unit tests */
+        const jsonRequest = DeleteController.correctedJsonDeleteRequest(table, req.body);
 
+        let jsonResponse: JSONResponse;
+        if (jsonRequest.errors.length > 0) {
+            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+        } else {
+            jsonResponse = await DeleteController.executeDelete(table, jsonRequest);
+        }
+
+        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
+    });
+
+    /**
+     * @swagger
+     * /operation/id/{id}:
+     *   delete:
+     *     summary: Delete operations
+     *     tags:
+     *       - Operations
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         description: ID of the operation
+     *         required: true
+     *         schema:
+     *           type: integer
+     *           minimum: 1
+     *           example: 1
+     *     responses:
+     *       200:
+     *         description: Operations updated
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#components/schemas/OperationResponseBody"
+     *       204:
+     *         description: No results found in database
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#components/schemas/OperationResponseBodyEmpty"
+     *       400:
+     *         description: Bad request. Change your request for to fix this error
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/Error"
+     *       500:
+     *         description: Internal server error. Please create an issue on Github
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
+     */
+    app.delete('/operation/id/:id', async (req: Request, res: Response) => {
+        /* If you modify this code, also modify the Swagger documentation and unit tests */
+        const jsonRequest = DeleteController.parseDeleteUrl(table, { ...req.params });
+
+        let jsonResponse: JSONResponse;
+        if (jsonRequest.errors.length > 0) {
+            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+        } else {
+            jsonResponse = await DeleteController.executeDelete(table, jsonRequest);
+        }
+
+        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
     });
 }
