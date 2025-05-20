@@ -1,6 +1,5 @@
 import pg from 'pg';
-import { Query, QueryTable, JSONUpdateRequest, JSONDeleteRequest, WhereValuesType, OperationsType, LoansType, TimetableType, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
-import { json } from 'node:stream/consumers';
+import { Query, QueryTable, JSONUpdateRequest, JSONDeleteRequest, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
 
 const { Client } = pg;
 let client: pg.Client;

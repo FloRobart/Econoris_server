@@ -187,8 +187,6 @@ export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any):
     Constantes.Columns[table].push("id");
     Constantes.Columns[table].push(table + "_id");
 
-    console.log("newJsonRequest :", newJsonRequest);
-    console.log("newJsonRequest.insertions :", newJsonRequest.insertions);
     return newJsonRequest;
 }
 

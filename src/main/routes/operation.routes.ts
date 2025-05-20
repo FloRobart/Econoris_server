@@ -1,10 +1,10 @@
 import { Express, Request, Response } from "express";
+import { QueryTable, JSONResponse } from "../models/types";
 import { createJsonResponse } from "../controllers/Controller";
 import * as SelectController from "../controllers/SelectController";
 import * as InsertController from "../controllers/InsertController";
 import * as UpdateController from "../controllers/UpdateController";
 import * as DeleteController from "../controllers/DeleteController";
-import { QueryTable, JSONResponse } from "../models/types";
 
 
 
