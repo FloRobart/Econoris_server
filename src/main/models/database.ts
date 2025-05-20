@@ -290,7 +290,7 @@ export function getUpdateQuery(table: QueryTable, jsonRequest: JSONUpdateRequest
  * }
  */
 export function getDeleteQuery(table: QueryTable, jsonRequest: JSONDeleteRequest): Query {
-    let query = `DELETE FROM ${table} WHERE 1=1`;
+    let query = `DELETE FROM ${table} WHERE 1=1 AND`;
     let values: (string|number|boolean|null)[] = [];
 
     /* Where */
@@ -301,12 +301,12 @@ export function getDeleteQuery(table: QueryTable, jsonRequest: JSONDeleteRequest
         const value              = whereObject.value;
         const logicalOperator    = whereObject.logicalOperator || "AND";
 
-        query += parseInt(index) === 0 ? " WHERE" : "";
-
         query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
-        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : " RETURNING *;";
+        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : "";
         values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
     }
+    if (jsonRequest.whereValues.length === 0) { query += " 1=1"; }
+    query += " RETURNING *;";
 
     console.log("delete query  :", query);
     console.log("delete values :", values);
