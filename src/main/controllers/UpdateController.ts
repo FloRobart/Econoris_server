@@ -151,14 +151,19 @@ export function correctedJsonUpdateRequest(table: QueryTable, jsonRequest: JSONU
     delete Constantes.Columns[table]["id"]
     delete Constantes.Columns[table][table + "_id"]
     for (const key in jsonRequest.keysValues) {
-        const value = jsonRequest.keysValues[key]?.toLowerCase();
+        const value = jsonRequest.keysValues[key];
         if (key === undefined || key === null || key === "") {
             newJsonRequest.warnings.push("Key associated to value : '" + value + "' is undefined, null or empty -> ignored");
             continue;
         }
 
+        if (value === undefined || value === null || value === "") {
+            newJsonRequest.warnings.push("Value associated to key : '" + key + "' is undefined, null or empty -> ignored");
+            continue;
+        }
+
         if (Constantes.Columns[table].includes(key)) {
-            newJsonRequest.keysValues.push(clone(key) as ColumnsType);
+            newJsonRequest.keysValues[key] = value;
         } else {
             newJsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
         }

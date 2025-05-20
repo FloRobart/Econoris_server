@@ -164,24 +164,17 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#components/schemas/Operations"
-                                    }
+                                    "$ref": "#components/schemas/OperationResponseBody"
                                 }
                             }
                         }
                     },
                     "204": {
-                        "description": "No operations updated",
+                        "description": "No results found in database",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    },
-                                    "example": []
+                                    "$ref": "#components/schemas/OperationResponseBodyEmpty"
                                 }
                             }
                         }
@@ -201,7 +194,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Error"
+                                    "$ref": "#/components/schemas/OperationResponseBodyEmpty"
                                 }
                             }
                         }
@@ -226,28 +219,21 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Operations deleted",
+                        "description": "Operations updated",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#components/schemas/Operations"
-                                    }
+                                    "$ref": "#components/schemas/OperationResponseBody"
                                 }
                             }
                         }
                     },
                     "204": {
-                        "description": "No operations deleted",
+                        "description": "No results found in database",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    },
-                                    "example": []
+                                    "$ref": "#components/schemas/OperationResponseBodyEmpty"
                                 }
                             }
                         }
@@ -267,7 +253,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Error"
+                                    "$ref": "#/components/schemas/OperationResponseBodyEmpty"
                                 }
                             }
                         }
@@ -317,6 +303,67 @@
                 "responses": {
                     "200": {
                         "description": "List of operations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#components/schemas/OperationResponseBody"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No results found in database",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#components/schemas/OperationResponseBodyEmpty"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. Change your request for to fix this error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error. Please create an issue on Github",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OperationResponseBodyEmpty"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete operations",
+                "tags": [
+                    "Operations"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "ID of the operation",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operations updated",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -816,33 +863,41 @@
                     "whereValues"
                 ],
                 "properties": {
-                    "keys": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "enum": [
-                                "*",
-                                "id",
-                                "date",
-                                "name",
-                                "amount",
-                                "source",
-                                "destination",
-                                "costs",
-                                "category",
-                                "validated",
-                                "redundancy",
-                                "operations_id",
-                                "operations_date",
-                                "operations_name",
-                                "operations_amount",
-                                "operations_source",
-                                "operations_destination",
-                                "operations_costs",
-                                "operations_category",
-                                "operations_validated",
-                                "operations_redundancy"
-                            ]
+                    "keysValues": {
+                        "type": "object",
+                        "required": [
+                            "date",
+                            "name",
+                            "amount"
+                        ],
+                        "properties": {
+                            "date": {
+                                "type": "string"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "amount": {
+                                "type": "integer"
+                            },
+                            "source": {
+                                "type": "string"
+                            },
+                            "destination": {
+                                "type": "string"
+                            },
+                            "costs": {
+                                "type": "integer"
+                            },
+                            "category": {
+                                "type": "string"
+                            },
+                            "validated": {
+                                "type": "boolean"
+                            },
+                            "redundancy": {
+                                "type": "string"
+                            }
                         }
                     },
                     "whereValues": {
