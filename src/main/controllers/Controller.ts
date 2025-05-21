@@ -10,8 +10,13 @@ import * as Constantes from "../models/constantes";
  * @returns A deep clone of the input object or array.
  */
 export function clone(element: any): any {
-    if (element === undefined) { return undefined; }
-    return JSON.parse(JSON.stringify(element));
+    try {
+        if (element === undefined) { return undefined; }
+        return JSON.parse(JSON.stringify(element));
+    } catch (error) {
+        console.error("Error in clone function :", error);
+        return element;
+    }
 }
 
 /**

@@ -26,67 +26,72 @@ const swaggerJsDoc = require('swagger-jsdoc');
 /*=============*/
 /* Application */
 /*=============*/
-const app = express();
-const server = http.createServer(app);
-
-/* Configuration */
-app.use(express.json());
-app.locals.title = APP_NAME;
-app.locals.strftime = require('strftime').localizeByIdentifier(APP_LOCAL);
-app.locals.lang = APP_LOCAL;
-app.locals.email = ADMIN_EMAIL;
-
-/* Swagger setup */
-const swaggerOptions = {
-    swaggerDefinition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'Éconoris API',
-            version: '2.0.0',
-            description: 'API documentation',
-        },
-        servers: [
-            {
-                url: APP_URL + ":" + APP_PORT,
-            },
-        ],
-    },
-    apis: [`${__dirname}/routes/*.ts`, `${__dirname}/swagger/*.ts`], // files containing annotations as above
-};
-  
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.get('/api-docs.json', (req, res) => {
-    if (!app.locals.swaggerJsonFileCreated) {
-        res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + APP_URL + ":" + APP_PORT + "/api-docs" });
-        return;
-    }
-    return res.download(SWAGGER_JSON_PATH)
-})
-
-/* Connexion à la base de données */
-connectToDatabase(DB_URI);
-
-/* Initialisation des routes */
-initRoutes(app);
-
-/* Create swagger json file */
 try {
-    fs.writeFileSync(SWAGGER_JSON_PATH, Buffer.from(JSON.stringify(swaggerDocs), 'utf8'));
-    app.locals.swaggerJsonFileCreated = true;
-    console.log(" [✅] Swagger JSON file created at :", SWAGGER_JSON_PATH);
-} catch (err) {
-    console.error(err);
-    app.locals.swaggerJsonFileCreated = false;
-    console.error(" [❌] Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
-}
+    const app = express();
+    const server = http.createServer(app);
 
-/* Écoute du server */
-server.listen(APP_PORT, () => {
-    console.log(" [✅] Server running at PORT :", APP_PORT, "!");
-    console.log(" [✅] Server running at URL :", APP_URL, "!");
-    console.log(" [✅] Server documentation running at URL :", APP_URL + ":" + APP_PORT + "/api-docs", "!");
-}).on("error", (error) => {
-    console.error(" [❌] FAILED STARTING SERVER\n");
-    throw new Error(error.message);
-});
+    /* Configuration */
+    app.use(express.json());
+    app.locals.title = APP_NAME;
+    app.locals.strftime = require('strftime').localizeByIdentifier(APP_LOCAL);
+    app.locals.lang = APP_LOCAL;
+    app.locals.email = ADMIN_EMAIL;
+
+    /* Swagger setup */
+    const swaggerOptions = {
+        swaggerDefinition: {
+            openapi: '3.0.0',
+            info: {
+                title: 'Éconoris API',
+                version: '2.0.0',
+                description: 'API documentation',
+            },
+            servers: [
+                {
+                    url: APP_URL + ":" + APP_PORT,
+                },
+            ],
+        },
+        apis: [`${__dirname}/routes/*.ts`, `${__dirname}/swagger/*.ts`], // files containing annotations as above
+    };
+    
+    const swaggerDocs = swaggerJsDoc(swaggerOptions);
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    app.get('/api-docs.json', (req, res) => {
+        if (!app.locals.swaggerJsonFileCreated) {
+            res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + APP_URL + ":" + APP_PORT + "/api-docs" });
+            return;
+        }
+        return res.download(SWAGGER_JSON_PATH)
+    })
+
+    /* Connexion à la base de données */
+    connectToDatabase(DB_URI);
+
+    /* Initialisation des routes */
+    initRoutes(app);
+
+    /* Create swagger json file */
+    try {
+        fs.writeFileSync(SWAGGER_JSON_PATH, Buffer.from(JSON.stringify(swaggerDocs), 'utf8'));
+        app.locals.swaggerJsonFileCreated = true;
+        console.log(" [✅] Swagger JSON file created at :", SWAGGER_JSON_PATH);
+    } catch (err) {
+        console.error(err);
+        app.locals.swaggerJsonFileCreated = false;
+        console.error(" [❌] Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
+    }
+
+    /* Écoute du server */
+    server.listen(APP_PORT, () => {
+        console.log(" [✅] Server running at PORT :", APP_PORT, "!");
+        console.log(" [✅] Server running at URL :", APP_URL, "!");
+        console.log(" [✅] Server documentation running at URL :", APP_URL + ":" + APP_PORT + "/api-docs", "!");
+    }).on("error", (error) => {
+        console.error(" [❌] FAILED STARTING SERVER\n");
+        throw new Error(error.message);
+    });
+} catch (error) {
+    console.error(" [❌] Error in main index.ts :", error);
+    process.exit(1);
+}
