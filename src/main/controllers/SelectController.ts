@@ -1,6 +1,7 @@
 import { executeQuery, getSelectQuery } from "../models/database";
 import { JSONSelectRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
 import * as Constantes from "../models/constantes";
+import * as logger from '../models/logger';
 import { createJsonResponse, clone } from "./Controller";
 
 
@@ -71,7 +72,8 @@ export async function executeSelect(table: QueryTable, jsonRequest: JSONSelectRe
 
         return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
     } catch (error) {
-        console.error("Error in executeSelect :", error);
+        logger.error(error);
+        logger.error("Error in executeSelect");
         jsonRequest.errors.push("An unknown error occurred while executing the query");
         return createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
     }

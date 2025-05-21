@@ -1,6 +1,7 @@
 import { executeQuery, getInsertQuery } from "../models/database";
 import { JSONInsertRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
 import * as Constantes from "../models/constantes";
+import * as logger from '../models/logger';
 import { createJsonResponse, clone } from "./Controller";
 
 
@@ -76,7 +77,8 @@ export async function executeInsert(table: QueryTable, jsonRequest: JSONInsertRe
 
         return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
     } catch (error) {
-        console.error("Error in executeInsert :", error);
+        logger.error(error);
+        logger.error("Error in executeInsert");
         jsonRequest.errors.push("An unknown error occurred while executing the query");
         return createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
     }

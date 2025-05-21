@@ -1,11 +1,10 @@
 /* Import */
 import express from 'express';
-import path from 'path';
 import http from 'http';
 import { initRoutes } from './routes/routes';
 import { normalizePort } from './models/utils';
 import { connectToDatabase } from './models/database';
-import { clone } from './controllers/Controller';
+import * as logger from './models/logger';
 import fs from 'node:fs';
 require('dotenv').config();
 
@@ -75,23 +74,23 @@ try {
     try {
         fs.writeFileSync(SWAGGER_JSON_PATH, Buffer.from(JSON.stringify(swaggerDocs), 'utf8'));
         app.locals.swaggerJsonFileCreated = true;
-        console.log(" [✅] Swagger JSON file created at :", SWAGGER_JSON_PATH);
+        logger.success("Swagger JSON file created at :", SWAGGER_JSON_PATH);
     } catch (err) {
-        console.error(err);
+        logger.error(err);
         app.locals.swaggerJsonFileCreated = false;
-        console.error(" [❌] Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
+        logger.error("Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
     }
 
     /* Écoute du server */
     server.listen(APP_PORT, () => {
-        console.log(" [✅] Server running at PORT :", APP_PORT, "!");
-        console.log(" [✅] Server running at URL :", APP_URL, "!");
-        console.log(" [✅] Server documentation running at URL :", APP_URL + ":" + APP_PORT + "/api-docs", "!");
+        logger.success("Server running at PORT :", APP_PORT, "!");
+        logger.success("Server running at URL :", APP_URL, "!");
+        logger.success("Server documentation running at URL :", APP_URL + ":" + APP_PORT + "/api-docs", "!");
     }).on("error", (error) => {
-        console.error(" [❌] FAILED STARTING SERVER\n");
+        logger.error("FAILED STARTING SERVER\n");
         throw new Error(error.message);
     });
 } catch (error) {
-    console.error(" [❌] Error in main index.ts :", error);
+    logger.error("Error in main index.ts :", error);
     process.exit(1);
 }

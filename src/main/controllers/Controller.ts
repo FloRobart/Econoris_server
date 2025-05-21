@@ -1,6 +1,7 @@
 import { JSONResponse } from "../models/types";
 import { WhereValuesType, LogicalOperatorType, QueryTable, ColumnsType } from "../models/types";
 import * as Constantes from "../models/constantes";
+import * as logger from "../models/logger";
 
 
 
@@ -14,7 +15,8 @@ export function clone(element: any): any {
         if (element === undefined) { return undefined; }
         return JSON.parse(JSON.stringify(element));
     } catch (error) {
-        console.error("Error in clone function :", error);
+        logger.error(error);
+        logger.error("Error in clone function");
         return element;
     }
 }

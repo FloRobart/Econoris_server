@@ -1,5 +1,6 @@
 import pg from 'pg';
 import { Query, QueryTable, JSONUpdateRequest, JSONDeleteRequest, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
+import * as logger from "./logger";
 
 const { Client } = pg;
 let client: pg.Client;
@@ -19,18 +20,18 @@ export async function connectToDatabase(dburi: string|{host: string, user: strin
         await client.connect();
 
         client.on('error', (err) => {
-            console.error(err);
-            console.error("\n [❌] DATABASE ERROR")
+            logger.error(err);
+            logger.error("DATABASE ERROR")
         });
 
         client.on('end', () => {
-            console.log("\n [✅️] DATABASE CONNECTION CLOSED")
+            logger.success("DATABASE CONNECTION CLOSED")
         });
 
         return true;
     } catch (err) {
-        console.error(err);
-        console.error("\n [❌] FAILED CONNECTING TO DATABASE");
+        logger.error(err);
+        logger.error("FAILED CONNECTING TO DATABASE");
         return false;
     }
 }
@@ -46,8 +47,8 @@ export async function closeDatabaseConnection(): Promise<void> {
         await client.end();
     }
     catch (err) {
-        console.error(err);
-        console.error("\n [❌] FAILED CLOSING DATABASE CONNECTION");
+        logger.error(err);
+        logger.error("FAILED CLOSING DATABASE CONNECTION");
     }
 }
 
@@ -64,8 +65,8 @@ export async function executeQuery(query: Query): Promise<any[]|null> {
         const res = await client.query(query);
         return res.rows || [];
     } catch (err) {
-        console.error(err);
-        console.error("\n [❌] FAILED EXECUTING QUERY");
+        logger.error(err);
+        logger.error("FAILED EXECUTING QUERY");
         return null;
     }
 }
@@ -136,10 +137,12 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONSelectRequest
         values.push(jsonRequest.limit as number|null);
         values.push(jsonRequest.offset as number);
 
+        logger.debug("Query : ", query);
+        logger.debug("Values : ", values);
         return { text: query, values: values };
     } catch (err) {
-        console.error(err);
-        console.error("\n [❌] FAILED PREPARING SELECT QUERY");
+        logger.error(err);
+        logger.error("FAILED PREPARING SELECT QUERY");
         return { text: "", values: [] };
     }
 }
@@ -203,10 +206,12 @@ export function getInsertQuery(table: QueryTable, jsonRequest: JSONInsertRequest
         query = query.slice(0, -2); // Remove the last comma and space
         query += ";";
 
+        logger.debug("Query : ", query);
+        logger.debug("Values : ", values);
         return { text: query, values: values };
     } catch (err) {
-        console.error(err);
-        console.error("\n [❌] FAILED PREPARING INSERT QUERY");
+        logger.error(err);
+        logger.error("FAILED PREPARING INSERT QUERY");
         return { text: "", values: [] };
     }
 }
@@ -269,10 +274,12 @@ export function getUpdateQuery(table: QueryTable, jsonRequest: JSONUpdateRequest
             values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
         }
 
+        logger.debug("Query : ", query);
+        logger.debug("Values : ", values);
         return { text: query, values: values };
     } catch (err) {
-        console.error(err);
-        console.error("\n [❌] FAILED PREPARING UPDATE QUERY");
+        logger.error(err);
+        logger.error("FAILED PREPARING UPDATE QUERY");
         return { text: "", values: [] };
     }
 }
@@ -324,10 +331,12 @@ export function getDeleteQuery(table: QueryTable, jsonRequest: JSONDeleteRequest
         if (jsonRequest.whereValues.length === 0) { query += " 1=1"; }
         query += " RETURNING *;";
 
+        logger.debug("Query : ", query);
+        logger.debug("Values : ", values);
         return { text: query, values: values };
     } catch (err) {
-        console.error(err);
-        console.error("\n [❌] FAILED PREPARING DELETE QUERY");
+        logger.error(err);
+        logger.error("FAILED PREPARING DELETE QUERY");
         return { text: "", values: [] };
     }
 }

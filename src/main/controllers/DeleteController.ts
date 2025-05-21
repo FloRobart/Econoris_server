@@ -1,6 +1,7 @@
 import { executeQuery, getDeleteQuery } from "../models/database";
 import { JSONDeleteRequest, JSONResponse, QueryTable, ColumnsType } from "../models/types";
 import * as Constantes from "../models/constantes";
+import * as logger from '../models/logger';
 import { createJsonResponse, clone, correctWhereValues } from "./Controller";
 
 
@@ -57,7 +58,8 @@ export async function executeDelete(table: QueryTable, jsonRequest: JSONDeleteRe
 
         return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
     } catch (error) {
-        console.error("Error in executeDelete :", error);
+        logger.error(error);
+        logger.error("Error in executeDelete");
         jsonRequest.errors.push("An unknown error occurred while executing the query");
         return createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
     }
