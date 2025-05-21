@@ -51,10 +51,16 @@ import { createJsonResponse, clone, correctWhereValues } from "./Controller";
  *     ]
  */
 export async function executeDelete(table: QueryTable, jsonRequest: JSONDeleteRequest): Promise<JSONResponse> {
-    const rows = await executeQuery(getDeleteQuery(table, jsonRequest));
-    if (rows === null) { jsonRequest.errors.push("An unknown error occurred while executing the query"); }
+    try {
+        const rows = await executeQuery(getDeleteQuery(table, jsonRequest));
+        if (rows === null) { jsonRequest.errors.push("An unknown error occurred while executing the query"); }
 
-    return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
+        return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
+    } catch (error) {
+        console.error("Error in executeDelete :", error);
+        jsonRequest.errors.push("An unknown error occurred while executing the query");
+        return createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+    }
 }
 
 

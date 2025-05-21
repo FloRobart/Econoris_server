@@ -101,41 +101,47 @@ export async function executeQuery(query: Query): Promise<any[]|null> {
  * }
  */
 export function getSelectQuery(table: QueryTable, jsonRequest: JSONSelectRequest): Query {
-    let query = "SELECT";
-    let values: (string|number|boolean|null)[] = [];
+    try {
+        let query = "SELECT";
+        let values: (string|number|boolean|null)[] = [];
 
-    /* Select */
-    for (const index in jsonRequest.keys) {
-        const key = normalyzeKey(jsonRequest.keys[index], table);
-        query += jsonRequest.aggregation ? ` ${jsonRequest.aggregation}(` : " ";
-        query += key;
-        query += jsonRequest.aggregation ? `) AS ${jsonRequest.aggregation.toLowerCase()}_${key === "*" ? "all" : key},` : ",";
+        /* Select */
+        for (const index in jsonRequest.keys) {
+            const key = normalyzeKey(jsonRequest.keys[index], table);
+            query += jsonRequest.aggregation ? ` ${jsonRequest.aggregation}(` : " ";
+            query += key;
+            query += jsonRequest.aggregation ? `) AS ${jsonRequest.aggregation.toLowerCase()}_${key === "*" ? "all" : key},` : ",";
+        }
+        query = query.slice(0, -1); // Remove the last comma
+
+        /* From */
+        query += ` FROM ${table} `;
+
+        /* Where */
+        for (const index in jsonRequest.whereValues) {
+            const whereObject        = jsonRequest.whereValues[index];
+            const key                = normalyzeKey(whereObject.key, table);
+            const comparisonOperator = whereObject.comparisonOperator || "=";
+            const value              = whereObject.value;
+            const logicalOperator    = whereObject.logicalOperator || "AND";
+
+            query += parseInt(index) === 0 ? "WHERE" : "";
+
+            query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
+            query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : "";
+            values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
+        }
+
+        query += `LIMIT $${values.length + 1} OFFSET $${values.length + 2};`;
+        values.push(jsonRequest.limit as number|null);
+        values.push(jsonRequest.offset as number);
+
+        return { text: query, values: values };
+    } catch (err) {
+        console.error(err);
+        console.error("\n [❌] FAILED PREPARING SELECT QUERY");
+        return { text: "", values: [] };
     }
-    query = query.slice(0, -1); // Remove the last comma
-
-    /* From */
-    query += ` FROM ${table} `;
-
-    /* Where */
-    for (const index in jsonRequest.whereValues) {
-        const whereObject        = jsonRequest.whereValues[index];
-        const key                = normalyzeKey(whereObject.key, table);
-        const comparisonOperator = whereObject.comparisonOperator || "=";
-        const value              = whereObject.value;
-        const logicalOperator    = whereObject.logicalOperator || "AND";
-
-        query += parseInt(index) === 0 ? "WHERE" : "";
-
-        query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
-        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : "";
-        values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
-    }
-
-    query += `LIMIT $${values.length + 1} OFFSET $${values.length + 2};`;
-    values.push(jsonRequest.limit as number|null);
-    values.push(jsonRequest.offset as number);
-
-    return { text: query, values: values };
 }
 
 
@@ -167,36 +173,42 @@ export function getSelectQuery(table: QueryTable, jsonRequest: JSONSelectRequest
  * }
  */
 export function getInsertQuery(table: QueryTable, jsonRequest: JSONInsertRequest): Query {
-    let query = "";
-    let values: (string|number|boolean|null)[] = [];
+    try {
+        let query = "";
+        let values: (string|number|boolean|null)[] = [];
 
-    const insertObject = jsonRequest.insertions[0];
-    query += `INSERT INTO ${table} (`
-    for (const key in insertObject) {
-        query += `${normalyzeKey(key as ColumnsType, table)}, `;
-    }
-    query = query.slice(0, -2); // Remove the last comma and space
-
-    query += ") VALUES (";
-    for (const key in insertObject) {
-        const value = insertObject[key];
-        query += `$${values.length + 1}, `;
-        values.push(value);
-    }
-    query = query.slice(0, -2); // Remove the last comma and space
-
-    query += ") RETURNING ";
-    for (const key in jsonRequest.returnedKeys) {
-        let returnedKey = jsonRequest.returnedKeys[key];
-        if (jsonRequest.returnedKeys[key] !== "*") {
-            returnedKey = normalyzeKey(jsonRequest.returnedKeys[key], table) as ColumnsType;
+        const insertObject = jsonRequest.insertions[0];
+        query += `INSERT INTO ${table} (`
+        for (const key in insertObject) {
+            query += `${normalyzeKey(key as ColumnsType, table)}, `;
         }
-        query += `${returnedKey}, `;
-    }
-    query = query.slice(0, -2); // Remove the last comma and space
-    query += ";";
+        query = query.slice(0, -2); // Remove the last comma and space
 
-    return { text: query, values: values };
+        query += ") VALUES (";
+        for (const key in insertObject) {
+            const value = insertObject[key];
+            query += `$${values.length + 1}, `;
+            values.push(value);
+        }
+        query = query.slice(0, -2); // Remove the last comma and space
+
+        query += ") RETURNING ";
+        for (const key in jsonRequest.returnedKeys) {
+            let returnedKey = jsonRequest.returnedKeys[key];
+            if (jsonRequest.returnedKeys[key] !== "*") {
+                returnedKey = normalyzeKey(jsonRequest.returnedKeys[key], table) as ColumnsType;
+            }
+            query += `${returnedKey}, `;
+        }
+        query = query.slice(0, -2); // Remove the last comma and space
+        query += ";";
+
+        return { text: query, values: values };
+    } catch (err) {
+        console.error(err);
+        console.error("\n [❌] FAILED PREPARING INSERT QUERY");
+        return { text: "", values: [] };
+    }
 }
 
 
@@ -232,33 +244,37 @@ export function getInsertQuery(table: QueryTable, jsonRequest: JSONInsertRequest
  * }
  */
 export function getUpdateQuery(table: QueryTable, jsonRequest: JSONUpdateRequest): Query {
-    let query = `UPDATE ${table} SET `;
-    let values: (string|number|boolean|null)[] = [];
+    try {
+        let query = `UPDATE ${table} SET `;
+        let values: (string|number|boolean|null)[] = [];
 
-    for (const key in jsonRequest.keysValues) {
-        query += `${normalyzeKey(key as ColumnsType, table)}=$${values.length+1}, `;
-        values.push(jsonRequest.keysValues[key]);
+        for (const key in jsonRequest.keysValues) {
+            query += `${normalyzeKey(key as ColumnsType, table)}=$${values.length+1}, `;
+            values.push(jsonRequest.keysValues[key]);
+        }
+        query = query.slice(0, -2); // Remove the last comma and space
+
+        /* Where */
+        for (const index in jsonRequest.whereValues) {
+            const whereObject        = jsonRequest.whereValues[index];
+            const key                = normalyzeKey(whereObject.key, table);
+            const comparisonOperator = whereObject.comparisonOperator || "=";
+            const value              = whereObject.value;
+            const logicalOperator    = whereObject.logicalOperator || "AND";
+
+            query += parseInt(index) === 0 ? " WHERE" : "";
+
+            query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
+            query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : " RETURNING *;";
+            values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
+        }
+
+        return { text: query, values: values };
+    } catch (err) {
+        console.error(err);
+        console.error("\n [❌] FAILED PREPARING UPDATE QUERY");
+        return { text: "", values: [] };
     }
-    query = query.slice(0, -2); // Remove the last comma and space
-
-    /* Where */
-    for (const index in jsonRequest.whereValues) {
-        const whereObject        = jsonRequest.whereValues[index];
-        const key                = normalyzeKey(whereObject.key, table);
-        const comparisonOperator = whereObject.comparisonOperator || "=";
-        const value              = whereObject.value;
-        const logicalOperator    = whereObject.logicalOperator || "AND";
-
-        query += parseInt(index) === 0 ? " WHERE" : "";
-
-        query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
-        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : " RETURNING *;";
-        values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
-    }
-
-    console.log("update query  :", query);
-    console.log("update values :", values);
-    return { text: query, values: values };
 }
 
 
@@ -289,27 +305,31 @@ export function getUpdateQuery(table: QueryTable, jsonRequest: JSONUpdateRequest
  * }
  */
 export function getDeleteQuery(table: QueryTable, jsonRequest: JSONDeleteRequest): Query {
-    let query = `DELETE FROM ${table} WHERE 1=1 AND`;
-    let values: (string|number|boolean|null)[] = [];
+    try {
+        let query = `DELETE FROM ${table} WHERE 1=1 AND`;
+        let values: (string|number|boolean|null)[] = [];
 
-    /* Where */
-    for (const index in jsonRequest.whereValues) {
-        const whereObject        = jsonRequest.whereValues[index];
-        const key                = normalyzeKey(whereObject.key, table);
-        const comparisonOperator = whereObject.comparisonOperator || "=";
-        const value              = whereObject.value;
-        const logicalOperator    = whereObject.logicalOperator || "AND";
+        /* Where */
+        for (const index in jsonRequest.whereValues) {
+            const whereObject        = jsonRequest.whereValues[index];
+            const key                = normalyzeKey(whereObject.key, table);
+            const comparisonOperator = whereObject.comparisonOperator || "=";
+            const value              = whereObject.value;
+            const logicalOperator    = whereObject.logicalOperator || "AND";
 
-        query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
-        query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : "";
-        values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
+            query += ` ${key} ${comparisonOperator} $${values.length + 1} `;
+            query += parseInt(index) !== jsonRequest.whereValues.length - 1 ? logicalOperator : "";
+            values.push(comparisonOperator === "LIKE" ? `%${value}%` : value);
+        }
+        if (jsonRequest.whereValues.length === 0) { query += " 1=1"; }
+        query += " RETURNING *;";
+
+        return { text: query, values: values };
+    } catch (err) {
+        console.error(err);
+        console.error("\n [❌] FAILED PREPARING DELETE QUERY");
+        return { text: "", values: [] };
     }
-    if (jsonRequest.whereValues.length === 0) { query += " 1=1"; }
-    query += " RETURNING *;";
-
-    console.log("delete query  :", query);
-    console.log("delete values :", values);
-    return { text: query, values: values };
 }
 
 

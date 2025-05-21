@@ -54,26 +54,32 @@ import { createJsonResponse, clone } from "./Controller";
  *     ]
  */
 export async function executeInsert(table: QueryTable, jsonRequest: JSONInsertRequest): Promise<JSONResponse> {
-    let rows: any[] = [];
-    for (const index in jsonRequest.insertions) {
-        const rowsTemp = await executeQuery(getInsertQuery(table, {
-            returnedKeys: jsonRequest.returnedKeys,
-            insertions: [jsonRequest.insertions[index]],
-            warnings: jsonRequest.warnings,
-            errors: jsonRequest.errors
-        }));
+    try {
+        let rows: any[] = [];
+        for (const index in jsonRequest.insertions) {
+            const rowsTemp = await executeQuery(getInsertQuery(table, {
+                returnedKeys: jsonRequest.returnedKeys,
+                insertions: [jsonRequest.insertions[index]],
+                warnings: jsonRequest.warnings,
+                errors: jsonRequest.errors
+            }));
 
-        if (rowsTemp === null) {
-            jsonRequest.errors.push("An error occurred while executing the query for insertions n°" + index);
-            continue;
+            if (rowsTemp === null) {
+                jsonRequest.errors.push("An error occurred while executing the query for insertions n°" + index);
+                continue;
+            }
+
+            if (rowsTemp.length > 0) {
+                rows.push(...rowsTemp);
+            }
         }
 
-        if (rowsTemp.length > 0) {
-            rows.push(...rowsTemp);
-        }
+        return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
+    } catch (error) {
+        console.error("Error in executeInsert :", error);
+        jsonRequest.errors.push("An unknown error occurred while executing the query");
+        return createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
     }
-
-    return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
 }
 
 /**

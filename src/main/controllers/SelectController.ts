@@ -65,10 +65,16 @@ import { createJsonResponse, clone } from "./Controller";
  *     ]
  */
 export async function executeSelect(table: QueryTable, jsonRequest: JSONSelectRequest): Promise<JSONResponse> {
-    const rows = await executeQuery(getSelectQuery(table, jsonRequest));
-    if (rows === null) { jsonRequest.errors.push("An unknown error occurred while executing the query"); }
+    try {
+        const rows = await executeQuery(getSelectQuery(table, jsonRequest));
+        if (rows === null) { jsonRequest.errors.push("An unknown error occurred while executing the query"); }
 
-    return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
+        return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
+    } catch (error) {
+        console.error("Error in executeSelect :", error);
+        jsonRequest.errors.push("An unknown error occurred while executing the query");
+        return createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
+    }
 }
 
 
