@@ -40,15 +40,22 @@ export async function connectToDatabase(dburi: string|{host: string, user: strin
 /**
  * Closes the database connection
  * @async
- * @returns void
+ * @returns boolean true if the connection was closed successfully, otherwise false
  */
-export async function closeDatabaseConnection(): Promise<void> {
+export async function closeDatabaseConnection(): Promise<boolean> {
     try {
-        await client.end();
+        return client.end().then(() => {
+            return true;
+        }).catch((err) => {
+            logger.error(err);
+            logger.error("FAILED CLOSING DATABASE CONNECTION");
+            return false;
+        });
     }
     catch (err) {
         logger.error(err);
         logger.error("FAILED CLOSING DATABASE CONNECTION");
+        return false;
     }
 }
 
