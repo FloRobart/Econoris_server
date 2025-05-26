@@ -110,7 +110,12 @@ function parseUpdateUrl(table: QueryTable, request: any): JSONUpdateRequest {
         errors: []
     };
 
-    // TODO : À faire plus tard
+    try {
+        // TODO : À faire plus tard
+    } catch (error) {
+        logger.error("Error in parseUpdateUrl:", error);
+        jsonRequest.errors.push("An error occurred while parsing the request parameters");
+    }
 
     return correctedJsonUpdateRequest(table, jsonRequest);
 }

@@ -99,25 +99,31 @@ export function parseDeleteUrl(table: QueryTable, request: any): JSONDeleteReque
         errors: []
     };
 
-    for (let key in request) {
-        let value = request[key];
-        key = key.toLowerCase();
+    try {
+        for (let key in request) {
+            let value = request[key];
+            key = key.toLowerCase();
 
-        if (key === undefined || value === undefined) {
-            jsonRequest.warnings.push( key === undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
-            continue;
-        }
+            if (key === undefined || value === undefined) {
+                jsonRequest.warnings.push( key === undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
+                continue;
+            }
 
-        if (Constantes.Columns[table].includes(key)) {
-            jsonRequest.whereValues.push({
-                key: key as ColumnsType,
-                comparisonOperator: "=",
-                value: value instanceof Array ? value[value.length - 1] : value,
-                logicalOperator: "AND"
-            });
-        } else {
-            jsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
+            if (Constantes.Columns[table].includes(key)) {
+                jsonRequest.whereValues.push({
+                    key: key as ColumnsType,
+                    comparisonOperator: "=",
+                    value: value instanceof Array ? value[value.length - 1] : value,
+                    logicalOperator: "AND"
+                });
+            } else {
+                jsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
+            }
         }
+    } catch (error) {
+        logger.error(error);
+        logger.error("Error in parseDeleteUrl");
+        jsonRequest.errors.push("An unknown error occurred while parsing the request");
     }
 
     return correctedJsonDeleteRequest(table, jsonRequest);
@@ -158,9 +164,15 @@ export function correctedJsonDeleteRequest(table: QueryTable, jsonRequest: JSOND
     };
 
     /* Verify where values */
-    let correctedWhereValues = correctWhereValues(table, jsonRequest.whereValues);
-    newJsonRequest.whereValues = correctedWhereValues.whereValues;
-    newJsonRequest.warnings.push(...correctedWhereValues.warnings);
+    try {
+        let correctedWhereValues = correctWhereValues(table, jsonRequest.whereValues);
+        newJsonRequest.whereValues = correctedWhereValues.whereValues;
+        newJsonRequest.warnings.push(...correctedWhereValues.warnings);
+    } catch (error) {
+        logger.error(error);
+        logger.error("Error in correctedJsonDeleteRequest");
+        newJsonRequest.errors.push("An unknown error occurred while correcting the where values");
+    }
 
     return newJsonRequest;
 }

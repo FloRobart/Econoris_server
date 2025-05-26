@@ -88,17 +88,18 @@ export function correctWhereValues(table: QueryTable, whereValues: WhereValuesTy
     const newWhereValues: WhereValuesType[] = [];
     const warnings: string[] = [];
 
-    for (const index in whereValues) {
+    try {
+        for (const index in whereValues) {
             const key = clone(whereValues[index].key?.toLowerCase());
             const value = clone(whereValues[index].value);
             const comparisonOperator = clone(whereValues[index].comparisonOperator);
             const logicalOperator = clone(whereValues[index].logicalOperator?.toUpperCase());
-    
+
             if (key === undefined || key === null || key === "" || value === undefined || value === null || value === "") {
                 warnings.push((key === undefined || key === null || key === "") ? ("Key undefined, null or empty for value : '" + value + "' -> ignored") : ("Value undefined, null or empty for key : '" + key + "' -> ignored"));
                 continue;
             }
-    
+
             if (Constantes.Columns[table].includes(key)) {
                 if (Constantes.ComparisonOperator.includes(comparisonOperator) || comparisonOperator == undefined) {
                     if (Constantes.LogicalOperator.includes(logicalOperator) || logicalOperator == undefined) {
@@ -118,6 +119,11 @@ export function correctWhereValues(table: QueryTable, whereValues: WhereValuesTy
                 warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
             }
         }
+    } catch (error) {
+        logger.error(error);
+        logger.error("Error in correctWhereValues function");
+        warnings.push("An unknown error occurred while correcting whereValues");
+    }
 
     return { whereValues: newWhereValues, warnings: warnings};
 }

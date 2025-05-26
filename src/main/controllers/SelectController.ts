@@ -135,43 +135,49 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONSelectReque
         errors: []
     };
 
-    /* Verify comparison operator */
-    if (!Constantes.ComparisonOperator.includes(comparisonOperator)) {
-        jsonRequest.warnings.push("Comparison operator : '" + comparisonOperator + "' not in [" + Constantes.ComparisonOperator + "] -> replaced by '='");
-        comparisonOperator = "=";
-    }
-
-    /* Verify logical operator */
-    if (!Constantes.LogicalOperator.includes(logicalOperator)) {
-        jsonRequest.warnings.push("Logical operator : '" + logicalOperator + "' not in [" + Constantes.LogicalOperator + "] -> replaced by 'AND'");
-        logicalOperator = "AND";
-    }
-
-    /* Verify keys */
-    delete request.limit;
-    delete request.offset;
-    delete request.comparisonOperator;
-    delete request.logicalOperator;
-
-    for (let key in request) {
-        let value = request[key];
-        key = key.toLowerCase();
-
-        if (key === undefined || value === undefined) {
-            jsonRequest.warnings.push( key === undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
-            continue;
+    try {
+        /* Verify comparison operator */
+        if (!Constantes.ComparisonOperator.includes(comparisonOperator)) {
+            jsonRequest.warnings.push("Comparison operator : '" + comparisonOperator + "' not in [" + Constantes.ComparisonOperator + "] -> replaced by '='");
+            comparisonOperator = "=";
         }
 
-        if (Constantes.Columns[table].includes(key)) {
-            jsonRequest.whereValues.push({
-                key: key as ColumnsType,
-                comparisonOperator: comparisonOperator,
-                value: value instanceof Array ? value[value.length - 1] : value,
-                logicalOperator: logicalOperator
-            });
-        } else {
-            jsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
+        /* Verify logical operator */
+        if (!Constantes.LogicalOperator.includes(logicalOperator)) {
+            jsonRequest.warnings.push("Logical operator : '" + logicalOperator + "' not in [" + Constantes.LogicalOperator + "] -> replaced by 'AND'");
+            logicalOperator = "AND";
         }
+
+        /* Verify keys */
+        delete request.limit;
+        delete request.offset;
+        delete request.comparisonOperator;
+        delete request.logicalOperator;
+
+        for (let key in request) {
+            let value = request[key];
+            key = key.toLowerCase();
+
+            if (key === undefined || value === undefined) {
+                jsonRequest.warnings.push( key === undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
+                continue;
+            }
+
+            if (Constantes.Columns[table].includes(key)) {
+                jsonRequest.whereValues.push({
+                    key: key as ColumnsType,
+                    comparisonOperator: comparisonOperator,
+                    value: value instanceof Array ? value[value.length - 1] : value,
+                    logicalOperator: logicalOperator
+                });
+            } else {
+                jsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
+            }
+        }
+    } catch (error) {
+        logger.error(error);
+        logger.error("Error in parseSelectUrl");
+        jsonRequest.errors.push("An unknown error occurred while parsing the request");
     }
 
     return correctedJsonSelectRequest(table, jsonRequest);
@@ -219,66 +225,72 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONS
         errors: clone(jsonRequest.errors) || []
     };
 
-    /* Verify limit */
-    newJsonRequest.limit = newJsonRequest.limit instanceof Array ? newJsonRequest.limit[newJsonRequest.limit.length - 1] : newJsonRequest.limit;
-    newJsonRequest.limit = !Number.isNaN(parseInt(String(newJsonRequest.limit), 10)) ? parseInt(String(newJsonRequest.limit), 10) : null;
-    newJsonRequest.limit = (newJsonRequest.limit >= 0 ? newJsonRequest.limit : null);
+    try {
+        /* Verify limit */
+        newJsonRequest.limit = newJsonRequest.limit instanceof Array ? newJsonRequest.limit[newJsonRequest.limit.length - 1] : newJsonRequest.limit;
+        newJsonRequest.limit = !Number.isNaN(parseInt(String(newJsonRequest.limit), 10)) ? parseInt(String(newJsonRequest.limit), 10) : null;
+        newJsonRequest.limit = (newJsonRequest.limit >= 0 ? newJsonRequest.limit : null);
 
-    /* Verify offset */
-    newJsonRequest.offset = newJsonRequest.offset instanceof Array ? newJsonRequest.offset[newJsonRequest.offset.length - 1] : newJsonRequest.offset;
-    newJsonRequest.offset = !Number.isNaN(parseInt(String(newJsonRequest.offset), 10)) ? parseInt(String(newJsonRequest.offset), 10) : 0;
-    newJsonRequest.offset = (newJsonRequest.offset >= 0 ? newJsonRequest.offset : 0);
+        /* Verify offset */
+        newJsonRequest.offset = newJsonRequest.offset instanceof Array ? newJsonRequest.offset[newJsonRequest.offset.length - 1] : newJsonRequest.offset;
+        newJsonRequest.offset = !Number.isNaN(parseInt(String(newJsonRequest.offset), 10)) ? parseInt(String(newJsonRequest.offset), 10) : 0;
+        newJsonRequest.offset = (newJsonRequest.offset >= 0 ? newJsonRequest.offset : 0);
 
-    /* Verify keys */
-    for (const index in jsonRequest.keys) {
-        const key = jsonRequest.keys[index]?.toLowerCase();
-        if (key === undefined || key === null || key === "") {
-            newJsonRequest.warnings.push("key n°" + index + " undefined, null or empty -> ignored");
-            continue;
+        /* Verify keys */
+        for (const index in jsonRequest.keys) {
+            const key = jsonRequest.keys[index]?.toLowerCase();
+            if (key === undefined || key === null || key === "") {
+                newJsonRequest.warnings.push("key n°" + index + " undefined, null or empty -> ignored");
+                continue;
+            }
+
+            if (Constantes.Columns[table].includes(key) || key === "*") {
+                newJsonRequest.keys.push(clone(key) as ColumnsType);
+            } else {
+                newJsonRequest.warnings.push("Key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
+            }
         }
 
-        if (Constantes.Columns[table].includes(key) || key === "*") {
-            newJsonRequest.keys.push(clone(key) as ColumnsType);
-        } else {
-            newJsonRequest.warnings.push("Key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
-        }
-    }
-
-    if (newJsonRequest.keys.length === 0) {
-        newJsonRequest.warnings.push("No key found -> '*' added");
-        newJsonRequest.keys.push("*");
-    }
-
-    /* Verify where values */
-    for (const index in jsonRequest.whereValues) {
-        const key = clone(jsonRequest.whereValues[index].key?.toLowerCase());
-        const value = clone(jsonRequest.whereValues[index].value);
-        const comparisonOperator = clone(jsonRequest.whereValues[index].comparisonOperator);
-        const logicalOperator = clone(jsonRequest.whereValues[index].logicalOperator?.toUpperCase());
-
-        if (key === undefined || key === null || key === "" || value === undefined || value === null || value === "") {
-            newJsonRequest.warnings.push((key === undefined || key === null || key === "") ? ("Key undefined, null or empty for value : '" + value + "' -> ignored") : ("Value undefined, null or empty for key : '" + key + "' -> ignored"));
-            continue;
+        if (newJsonRequest.keys.length === 0) {
+            newJsonRequest.warnings.push("No key found -> '*' added");
+            newJsonRequest.keys.push("*");
         }
 
-        if (Constantes.Columns[table].includes(key)) {
-            if (Constantes.ComparisonOperator.includes(comparisonOperator) || comparisonOperator == undefined) {
-                if (Constantes.LogicalOperator.includes(logicalOperator) || logicalOperator == undefined) {
-                    newJsonRequest.whereValues.push({
-                        key: key as ColumnsType,
-                        comparisonOperator: comparisonOperator || "=",
-                        value: value,
-                        logicalOperator: (logicalOperator || "AND") as LogicalOperatorType
-                    });
+        /* Verify where values */
+        for (const index in jsonRequest.whereValues) {
+            const key = clone(jsonRequest.whereValues[index].key?.toLowerCase());
+            const value = clone(jsonRequest.whereValues[index].value);
+            const comparisonOperator = clone(jsonRequest.whereValues[index].comparisonOperator);
+            const logicalOperator = clone(jsonRequest.whereValues[index].logicalOperator?.toUpperCase());
+
+            if (key === undefined || key === null || key === "" || value === undefined || value === null || value === "") {
+                newJsonRequest.warnings.push((key === undefined || key === null || key === "") ? ("Key undefined, null or empty for value : '" + value + "' -> ignored") : ("Value undefined, null or empty for key : '" + key + "' -> ignored"));
+                continue;
+            }
+
+            if (Constantes.Columns[table].includes(key)) {
+                if (Constantes.ComparisonOperator.includes(comparisonOperator) || comparisonOperator == undefined) {
+                    if (Constantes.LogicalOperator.includes(logicalOperator) || logicalOperator == undefined) {
+                        newJsonRequest.whereValues.push({
+                            key: key as ColumnsType,
+                            comparisonOperator: comparisonOperator || "=",
+                            value: value,
+                            logicalOperator: (logicalOperator || "AND") as LogicalOperatorType
+                        });
+                    } else {
+                        newJsonRequest.warnings.push("Logical operator : '" + logicalOperator + "' not in [" + Constantes.LogicalOperator + "] for key : '" + key + "' -> replaced by 'AND'");
+                    }
                 } else {
-                    newJsonRequest.warnings.push("Logical operator : '" + logicalOperator + "' not in [" + Constantes.LogicalOperator + "] for key : '" + key + "' -> replaced by 'AND'");
+                    newJsonRequest.warnings.push("Comparison operator : '" + comparisonOperator + "' not in [" + Constantes.ComparisonOperator + "] for key : '" + key + "' -> replaced by '='");
                 }
             } else {
-                newJsonRequest.warnings.push("Comparison operator : '" + comparisonOperator + "' not in [" + Constantes.ComparisonOperator + "] for key : '" + key + "' -> replaced by '='");
+                newJsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
             }
-        } else {
-            newJsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
         }
+    } catch (error) {
+        logger.error(error);
+        logger.error("Error in correctedJsonSelectRequest");
+        newJsonRequest.errors.push("An unknown error occurred while correcting the JSON request");
     }
 
     return newJsonRequest;

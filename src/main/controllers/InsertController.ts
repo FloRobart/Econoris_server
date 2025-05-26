@@ -120,80 +120,91 @@ export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any):
         errors: clone(jsonRequest.errors) || []
     };
 
-    /* Verify returned values */
-    if (jsonRequest.returnedKeys !== undefined && jsonRequest.returnedKeys !== null) {
-        if (Array.isArray(jsonRequest.returnedKeys)) {
-            for (const index in jsonRequest.returnedKeys) {
-                const key = jsonRequest.returnedKeys[index]?.toLowerCase();
-                if (key === undefined || key === null || key === "") {
-                    newJsonRequest.warnings.push("Returned key n°" + index + " undefined, null or empty -> ignored");
-                    continue;
-                }
+    try {
+        /* Verify returned values */
+        if (jsonRequest.returnedKeys !== undefined && jsonRequest.returnedKeys !== null) {
+            if (Array.isArray(jsonRequest.returnedKeys)) {
+                for (const index in jsonRequest.returnedKeys) {
+                    const key = jsonRequest.returnedKeys[index]?.toLowerCase();
+                    if (key === undefined || key === null || key === "") {
+                        newJsonRequest.warnings.push("Returned key n°" + index + " undefined, null or empty -> ignored");
+                        continue;
+                    }
 
-                if (Constantes.Columns[table].includes(key) || key === "*") {
+                    if (Constantes.Columns[table].includes(key) || key === "*") {
+                        newJsonRequest.returnedKeys.push(key as ColumnsType);
+                    } else {
+                        newJsonRequest.warnings.push("Returned key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
+                    }
+                }
+            } else if (typeof jsonRequest.returnedKeys === "string") {
+                const key = jsonRequest.returnedKeys?.toLowerCase();
+                if (key === undefined || key === null || key === "") {
+                    newJsonRequest.warnings.push("Returned key undefined, null or empty -> ignored");
+                } else if (Constantes.Columns[table].includes(key) || key === "*") {
                     newJsonRequest.returnedKeys.push(key as ColumnsType);
                 } else {
                     newJsonRequest.warnings.push("Returned key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
                 }
-            }
-        } else if (typeof jsonRequest.returnedKeys === "string") {
-            const key = jsonRequest.returnedKeys?.toLowerCase();
-            if (key === undefined || key === null || key === "") {
-                newJsonRequest.warnings.push("Returned key undefined, null or empty -> ignored");
-            } else if (Constantes.Columns[table].includes(key) || key === "*") {
-                newJsonRequest.returnedKeys.push(key as ColumnsType);
             } else {
-                newJsonRequest.warnings.push("Returned key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
+                newJsonRequest.warnings.push("Returned keys is not an array or a string -> ignored");
             }
         } else {
-            newJsonRequest.warnings.push("Returned keys is not an array or a string -> ignored");
+            newJsonRequest.warnings.push("Returned keys undefined or null -> ignored");
         }
-    } else {
-        newJsonRequest.warnings.push("Returned keys undefined or null -> ignored");
-    }
 
-    if (newJsonRequest.returnedKeys.length === 0) {
-        newJsonRequest.warnings.push("No returned key found -> no returned key");
-        newJsonRequest.returnedKeys = null;
-    }
+        if (newJsonRequest.returnedKeys.length === 0) {
+            newJsonRequest.warnings.push("No returned key found -> no returned key");
+            newJsonRequest.returnedKeys = null;
+        }
 
-    /* Verify insertions */
-    delete Constantes.Columns[table]["id"];
-    delete Constantes.Columns[table][table + "_id"];
+        /* Verify insertions */
+        delete Constantes.Columns[table]["id"];
+        delete Constantes.Columns[table][table + "_id"];
 
-    if(jsonRequest.insertions !== undefined && jsonRequest.insertions !== null) {
-        if (Array.isArray(jsonRequest.insertions)) {
-            for (const i in jsonRequest.insertions) {
-                const element = jsonRequest.insertions[i];
-                for (const key in element) {
-                    let rep = verifyKeyValue(table, key, element[key]);
+        if(jsonRequest.insertions !== undefined && jsonRequest.insertions !== null) {
+            if (Array.isArray(jsonRequest.insertions)) {
+                for (const i in jsonRequest.insertions) {
+                    const element = jsonRequest.insertions[i];
+                    for (const key in element) {
+                        let rep = verifyKeyValue(table, key, element[key]);
+                        if (rep.warnings.length > 0) {
+                            newJsonRequest.warnings.push(...rep.warnings);
+                        } else {
+                            if (rep[key] !== undefined) {
+                                newJsonRequest.insertions[i] = newJsonRequest.insertions[i] || {};
+                                newJsonRequest.insertions[i][key] = rep[key];
+                            }
+                        }
+                    }
+                }
+            } else if (typeof jsonRequest.insertions === "object") {
+                for (const key in jsonRequest.insertions) {
+                    let rep = verifyKeyValue(table, key, jsonRequest.insertions[key]);
                     if (rep.warnings.length > 0) {
                         newJsonRequest.warnings.push(...rep.warnings);
                     } else {
                         if (rep[key] !== undefined) {
-                            newJsonRequest.insertions[i] = newJsonRequest.insertions[i] || {};
-                            newJsonRequest.insertions[i][key] = rep[key];
+                            newJsonRequest.insertions[0] = newJsonRequest.insertions[0] || {};
+                            newJsonRequest.insertions[0][key] = rep[key];
                         }
                     }
                 }
             }
-        } else if (typeof jsonRequest.insertions === "object") {
-            for (const key in jsonRequest.insertions) {
-                let rep = verifyKeyValue(table, key, jsonRequest.insertions[key]);
-                if (rep.warnings.length > 0) {
-                    newJsonRequest.warnings.push(...rep.warnings);
-                } else {
-                    if (rep[key] !== undefined) {
-                        newJsonRequest.insertions[0] = newJsonRequest.insertions[0] || {};
-                        newJsonRequest.insertions[0][key] = rep[key];
-                    }
-                }
-            }
         }
-    }
 
-    Constantes.Columns[table].push("id");
-    Constantes.Columns[table].push(table + "_id");
+        Constantes.Columns[table].push("id");
+        Constantes.Columns[table].push(table + "_id");
+    } catch (error) {
+        if (!Constantes.Columns[table].includes("id")) {
+            Constantes.Columns[table].push("id");
+            Constantes.Columns[table].push(table + "_id");
+        }
+
+        logger.error(error);
+        logger.error("Error in correctedJsonInsertRequest");
+        newJsonRequest.errors.push("An unknown error occurred while correcting the JSON request");
+    }
 
     return newJsonRequest;
 }
