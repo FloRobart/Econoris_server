@@ -3,6 +3,7 @@ import { JSONSelectRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperat
 import * as Constantes from "../models/constantes";
 import * as logger from '../models/logger';
 import { createJsonResponse, clone } from "./Controller";
+import { normalize } from "path";
 
 
 
@@ -110,7 +111,7 @@ export async function executeSelect(table: QueryTable, jsonRequest: JSONSelectRe
  *     ]
  * }
  */
-export function parseSelectUrl(table: QueryTable, request: any): JSONSelectRequest {
+export function parseSelectUrl(table: QueryTable, request: any, user: any): JSONSelectRequest {
     let limit: any = request.limit || null;
     let offset: any = request.offset || 0;
     let comparisonOperator = request.comparisonOperator || "=";
@@ -180,7 +181,7 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONSelectReque
         jsonRequest.errors.push("An unknown error occurred while parsing the request");
     }
 
-    return correctedJsonSelectRequest(table, jsonRequest);
+    return correctedJsonSelectRequest(table, jsonRequest, user);
 }
 
 
@@ -214,7 +215,7 @@ export function parseSelectUrl(table: QueryTable, request: any): JSONSelectReque
  *     ]
  * }
  */
-export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelectRequest): JSONSelectRequest {
+export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelectRequest, user: any): JSONSelectRequest {
     let newJsonRequest: JSONSelectRequest = {
         keys: [],
         aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase()) ? jsonRequest.aggregation : undefined,
@@ -224,6 +225,13 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONS
         warnings: clone(jsonRequest.warnings) || [],
         errors: clone(jsonRequest.errors) || []
     };
+
+    newJsonRequest.whereValues.push({
+        key: "userid",
+        comparisonOperator: "=",
+        value: user.id || 0,
+        logicalOperator: "AND"
+    });
 
     try {
         /* Verify limit */

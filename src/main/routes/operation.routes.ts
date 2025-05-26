@@ -70,7 +70,9 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.get('/operations', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const jsonRequest = SelectController.parseSelectUrl(table, req.query);
+        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
+        const user = { id: req.headers['authorization'].split(' ')[1]};
+        const jsonRequest = SelectController.parseSelectUrl(table, req.query, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -140,7 +142,9 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.get('/operation/id/:id', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query });
+        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
+        const user = { id: req.headers['authorization'].split(' ')[1]};
+        const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query }, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -191,7 +195,9 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.post('/operations/get', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const jsonRequest = SelectController.correctedJsonSelectRequest(table, req.body);
+        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
+        const user = { id: req.headers['authorization'].split(' ')[1]};
+        const jsonRequest = SelectController.correctedJsonSelectRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -252,7 +258,9 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.post('/operations', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const jsonRequest = InsertController.correctedJsonInsertRequest(table, req.body);
+        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
+        const user = { id: req.headers['authorization'].split(' ')[1]};
+        const jsonRequest = InsertController.correctedJsonInsertRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -310,7 +318,9 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.put('/operations', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const jsonRequest = UpdateController.correctedJsonUpdateRequest(table, req.body);
+        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
+        const user = { id: req.headers['authorization'].split(' ')[1]};
+        const jsonRequest = UpdateController.correctedJsonUpdateRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -368,7 +378,9 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.delete('/operations', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const jsonRequest = DeleteController.correctedJsonDeleteRequest(table, req.body);
+        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
+        const user = { id: req.headers['authorization'].split(' ')[1]};
+        const jsonRequest = DeleteController.correctedJsonDeleteRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -424,7 +436,9 @@ export function initOperationsRoutes(app: Express): void {
      */
     app.delete('/operation/id/:id', async (req: Request, res: Response) => {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const jsonRequest = DeleteController.parseDeleteUrl(table, { ...req.params });
+        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
+        const user = { id: req.headers['authorization'].split(' ')[1]};
+        const jsonRequest = DeleteController.parseDeleteUrl(table, { ...req.params }, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {

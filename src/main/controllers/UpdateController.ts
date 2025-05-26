@@ -102,7 +102,7 @@ export async function executeUpdate(table: QueryTable, jsonRequest: JSONUpdateRe
  *     ]
  * }
  */
-function parseUpdateUrl(table: QueryTable, request: any): JSONUpdateRequest {
+function parseUpdateUrl(table: QueryTable, request: any, user: any): JSONUpdateRequest {
     const jsonRequest: JSONUpdateRequest = {
         keysValues: {},
         whereValues: [],
@@ -117,7 +117,7 @@ function parseUpdateUrl(table: QueryTable, request: any): JSONUpdateRequest {
         jsonRequest.errors.push("An error occurred while parsing the request parameters");
     }
 
-    return correctedJsonUpdateRequest(table, jsonRequest);
+    return correctedJsonUpdateRequest(table, jsonRequest, user);
 }
 
 
@@ -152,7 +152,7 @@ function parseUpdateUrl(table: QueryTable, request: any): JSONUpdateRequest {
  *     ]
  * }
  */
-export function correctedJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdateRequest): JSONUpdateRequest {
+export function correctedJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdateRequest, user: any): JSONUpdateRequest {
     const newJsonRequest: JSONUpdateRequest = {
         keysValues: {},
         whereValues: [],
@@ -160,39 +160,52 @@ export function correctedJsonUpdateRequest(table: QueryTable, jsonRequest: JSONU
         errors: clone(jsonRequest.errors) || []
     };
 
-    /* Verify keys values */
-    delete Constantes.Columns[table]["id"]
-    delete Constantes.Columns[table][table + "_id"]
-    for (const key in jsonRequest.keysValues) {
-        const value = jsonRequest.keysValues[key];
-        if (key === undefined || key === null || key === "") {
-            newJsonRequest.warnings.push("Key associated to value : '" + value + "' is undefined, null or empty -> ignored");
-            continue;
+    newJsonRequest.whereValues.push({
+        key: "userid",
+        comparisonOperator: "=",
+        value: user.id || 0,
+        logicalOperator: "AND"
+    });
+
+    try {
+        /* Verify keys values */
+        delete Constantes.Columns[table]["id"]
+        delete Constantes.Columns[table][table + "_id"]
+        for (const key in jsonRequest.keysValues) {
+            const value = jsonRequest.keysValues[key];
+            if (key === undefined || key === null || key === "") {
+                newJsonRequest.warnings.push("Key associated to value : '" + value + "' is undefined, null or empty -> ignored");
+                continue;
+            }
+
+            if (value === undefined || value === null || value === "") {
+                newJsonRequest.warnings.push("Value associated to key : '" + key + "' is undefined, null or empty -> ignored");
+                continue;
+            }
+
+            if (Constantes.Columns[table].includes(key)) {
+                newJsonRequest.keysValues[key] = value;
+            } else {
+                newJsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
+            }
+        }
+        Constantes.Columns[table].push("id");
+        Constantes.Columns[table].push(table + "_id");
+
+        if (newJsonRequest.keysValues.length === 0) {
+            newJsonRequest.errors.push("No keysValues found -> nothing updated");
+            return newJsonRequest;
         }
 
-        if (value === undefined || value === null || value === "") {
-            newJsonRequest.warnings.push("Value associated to key : '" + key + "' is undefined, null or empty -> ignored");
-            continue;
-        }
-
-        if (Constantes.Columns[table].includes(key)) {
-            newJsonRequest.keysValues[key] = value;
-        } else {
-            newJsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
-        }
+        /* Verify where values */
+        let correctedWhereValues = correctWhereValues(table, jsonRequest.whereValues);
+        newJsonRequest.whereValues.push(...correctedWhereValues.whereValues);
+        newJsonRequest.warnings.push(...correctedWhereValues.warnings);
+    } catch (error) {
+        logger.error(error);
+        logger.error("Error in correctedJsonUpdateRequest");
+        newJsonRequest.errors.push("An unknown error occurred while correcting the request parameters");
     }
-    Constantes.Columns[table].push("id");
-    Constantes.Columns[table].push(table + "_id");
-
-    if (newJsonRequest.keysValues.length === 0) {
-        newJsonRequest.errors.push("No keysValues found -> nothing updated");
-        return newJsonRequest;
-    }
-
-    /* Verify where values */
-    let correctedWhereValues = correctWhereValues(table, jsonRequest.whereValues);
-    newJsonRequest.whereValues = correctedWhereValues.whereValues;
-    newJsonRequest.warnings.push(...correctedWhereValues.warnings);
 
     return newJsonRequest;
 }

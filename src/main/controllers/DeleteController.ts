@@ -92,7 +92,7 @@ export async function executeDelete(table: QueryTable, jsonRequest: JSONDeleteRe
  *     ]
  * }
  */
-export function parseDeleteUrl(table: QueryTable, request: any): JSONDeleteRequest {
+export function parseDeleteUrl(table: QueryTable, request: any, user: any): JSONDeleteRequest {
     const jsonRequest: JSONDeleteRequest = {
         whereValues: [],
         warnings: [],
@@ -126,7 +126,7 @@ export function parseDeleteUrl(table: QueryTable, request: any): JSONDeleteReque
         jsonRequest.errors.push("An unknown error occurred while parsing the request");
     }
 
-    return correctedJsonDeleteRequest(table, jsonRequest);
+    return correctedJsonDeleteRequest(table, jsonRequest, user);
 }
 
 
@@ -156,17 +156,24 @@ export function parseDeleteUrl(table: QueryTable, request: any): JSONDeleteReque
  *     ]
  * }
  */
-export function correctedJsonDeleteRequest(table: QueryTable, jsonRequest: JSONDeleteRequest): JSONDeleteRequest {
+export function correctedJsonDeleteRequest(table: QueryTable, jsonRequest: JSONDeleteRequest, user: any): JSONDeleteRequest {
     const newJsonRequest: JSONDeleteRequest = {
         whereValues: [],
         warnings: clone(jsonRequest.warnings) || [],
         errors: clone(jsonRequest.errors) || []
     };
 
+    newJsonRequest.whereValues.push({
+        key: "userid",
+        comparisonOperator: "=",
+        value: user.id || 0,
+        logicalOperator: "AND"
+    });
+
     /* Verify where values */
     try {
         let correctedWhereValues = correctWhereValues(table, jsonRequest.whereValues);
-        newJsonRequest.whereValues = correctedWhereValues.whereValues;
+        newJsonRequest.whereValues.push(...correctedWhereValues.whereValues);
         newJsonRequest.warnings.push(...correctedWhereValues.warnings);
     } catch (error) {
         logger.error(error);

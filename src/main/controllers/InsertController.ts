@@ -84,6 +84,7 @@ export async function executeInsert(table: QueryTable, jsonRequest: JSONInsertRe
     }
 }
 
+
 /**
  * Checks and corrects JSON parameters
  * @param table Table name
@@ -112,7 +113,7 @@ export async function executeInsert(table: QueryTable, jsonRequest: JSONInsertRe
  *     ]
  * }
  */
-export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any): JSONInsertRequest {
+export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any, user: any): JSONInsertRequest {
     let newJsonRequest: JSONInsertRequest = {
         returnedKeys: [],
         insertions: [],
@@ -177,6 +178,7 @@ export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any):
                             }
                         }
                     }
+                    newJsonRequest.insertions[i]["userid"] = user.id || 0; // Add user id to insertions
                 }
             } else if (typeof jsonRequest.insertions === "object") {
                 for (const key in jsonRequest.insertions) {
@@ -190,6 +192,7 @@ export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any):
                         }
                     }
                 }
+                newJsonRequest.insertions[0]["userid"] = user.id || 0; // Add user id to insertions
             }
         }
 
@@ -208,6 +211,7 @@ export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any):
 
     return newJsonRequest;
 }
+
 
 /**
  * Verify key and value is correct and not null, empty or undefined
@@ -246,6 +250,7 @@ function verifyKeyValue(table: QueryTable, key: string, value: string): any {
 
     return response;
 }
+
 
 /**
  * Checks and corrects JSON parameters

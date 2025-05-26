@@ -1,6 +1,7 @@
 /* Import */
 import express from 'express';
 import http from 'http';
+import { initMiddlewares } from './middlewares/middlewares';
 import { initRoutes } from './routes/routes';
 import { normalizePort } from './models/utils';
 import { connectToDatabase } from './models/database';
@@ -30,7 +31,7 @@ try {
     const server = http.createServer(app);
 
     /* Configuration */
-    app.use(express.json());
+    initMiddlewares(app);
     app.locals.title = APP_NAME;
     app.locals.strftime = require('strftime').localizeByIdentifier(APP_LOCAL);
     app.locals.lang = APP_LOCAL;
