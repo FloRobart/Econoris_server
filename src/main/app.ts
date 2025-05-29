@@ -9,19 +9,8 @@ import { authHandler } from './middlewares/authHandler';
 
 
 
-/*===========*/
-/* Constants */
-/*===========*/
-const SWAGGER_JSON_PATH = `${__dirname}/swagger/swagger.json`;
-const swaggerUi = require('swagger-ui-express');
-const swaggerJsDoc = require('swagger-jsdoc');
-
-
-
-/*=============*/
-/* Application */
-/*=============*/
 const app = express();
+
 
 
 /* Configuration */
@@ -32,6 +21,9 @@ app.locals.email = config.admin_email;
 
 
 /* Swagger setup */
+const SWAGGER_JSON_PATH = `${__dirname}/swagger/swagger.json`;
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerOptions = {
     swaggerDefinition: {
         openapi: '3.0.0',
