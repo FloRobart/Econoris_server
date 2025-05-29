@@ -4,7 +4,7 @@ import config from '../config/config';
 const ENABLE_ENV: Record<string, number> = {
     "default": 4,
 
-    "development": 4,
+    "developpement": 4,
     "dev": 4,
     "debug": 4,
     "local": 4,
