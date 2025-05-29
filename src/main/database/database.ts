@@ -1,6 +1,7 @@
 import pg from 'pg';
-import { Query, QueryTable, JSONUpdateRequest, JSONDeleteRequest, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
+import { Query, QueryTable, JSONUpdateRequest, JSONDeleteRequest, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "../utils/types";
 import * as logger from "../utils/logger";
+import { normalyzeKey } from "../utils/utils";
 
 const { Client } = pg;
 let client: pg.Client;
@@ -346,16 +347,4 @@ export function getDeleteQuery(table: QueryTable, jsonRequest: JSONDeleteRequest
         logger.error("FAILED PREPARING DELETE QUERY");
         return { text: "", values: [] };
     }
-}
-
-
-/**
- * Normalizes the key by adding the prefix of the table if it is not already present
- * @param key The key to normalize
- * @param table The table to normalize the key for
- * @returns 
- */
-function normalyzeKey(key: ColumnsType, table: QueryTable): string {
-    if (key == "*") return key;
-    return key.includes(`${table}_`) ? key : `${table}_${key}`;
 }

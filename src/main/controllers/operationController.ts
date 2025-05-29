@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import { JSONResponse, QueryTable } from '../models/types';
-import { createJsonResponse } from './Controller';
-import * as SelectController from "../controllers/SelectController";
-import * as InsertController from "../controllers/InsertController";
-import * as UpdateController from "../controllers/UpdateController";
-import * as DeleteController from "../controllers/DeleteController";
+import { JSONResponse, QueryTable } from '../utils/types';
+import { createJsonResponse } from '../database/parser';
+import * as SelectController from "../database/parseSelect";
+import * as InsertController from "../database/parseInsert";
+import * as UpdateController from "../database/parseUpdate";
+import * as DeleteController from "../database/parseDelete";
+
 
 
 const table: QueryTable = "operations";
@@ -59,7 +60,7 @@ export const getOperationsComplexe = async (req: Request, res: Response, next: N
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
         const user = { id: req.headers['authorization']?.split(' ')[1]};
-        const jsonRequest = SelectController.correctedJsonSelectRequest(table, req.body, user);
+        const jsonRequest = SelectController.parseJsonSelectRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -84,7 +85,7 @@ export const postOperations = async (req: Request, res: Response, next: NextFunc
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
         const user = { id: req.headers['authorization']?.split(' ')[1]};
-        const jsonRequest = InsertController.correctedJsonInsertRequest(table, req.body, user);
+        const jsonRequest = InsertController.parseJsonInsertRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -109,7 +110,7 @@ export const putOperations = async (req: Request, res: Response, next: NextFunct
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
         const user = { id: req.headers['authorization']?.split(' ')[1]};
-        const jsonRequest = UpdateController.correctedJsonUpdateRequest(table, req.body, user);
+        const jsonRequest = UpdateController.parseJsonUpdateRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {
@@ -134,7 +135,7 @@ export const deleteOperations = async (req: Request, res: Response, next: NextFu
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
         const user = { id: req.headers['authorization']?.split(' ')[1]};
-        const jsonRequest = DeleteController.correctedJsonDeleteRequest(table, req.body, user);
+        const jsonRequest = DeleteController.parseJsonDeleteRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
         if (jsonRequest.errors.length > 0) {

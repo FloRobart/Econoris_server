@@ -1,19 +1,25 @@
-import { executeQuery, getDeleteQuery } from "../models/database";
-import { JSONDeleteRequest, JSONResponse, QueryTable, ColumnsType } from "../models/types";
-import * as Constantes from "../models/constantes";
+import { executeQuery, getUpdateQuery } from "./database";
+import { JSONUpdateRequest, JSONResponse, QueryTable, ColumnsType } from "../utils/types";
+import * as Constantes from "../utils/constantes";
 import * as logger from '../utils/logger';
-import { createJsonResponse, clone, correctWhereValues } from "./Controller";
+import { createJsonResponse, parseWhereValues } from "./parser";
+import { clone } from "../utils/utils";
 
 
 
 /**
- * Delete all operations corresponding at parameters
+ * Update all operations corresponding at parameters
  * @async
  * @param jsonRequest JSON object with structure shown in the example (JSON Request)
  * @returns JSON object with the structure shown in the example (JSON Response)
  * @example
  * JSON Request
  * {
+ *     "keysValues": {
+ *         "key1": "value1",
+ *         "key2": "value2",
+ *         ...
+ *     },
  *     "whereValues": [
  *         {
  *             "key": "x",
@@ -51,15 +57,15 @@ import { createJsonResponse, clone, correctWhereValues } from "./Controller";
  *         ...
  *     ]
  */
-export async function executeDelete(table: QueryTable, jsonRequest: JSONDeleteRequest): Promise<JSONResponse> {
+export async function executeUpdate(table: QueryTable, jsonRequest: JSONUpdateRequest): Promise<JSONResponse> {
     try {
-        const rows = await executeQuery(getDeleteQuery(table, jsonRequest));
+        const rows = await executeQuery(getUpdateQuery(table, jsonRequest));
         if (rows === null) { jsonRequest.errors.push("An unknown error occurred while executing the query"); }
 
         return createJsonResponse(rows, jsonRequest.warnings, jsonRequest.errors);
     } catch (error) {
         logger.error(error);
-        logger.error("Error in executeDelete");
+        logger.error("Error in executeUpdate");
         jsonRequest.errors.push("An unknown error occurred while executing the query");
         return createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
     }
@@ -73,6 +79,11 @@ export async function executeDelete(table: QueryTable, jsonRequest: JSONDeleteRe
  * @returns Valid JSON object with the structure shown in the example
  * @example
  * {
+ *     "keysValues": {
+ *         "key1": "value1",
+ *         "key2": "value2",
+ *         ...
+ *     },
  *     "whereValues": [
  *         {
  *             "key": "x",
@@ -92,41 +103,22 @@ export async function executeDelete(table: QueryTable, jsonRequest: JSONDeleteRe
  *     ]
  * }
  */
-export function parseDeleteUrl(table: QueryTable, request: any, user: any): JSONDeleteRequest {
-    const jsonRequest: JSONDeleteRequest = {
+function parseUpdateUrl(table: QueryTable, request: any, user: any): JSONUpdateRequest {
+    const jsonRequest: JSONUpdateRequest = {
+        keysValues: {},
         whereValues: [],
         warnings: [],
         errors: []
     };
 
     try {
-        for (let key in request) {
-            let value = request[key];
-            key = key.toLowerCase();
-
-            if (key === undefined || value === undefined) {
-                jsonRequest.warnings.push( key === undefined ? "Key undefined for value : '" + value + "' -> ignored" : "Value undefined for key : '" + key + "' -> ignored");
-                continue;
-            }
-
-            if (Constantes.Columns[table].includes(key)) {
-                jsonRequest.whereValues.push({
-                    key: key as ColumnsType,
-                    comparisonOperator: "=",
-                    value: value instanceof Array ? value[value.length - 1] : value,
-                    logicalOperator: "AND"
-                });
-            } else {
-                jsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
-            }
-        }
+        // TODO : À faire plus tard
     } catch (error) {
-        logger.error(error);
-        logger.error("Error in parseDeleteUrl");
-        jsonRequest.errors.push("An unknown error occurred while parsing the request");
+        logger.error("Error in parseUpdateUrl:", error);
+        jsonRequest.errors.push("An error occurred while parsing the request parameters");
     }
 
-    return correctedJsonDeleteRequest(table, jsonRequest, user);
+    return parseJsonUpdateRequest(table, jsonRequest, user);
 }
 
 
@@ -137,6 +129,11 @@ export function parseDeleteUrl(table: QueryTable, request: any, user: any): JSON
  * @returns Valid JSON object with the structure shown in the example
  * @example
  * {
+ *     "keysValues": {
+ *         "key1": "value1",
+ *         "key2": "value2",
+ *         ...
+ *     },
  *     "whereValues": [
  *         {
  *             "key": "x",
@@ -156,8 +153,9 @@ export function parseDeleteUrl(table: QueryTable, request: any, user: any): JSON
  *     ]
  * }
  */
-export function correctedJsonDeleteRequest(table: QueryTable, jsonRequest: JSONDeleteRequest, user: any): JSONDeleteRequest {
-    const newJsonRequest: JSONDeleteRequest = {
+export function parseJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdateRequest, user: any): JSONUpdateRequest {
+    const newJsonRequest: JSONUpdateRequest = {
+        keysValues: {},
         whereValues: [],
         warnings: clone(jsonRequest.warnings) || [],
         errors: clone(jsonRequest.errors) || []
@@ -170,15 +168,44 @@ export function correctedJsonDeleteRequest(table: QueryTable, jsonRequest: JSOND
         logicalOperator: "AND"
     });
 
-    /* Verify where values */
     try {
-        let correctedWhereValues = correctWhereValues(table, jsonRequest.whereValues);
+        /* Verify keys values */
+        delete Constantes.Columns[table]["id"]
+        delete Constantes.Columns[table][table + "_id"]
+        for (const key in jsonRequest.keysValues) {
+            const value = jsonRequest.keysValues[key];
+            if (key === undefined || key === null || key === "") {
+                newJsonRequest.warnings.push("Key associated to value : '" + value + "' is undefined, null or empty -> ignored");
+                continue;
+            }
+
+            if (value === undefined || value === null || value === "") {
+                newJsonRequest.warnings.push("Value associated to key : '" + key + "' is undefined, null or empty -> ignored");
+                continue;
+            }
+
+            if (Constantes.Columns[table].includes(key)) {
+                newJsonRequest.keysValues[key] = value;
+            } else {
+                newJsonRequest.warnings.push("Key : '" + key + "' not in [" + Constantes.Columns[table] + "] -> ignored");
+            }
+        }
+        Constantes.Columns[table].push("id");
+        Constantes.Columns[table].push(table + "_id");
+
+        if (newJsonRequest.keysValues.length === 0) {
+            newJsonRequest.errors.push("No keysValues found -> nothing updated");
+            return newJsonRequest;
+        }
+
+        /* Verify where values */
+        let correctedWhereValues = parseWhereValues(table, jsonRequest.whereValues);
         newJsonRequest.whereValues.push(...correctedWhereValues.whereValues);
         newJsonRequest.warnings.push(...correctedWhereValues.warnings);
     } catch (error) {
         logger.error(error);
-        logger.error("Error in correctedJsonDeleteRequest");
-        newJsonRequest.errors.push("An unknown error occurred while correcting the where values");
+        logger.error("Error in parseJsonUpdateRequest");
+        newJsonRequest.errors.push("An unknown error occurred while correcting the request parameters");
     }
 
     return newJsonRequest;

@@ -1,9 +1,9 @@
-import { executeQuery, getSelectQuery } from "../models/database";
-import { JSONSelectRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
-import * as Constantes from "../models/constantes";
+import { executeQuery, getSelectQuery } from "./database";
+import { JSONSelectRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../utils/types";
+import * as Constantes from "../utils/constantes";
 import * as logger from '../utils/logger';
-import { createJsonResponse, clone } from "./Controller";
-import { normalize } from "path";
+import { createJsonResponse } from "./parser";
+import { clone } from "../utils/utils";
 
 
 
@@ -181,7 +181,7 @@ export function parseSelectUrl(table: QueryTable, request: any, user: any): JSON
         jsonRequest.errors.push("An unknown error occurred while parsing the request");
     }
 
-    return correctedJsonSelectRequest(table, jsonRequest, user);
+    return parseJsonSelectRequest(table, jsonRequest, user);
 }
 
 
@@ -215,7 +215,7 @@ export function parseSelectUrl(table: QueryTable, request: any, user: any): JSON
  *     ]
  * }
  */
-export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelectRequest, user: any): JSONSelectRequest {
+export function parseJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelectRequest, user: any): JSONSelectRequest {
     let newJsonRequest: JSONSelectRequest = {
         keys: [],
         aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase()) ? jsonRequest.aggregation : undefined,
@@ -297,7 +297,7 @@ export function correctedJsonSelectRequest(table: QueryTable, jsonRequest: JSONS
         }
     } catch (error) {
         logger.error(error);
-        logger.error("Error in correctedJsonSelectRequest");
+        logger.error("Error in parseJsonSelectRequest");
         newJsonRequest.errors.push("An unknown error occurred while correcting the JSON request");
     }
 

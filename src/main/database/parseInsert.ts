@@ -1,8 +1,9 @@
-import { executeQuery, getInsertQuery } from "../models/database";
-import { JSONInsertRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
-import * as Constantes from "../models/constantes";
+import { executeQuery, getInsertQuery } from "./database";
+import { JSONInsertRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../utils/types";
+import * as Constantes from "../utils/constantes";
 import * as logger from '../utils/logger';
-import { createJsonResponse, clone } from "./Controller";
+import { createJsonResponse } from "./parser";
+import { clone } from "../utils/utils";
 
 
 
@@ -113,7 +114,7 @@ export async function executeInsert(table: QueryTable, jsonRequest: JSONInsertRe
  *     ]
  * }
  */
-export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any, user: any): JSONInsertRequest {
+export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user: any): JSONInsertRequest {
     let newJsonRequest: JSONInsertRequest = {
         returnedKeys: [],
         insertions: [],
@@ -205,7 +206,7 @@ export function correctedJsonInsertRequest(table: QueryTable, jsonRequest: any, 
         }
 
         logger.error(error);
-        logger.error("Error in correctedJsonInsertRequest");
+        logger.error("Error in parseJsonInsertRequest");
         newJsonRequest.errors.push("An unknown error occurred while correcting the JSON request");
     }
 

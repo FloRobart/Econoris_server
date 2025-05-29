@@ -1,7 +1,7 @@
 import express from 'express';
 import operationRoutes from './routes/operationRoutes';
 import { errorHandler } from './middlewares/errorHandler';
-import { connectToDatabase } from './models/database';
+import { connectToDatabase } from './database/database';
 import * as logger from './utils/logger';
 import fs from 'node:fs';
 import config from './config/config';

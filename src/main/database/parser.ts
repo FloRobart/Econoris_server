@@ -1,25 +1,10 @@
-import { JSONResponse } from "../models/types";
-import { WhereValuesType, LogicalOperatorType, QueryTable, ColumnsType } from "../models/types";
-import * as Constantes from "../models/constantes";
+import { JSONResponse } from "../utils/types";
+import { WhereValuesType, LogicalOperatorType, QueryTable, ColumnsType } from "../utils/types";
+import * as Constantes from "../utils/constantes";
 import * as logger from "../utils/logger";
+import { clone } from "../utils/utils";
 
 
-
-/**
- * Clone an object or array.
- * @param element The object or array to be cloned.
- * @returns A deep clone of the input object or array.
- */
-export function clone(element: any): any {
-    try {
-        if (element === undefined) { return undefined; }
-        return JSON.parse(JSON.stringify(element));
-    } catch (error) {
-        logger.error(error);
-        logger.error("Error in clone function");
-        return element;
-    }
-}
 
 /**
  * Create a JSON response object.
@@ -84,7 +69,7 @@ export function createJsonResponse(rows?: any[], warnings?: string[], errors?: s
  *     ]
  * }
  */
-export function correctWhereValues(table: QueryTable, whereValues: WhereValuesType[]): { whereValues: WhereValuesType[], warnings: string[] } {
+export function parseWhereValues(table: QueryTable, whereValues: WhereValuesType[]): { whereValues: WhereValuesType[], warnings: string[] } {
     const newWhereValues: WhereValuesType[] = [];
     const warnings: string[] = [];
 
@@ -121,7 +106,7 @@ export function correctWhereValues(table: QueryTable, whereValues: WhereValuesTy
         }
     } catch (error) {
         logger.error(error);
-        logger.error("Error in correctWhereValues function");
+        logger.error("Error in parseWhereValues function");
         warnings.push("An unknown error occurred while correcting whereValues");
     }
 

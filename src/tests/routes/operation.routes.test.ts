@@ -1,7 +1,7 @@
-import { connectToDatabase, closeDatabaseConnection, executeQuery } from "../../main/models/database";
-import * as SelectController from "../../main/controllers/SelectController";
-import { clone } from "../../main/controllers/Controller";
-import { JSONSelectRequest } from "../../main/models/types";
+import { connectToDatabase, closeDatabaseConnection, executeQuery } from "../../main/database/database";
+import * as SelectController from "../../main/database/parseSelect";
+import { clone } from "../../main/utils/utils";
+import { JSONSelectRequest } from "../../main/utils/types";
 require('dotenv').config();
 
 
@@ -199,7 +199,7 @@ describe("Operations routes test", () => {
          */
         test("Test SELECT Operations " + (i+1), async () => {
             /* Route code */
-            const jsonRequest = SelectController.parseSelectUrl("operations", queries[i]);
+            const jsonRequest = SelectController.parseSelectUrl("operations", queries[i], { id: 1 });
             const response = await SelectController.executeSelect("operations", jsonRequest);
             const jsonResponse = JSON.parse(JSON.stringify(response));
             const expectedResponse = queriesResponses[i] || [];
