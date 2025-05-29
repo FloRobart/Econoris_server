@@ -1,0 +1,85 @@
+import express from 'express';
+import operationRoutes from './routes/operationRoutes';
+import { errorHandler } from './middlewares/errorHandler';
+import { connectToDatabase } from './database/database';
+import * as logger from './utils/logger';
+import fs from 'node:fs';
+import config from './config/config';
+import { authHandler } from './middlewares/authHandler';
+
+
+
+/*===========*/
+/* Constants */
+/*===========*/
+const SWAGGER_JSON_PATH = `${__dirname}/swagger/swagger.json`;
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+
+
+
+/*=============*/
+/* Application */
+/*=============*/
+const app = express();
+
+/* Configuration */
+app.locals.title = config.app_name;
+app.locals.strftime = require('strftime').localizeByIdentifier(config.app_local);
+app.locals.lang = config.app_local;
+app.locals.email = config.admin_email;
+
+/* Swagger setup */
+const swaggerOptions = {
+    swaggerDefinition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'Éconoris API',
+            version: '2.0.0',
+            description: 'API documentation',
+        },
+        servers: [
+            {
+                url: config.app_url + ":" + config.app_port,
+            },
+        ],
+    },
+    apis: [`${__dirname}/routes/*.ts`, `${__dirname}/swagger/*.ts`], // files containing annotations as above
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.get('/api-docs.json', (req, res) => {
+    if (!app.locals.swaggerJsonFileCreated) {
+        res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + config.app_url + ":" + config.app_port + "/api-docs" });
+        return;
+    }
+    return res.download(SWAGGER_JSON_PATH)
+})
+
+/* Connexion à la base de données */
+connectToDatabase(config.db_uri);
+
+/* Initialisation des routes */
+app.use(authHandler);
+app.use(express.json());
+
+app.use('/operations', operationRoutes);
+
+app.use(errorHandler);
+
+
+/* Create swagger json file */
+try {
+    fs.writeFileSync(SWAGGER_JSON_PATH, Buffer.from(JSON.stringify(swaggerDocs), 'utf8'));
+    app.locals.swaggerJsonFileCreated = true;
+    logger.success("Swagger JSON file created at :", SWAGGER_JSON_PATH);
+} catch (err) {
+    logger.error(err);
+    app.locals.swaggerJsonFileCreated = false;
+    logger.error("Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
+}
+
+
+
+export default app;

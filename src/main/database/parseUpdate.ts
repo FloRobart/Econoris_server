@@ -1,8 +1,9 @@
-import { executeQuery, getUpdateQuery } from "../models/database";
-import { JSONUpdateRequest, JSONResponse, QueryTable, ColumnsType } from "../models/types";
-import * as Constantes from "../models/constantes";
-import * as logger from '../models/logger';
-import { createJsonResponse, clone, correctWhereValues } from "./Controller";
+import { executeQuery, getUpdateQuery } from "./database";
+import { JSONUpdateRequest, JSONResponse, QueryTable, ColumnsType } from "../utils/types";
+import * as Constantes from "../utils/constantes";
+import * as logger from '../utils/logger';
+import { createJsonResponse, parseWhereValues } from "./parser";
+import { clone } from "../utils/utils";
 
 
 
@@ -117,7 +118,7 @@ function parseUpdateUrl(table: QueryTable, request: any, user: any): JSONUpdateR
         jsonRequest.errors.push("An error occurred while parsing the request parameters");
     }
 
-    return correctedJsonUpdateRequest(table, jsonRequest, user);
+    return parseJsonUpdateRequest(table, jsonRequest, user);
 }
 
 
@@ -152,7 +153,7 @@ function parseUpdateUrl(table: QueryTable, request: any, user: any): JSONUpdateR
  *     ]
  * }
  */
-export function correctedJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdateRequest, user: any): JSONUpdateRequest {
+export function parseJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdateRequest, user: any): JSONUpdateRequest {
     const newJsonRequest: JSONUpdateRequest = {
         keysValues: {},
         whereValues: [],
@@ -198,12 +199,12 @@ export function correctedJsonUpdateRequest(table: QueryTable, jsonRequest: JSONU
         }
 
         /* Verify where values */
-        let correctedWhereValues = correctWhereValues(table, jsonRequest.whereValues);
+        let correctedWhereValues = parseWhereValues(table, jsonRequest.whereValues);
         newJsonRequest.whereValues.push(...correctedWhereValues.whereValues);
         newJsonRequest.warnings.push(...correctedWhereValues.warnings);
     } catch (error) {
         logger.error(error);
-        logger.error("Error in correctedJsonUpdateRequest");
+        logger.error("Error in parseJsonUpdateRequest");
         newJsonRequest.errors.push("An unknown error occurred while correcting the request parameters");
     }
 

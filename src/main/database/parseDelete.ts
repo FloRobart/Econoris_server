@@ -1,8 +1,9 @@
-import { executeQuery, getDeleteQuery } from "../models/database";
-import { JSONDeleteRequest, JSONResponse, QueryTable, ColumnsType } from "../models/types";
-import * as Constantes from "../models/constantes";
-import * as logger from '../models/logger';
-import { createJsonResponse, clone, correctWhereValues } from "./Controller";
+import { executeQuery, getDeleteQuery } from "./database";
+import { JSONDeleteRequest, JSONResponse, QueryTable, ColumnsType } from "../utils/types";
+import * as Constantes from "../utils/constantes";
+import * as logger from '../utils/logger';
+import { createJsonResponse, parseWhereValues } from "./parser";
+import { clone } from "../utils/utils";
 
 
 
@@ -126,7 +127,7 @@ export function parseDeleteUrl(table: QueryTable, request: any, user: any): JSON
         jsonRequest.errors.push("An unknown error occurred while parsing the request");
     }
 
-    return correctedJsonDeleteRequest(table, jsonRequest, user);
+    return parseJsonDeleteRequest(table, jsonRequest, user);
 }
 
 
@@ -156,7 +157,7 @@ export function parseDeleteUrl(table: QueryTable, request: any, user: any): JSON
  *     ]
  * }
  */
-export function correctedJsonDeleteRequest(table: QueryTable, jsonRequest: JSONDeleteRequest, user: any): JSONDeleteRequest {
+export function parseJsonDeleteRequest(table: QueryTable, jsonRequest: JSONDeleteRequest, user: any): JSONDeleteRequest {
     const newJsonRequest: JSONDeleteRequest = {
         whereValues: [],
         warnings: clone(jsonRequest.warnings) || [],
@@ -172,12 +173,12 @@ export function correctedJsonDeleteRequest(table: QueryTable, jsonRequest: JSOND
 
     /* Verify where values */
     try {
-        let correctedWhereValues = correctWhereValues(table, jsonRequest.whereValues);
+        let correctedWhereValues = parseWhereValues(table, jsonRequest.whereValues);
         newJsonRequest.whereValues.push(...correctedWhereValues.whereValues);
         newJsonRequest.warnings.push(...correctedWhereValues.warnings);
     } catch (error) {
         logger.error(error);
-        logger.error("Error in correctedJsonDeleteRequest");
+        logger.error("Error in parseJsonDeleteRequest");
         newJsonRequest.errors.push("An unknown error occurred while correcting the where values");
     }
 
