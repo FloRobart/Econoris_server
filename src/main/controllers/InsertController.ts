@@ -1,7 +1,7 @@
 import { executeQuery, getInsertQuery } from "../models/database";
 import { JSONInsertRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
 import * as Constantes from "../models/constantes";
-import * as logger from '../models/logger';
+import * as logger from '../utils/logger';
 import { createJsonResponse, clone } from "./Controller";
 
 

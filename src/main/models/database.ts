@@ -1,6 +1,6 @@
 import pg from 'pg';
 import { Query, QueryTable, JSONUpdateRequest, JSONDeleteRequest, JSONSelectRequest, JSONInsertRequest, ColumnsType } from "./types";
-import * as logger from "./logger";
+import * as logger from "../utils/logger";
 
 const { Client } = pg;
 let client: pg.Client;

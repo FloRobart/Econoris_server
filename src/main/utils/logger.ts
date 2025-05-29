@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const ENABLE_ENV = {
+const ENABLE_ENV: Record<string, number> = {
     "development": 4,
     "dev": 4,
     "debug": 4,
@@ -42,7 +42,7 @@ const APP_NAME: string = process.env.APP_NAME || "Éconoris";
  */
 export function error(...args: any[]) {
     if (APP_ENV >= 1) {
-        console.log(` [❌] ${APP_NAME} |`, ...args);
+        console.log(` [❌] ${APP_NAME} - ERROR |`, ...args);
     }
 }
 
@@ -59,7 +59,7 @@ export function error(...args: any[]) {
  */
 export function success(...args: any[]) {
     if (APP_ENV >= 2) {
-        console.log(` [✅] ${APP_NAME} |`, ...args);
+        console.log(` [✅] ${APP_NAME} - SUCCESS |`, ...args);
     }
 }
 
@@ -76,7 +76,7 @@ export function success(...args: any[]) {
  */
 export function info(...args: any[]) {
     if (APP_ENV >= 3) {
-        console.log(` [❕] ${APP_NAME} |`, ...args);
+        console.log(` [❕] ${APP_NAME} - INFO |`, ...args);
     }
 }
 
@@ -93,6 +93,6 @@ export function info(...args: any[]) {
  */
 export function debug(...args: any[]) {
     if (APP_ENV >= 4) {
-        console.log(` [🐛] ${APP_NAME} |`, ...args);
+        console.log(` [🐛] ${APP_NAME} - DEBUG |`, ...args);
     }
 }

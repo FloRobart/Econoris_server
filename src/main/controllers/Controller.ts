@@ -1,7 +1,7 @@
 import { JSONResponse } from "../models/types";
 import { WhereValuesType, LogicalOperatorType, QueryTable, ColumnsType } from "../models/types";
 import * as Constantes from "../models/constantes";
-import * as logger from "../models/logger";
+import * as logger from "../utils/logger";
 
 
 

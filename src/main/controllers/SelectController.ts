@@ -1,7 +1,7 @@
 import { executeQuery, getSelectQuery } from "../models/database";
 import { JSONSelectRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../models/types";
 import * as Constantes from "../models/constantes";
-import * as logger from '../models/logger';
+import * as logger from '../utils/logger';
 import { createJsonResponse, clone } from "./Controller";
 import { normalize } from "path";
 

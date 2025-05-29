@@ -1,7 +1,7 @@
 import { executeQuery, getDeleteQuery } from "../models/database";
 import { JSONDeleteRequest, JSONResponse, QueryTable, ColumnsType } from "../models/types";
 import * as Constantes from "../models/constantes";
-import * as logger from '../models/logger';
+import * as logger from '../utils/logger';
 import { createJsonResponse, clone, correctWhereValues } from "./Controller";
 
 
