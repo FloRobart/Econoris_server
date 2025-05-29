@@ -23,11 +23,13 @@ const swaggerJsDoc = require('swagger-jsdoc');
 /*=============*/
 const app = express();
 
+
 /* Configuration */
 app.locals.title = config.app_name;
 app.locals.strftime = require('strftime').localizeByIdentifier(config.app_local);
 app.locals.lang = config.app_local;
 app.locals.email = config.admin_email;
+
 
 /* Swagger setup */
 const swaggerOptions = {
@@ -57,10 +59,12 @@ app.get('/api-docs.json', (req, res) => {
     return res.download(SWAGGER_JSON_PATH)
 })
 
-/* Connexion à la base de données */
+
+/* Database */
 connectToDatabase(config.db_uri);
 
-/* Initialisation des routes */
+
+/* Routes */
 app.use(authHandler);
 app.use(express.json());
 
