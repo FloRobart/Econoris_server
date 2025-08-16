@@ -25,14 +25,14 @@ export const authHandler = (req: Request, res: Response, next: NextFunction) => 
         return;
     }
 
-    const schema = authorization.split(' ')[0];
-    const token = authorization.split(' ')[1];
+    const [schema, token] = authorization.split(' ');
     if (!token || schema !== "Bearer") {
         logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
         res.status(401).json({ error: 'Unauthorized' });
         return;
     }
 
+    
     // Here you would typically verify the token
     // For example, using a JWT library to decode and verify the token
     // jwt.verify(token, secretKey, (err, decoded) => {
