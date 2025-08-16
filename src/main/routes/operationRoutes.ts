@@ -71,7 +71,7 @@ router.get('/', getOperations);
 
 /**
  * @swagger
- * /operation/id/{id}:
+ * /operations/id/{id}:
  *   get:
  *     summary: Get operation with id
  *     tags:
@@ -312,7 +312,7 @@ router.delete('/', deleteOperations);
 
 /**
  * @swagger
- * /operation/id/{id}:
+ * /operations/id/{id}:
  *   delete:
  *     summary: Delete operations
  *     tags:
