@@ -6,6 +6,7 @@ import * as logger from './utils/logger';
 import fs from 'node:fs';
 import config from './config/config';
 import { authHandler } from './middlewares/authHandler';
+import handshakeRoutes from './routes/handshake.routes';
 
 
 
@@ -34,7 +35,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: config.app_url + ":" + config.app_port,
+                url: config.base_url,
             },
         ],
     },
@@ -45,7 +46,7 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.get('/api-docs.json', (req, res) => {
     if (!app.locals.swaggerJsonFileCreated) {
-        res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + config.app_url + ":" + config.app_port + "/api-docs" });
+        res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + config.base_url + "/api-docs" });
         return;
     }
     return res.download(SWAGGER_JSON_PATH)
@@ -57,8 +58,9 @@ connectToDatabase(config.db_uri);
 
 
 /* Routes */
-app.use(authHandler);
 app.use(express.json());
+app.use("/handshake", handshakeRoutes);
+app.use(authHandler);
 
 app.use('/operations', operationRoutes);
 
