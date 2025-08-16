@@ -6,7 +6,7 @@ import * as logger from './utils/logger';
 import fs from 'node:fs';
 import config from './config/config';
 import { authHandler } from './middlewares/authHandler';
-import handshakeRoutes from './routes/handshake.routes';
+import handshakeRoutes from './routes/handshakeRoutes';
 
 
 
