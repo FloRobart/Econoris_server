@@ -18,8 +18,9 @@ interface Config {
     private_timestamp?: number; // FlorAccess private timestamp
     readonly auth_app_handshake_url: string;
     auth_app_url?: string;
-
+    
     readonly hash_algorithm?: string; // Hash algorithm for security, default is sha256
+    readonly hash_rounds: number;
 }
 
 const DEFAULT_PORT: number = 8080;
@@ -36,6 +37,7 @@ const config: Config = {
     auth_app_handshake_url: process.env.AUTH_APP_HANDSHAKE_URL || '',
 
     hash_algorithm: process.env.HASH_ALGORITHM || 'sha256',
+    hash_rounds: parseInt(process.env.HASH_ROUNDS || '10', 10) || 10,
 };
 
 
