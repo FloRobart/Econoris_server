@@ -35,6 +35,7 @@ const config: Config = {
     db_uri: process.env.DB_URI || '',
     handshake_static_token: process.env.HANDSHAKE_STATIC_TOKEN || '',
     auth_app_handshake_url: process.env.AUTH_APP_HANDSHAKE_URL || '',
+    auth_app_url: process.env.AUTH_APP_URL || '',
 
     hash_algorithm: process.env.HASH_ALGORITHM || 'sha256',
     hash_rounds: parseInt(process.env.HASH_ROUNDS || '10', 10) || 10,
