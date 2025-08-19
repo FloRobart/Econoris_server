@@ -5,6 +5,7 @@ import * as SelectController from "../database/parseSelect";
 import * as InsertController from "../database/parseInsert";
 import * as UpdateController from "../database/parseUpdate";
 import * as DeleteController from "../database/parseDelete";
+import { User } from '../models/UserModels';
 
 
 
@@ -17,9 +18,8 @@ const table: QueryTable = "operations";
 /*========*/
 export const getOperations = async (req: Request, res: Response, next: NextFunction) => {
     /* If you modify this code, also modify the Swagger documentation and unit tests */
-    // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
     try {
-        const user = { id: req.headers['authorization']?.split(' ')[1]};
+        const user: User = req.body.user;
         const jsonRequest = SelectController.parseSelectUrl(table, req.query, user);
 
         let jsonResponse: JSONResponse;
@@ -38,8 +38,7 @@ export const getOperations = async (req: Request, res: Response, next: NextFunct
 export const getOperationsById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
-        const user = { id: req.headers['authorization']?.split(' ')[1]};
+        const user: User = req.body.user;
         const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query }, user);
 
         let jsonResponse: JSONResponse;
@@ -58,8 +57,7 @@ export const getOperationsById = async (req: Request, res: Response, next: NextF
 export const getOperationsComplexe = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
-        const user = { id: req.headers['authorization']?.split(' ')[1]};
+        const user: User = req.body.user;
         const jsonRequest = SelectController.parseJsonSelectRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
@@ -83,8 +81,7 @@ export const getOperationsComplexe = async (req: Request, res: Response, next: N
 export const postOperations = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
-        const user = { id: req.headers['authorization']?.split(' ')[1]};
+        const user: User = req.body.user;
         const jsonRequest = InsertController.parseJsonInsertRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
@@ -108,8 +105,7 @@ export const postOperations = async (req: Request, res: Response, next: NextFunc
 export const putOperations = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
-        const user = { id: req.headers['authorization']?.split(' ')[1]};
+        const user: User = req.body.user;
         const jsonRequest = UpdateController.parseJsonUpdateRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
@@ -133,8 +129,7 @@ export const putOperations = async (req: Request, res: Response, next: NextFunct
 export const deleteOperations = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
-        const user = { id: req.headers['authorization']?.split(' ')[1]};
+        const user: User = req.body.user;
         const jsonRequest = DeleteController.parseJsonDeleteRequest(table, req.body, user);
 
         let jsonResponse: JSONResponse;
@@ -153,8 +148,7 @@ export const deleteOperations = async (req: Request, res: Response, next: NextFu
 export const deleteOperationsById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
-        // TODO : Verify the authorization token here (http to floraccess with the token [req.headers['authorization'].split(' ')[1];])
-        const user = { id: req.headers['authorization']?.split(' ')[1]};
+        const user: User = req.body.user;
         const jsonRequest = DeleteController.parseDeleteUrl(table, { ...req.params }, user);
 
         let jsonResponse: JSONResponse;

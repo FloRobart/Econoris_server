@@ -4,6 +4,7 @@ import * as Constantes from "../utils/constantes";
 import * as logger from '../utils/logger';
 import { createJsonResponse, parseWhereValues } from "./parser";
 import { clone } from "../utils/utils";
+import { User } from "../models/UserModels";
 
 
 
@@ -103,7 +104,7 @@ export async function executeUpdate(table: QueryTable, jsonRequest: JSONUpdateRe
  *     ]
  * }
  */
-function parseUpdateUrl(table: QueryTable, request: any, user: any): JSONUpdateRequest {
+function parseUpdateUrl(table: QueryTable, request: any, user: User): JSONUpdateRequest {
     const jsonRequest: JSONUpdateRequest = {
         keysValues: {},
         whereValues: [],
@@ -153,7 +154,7 @@ function parseUpdateUrl(table: QueryTable, request: any, user: any): JSONUpdateR
  *     ]
  * }
  */
-export function parseJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdateRequest, user: any): JSONUpdateRequest {
+export function parseJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdateRequest, user: User): JSONUpdateRequest {
     const newJsonRequest: JSONUpdateRequest = {
         keysValues: {},
         whereValues: [],
@@ -164,7 +165,7 @@ export function parseJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdat
     newJsonRequest.whereValues.push({
         key: "userid",
         comparisonOperator: "=",
-        value: user.id || 0,
+        value: user.userid,
         logicalOperator: "AND"
     });
 

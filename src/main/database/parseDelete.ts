@@ -4,6 +4,7 @@ import * as Constantes from "../utils/constantes";
 import * as logger from '../utils/logger';
 import { createJsonResponse, parseWhereValues } from "./parser";
 import { clone } from "../utils/utils";
+import { User } from "../models/UserModels";
 
 
 
@@ -93,7 +94,7 @@ export async function executeDelete(table: QueryTable, jsonRequest: JSONDeleteRe
  *     ]
  * }
  */
-export function parseDeleteUrl(table: QueryTable, request: any, user: any): JSONDeleteRequest {
+export function parseDeleteUrl(table: QueryTable, request: any, user: User): JSONDeleteRequest {
     const jsonRequest: JSONDeleteRequest = {
         whereValues: [],
         warnings: [],
@@ -157,7 +158,7 @@ export function parseDeleteUrl(table: QueryTable, request: any, user: any): JSON
  *     ]
  * }
  */
-export function parseJsonDeleteRequest(table: QueryTable, jsonRequest: JSONDeleteRequest, user: any): JSONDeleteRequest {
+export function parseJsonDeleteRequest(table: QueryTable, jsonRequest: JSONDeleteRequest, user: User): JSONDeleteRequest {
     const newJsonRequest: JSONDeleteRequest = {
         whereValues: [],
         warnings: clone(jsonRequest.warnings) || [],
@@ -167,7 +168,7 @@ export function parseJsonDeleteRequest(table: QueryTable, jsonRequest: JSONDelet
     newJsonRequest.whereValues.push({
         key: "userid",
         comparisonOperator: "=",
-        value: user.id || 0,
+        value: user.userid,
         logicalOperator: "AND"
     });
 

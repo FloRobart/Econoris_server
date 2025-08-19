@@ -4,6 +4,7 @@ import * as Constantes from "../utils/constantes";
 import * as logger from '../utils/logger';
 import { createJsonResponse } from "./parser";
 import { clone } from "../utils/utils";
+import { User } from "../models/UserModels";
 
 
 
@@ -114,7 +115,7 @@ export async function executeInsert(table: QueryTable, jsonRequest: JSONInsertRe
  *     ]
  * }
  */
-export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user: any): JSONInsertRequest {
+export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user: User): JSONInsertRequest {
     let newJsonRequest: JSONInsertRequest = {
         returnedKeys: [],
         insertions: [],
@@ -179,7 +180,7 @@ export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user
                             }
                         }
                     }
-                    newJsonRequest.insertions[i]["userid"] = user.id || 0; // Add user id to insertions
+                    newJsonRequest.insertions[i]["userid"] = user.userid; // Add user id to insertions
                 }
             } else if (typeof jsonRequest.insertions === "object") {
                 for (const key in jsonRequest.insertions) {
@@ -193,7 +194,7 @@ export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user
                         }
                     }
                 }
-                newJsonRequest.insertions[0]["userid"] = user.id || 0; // Add user id to insertions
+                newJsonRequest.insertions[0]["userid"] = user.userid; // Add user id to insertions
             }
         }
 

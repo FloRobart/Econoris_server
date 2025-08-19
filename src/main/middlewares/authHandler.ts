@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import * as logger from '../utils/logger';
+import config from '../config/config';
+import http from 'node:http';
 
 
 /**
@@ -9,8 +11,8 @@ import * as logger from '../utils/logger';
  * @param next Next function
  * @returns void
  */
-export const authHandler = (req: Request, res: Response, next: NextFunction) => {
-    if (req.url === '/api-docs' || req.url === '/api-docs.json') { return next(); }
+export const authHandler = async (req: Request, res: Response, next: NextFunction) => {
+    if (req.url === '/api-docs' || req.url === '/api-docs.json') { next(); return; }
 
     if (!req.headers['authorization']) {
         logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
@@ -32,16 +34,30 @@ export const authHandler = (req: Request, res: Response, next: NextFunction) => 
         return;
     }
 
-    
-    // Here you would typically verify the token
-    // For example, using a JWT library to decode and verify the token
-    // jwt.verify(token, secretKey, (err, decoded) => {
-    //     if (err) {
-    //         return res.status(401).json({ error: 'Unauthorized' });
-    //     }
-    //     req.user = decoded; // Attach user info to request
-    //     next();
-    // });
-
-    next(); // Mock user for demonstration
+    http.get(`${config.auth_app_url}/jwt/user?jwt=${token}`, {
+        headers: {
+            'Authorization': `${config.app_name} ${config.private_token}`
+        }
+    }, (response: http.IncomingMessage) => {
+        response.on('data', (chunk) => {
+            try {
+                if (response.statusCode >= 200 && response.statusCode < 300) {
+                    const user = JSON.parse(chunk.toString());
+                    req.body.user = user;
+                    next();
+                } else {
+                    logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+                    res.status(401).json({ error: 'Unauthorized' });
+                    return;
+                }
+            } catch (error) {
+                logger.error('Error parsing user data', { error });
+                res.status(401).json({ error: 'Unauthorized' });
+                return;
+            }
+        });
+    }).on('error', (err) => {
+        logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+        res.status(401).json({ error: 'Unauthorized' });
+    });
 };

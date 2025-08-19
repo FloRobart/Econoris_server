@@ -4,6 +4,7 @@ import * as Constantes from "../utils/constantes";
 import * as logger from '../utils/logger';
 import { createJsonResponse } from "./parser";
 import { clone } from "../utils/utils";
+import { User } from "../models/UserModels";
 
 
 
@@ -111,7 +112,7 @@ export async function executeSelect(table: QueryTable, jsonRequest: JSONSelectRe
  *     ]
  * }
  */
-export function parseSelectUrl(table: QueryTable, request: any, user: any): JSONSelectRequest {
+export function parseSelectUrl(table: QueryTable, request: any, user: User): JSONSelectRequest {
     let limit: any = request.limit || null;
     let offset: any = request.offset || 0;
     let comparisonOperator = request.comparisonOperator || "=";
@@ -215,7 +216,7 @@ export function parseSelectUrl(table: QueryTable, request: any, user: any): JSON
  *     ]
  * }
  */
-export function parseJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelectRequest, user: any): JSONSelectRequest {
+export function parseJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelectRequest, user: User): JSONSelectRequest {
     let newJsonRequest: JSONSelectRequest = {
         keys: [],
         aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase()) ? jsonRequest.aggregation : undefined,
@@ -229,7 +230,7 @@ export function parseJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelec
     newJsonRequest.whereValues.push({
         key: "userid",
         comparisonOperator: "=",
-        value: user.id || 0,
+        value: user.userid,
         logicalOperator: "AND"
     });
 
