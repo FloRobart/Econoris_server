@@ -35,7 +35,7 @@ export type JSONResponse = {
 }
 
 export type QueryType = "SELECT" | "INSERT" | "UPDATE" | "DELETE";
-export type QueryTable = "users" | "operations" | "loans" | "timetable";
+export type QueryTable = "operations" | "loans" | "timetable";
 export type Query = { text: string; values: (string | number | boolean | null)[]; };
 export type AggregationType = "SUM" | "AVG" | "COUNT" | "MAX" | "MIN";
 export type ComparisonOperatorType = "=" | ">" | "<" | "<=" | ">=" | "<>" | "!=" | "LIKE";
