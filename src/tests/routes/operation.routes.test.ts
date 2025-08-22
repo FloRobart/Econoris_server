@@ -1,15 +1,13 @@
 import { connectToDatabase, closeDatabaseConnection, executeQuery } from "../../main/database/database";
 import * as SelectController from "../../main/database/parseSelect";
-import { clone } from "../../main/utils/utils";
-import { JSONSelectRequest } from "../../main/utils/types";
 require('dotenv').config();
 
 
-const DB_HOST = process.env.DB_HOST;
-const DB_USER = process.env.DB_USER;
-const DB_PASSWORD = process.env.DB_PASSWORD;
-const DB_PORT = process.env.DB_PORT;
-const DB_NAME = process.env.DB_NAME;
+const DB_HOST = process.env.DB_HOST || "localhost";
+const DB_USER = process.env.DB_USER || "postgres";
+const DB_PASSWORD = process.env.DB_PASSWORD || "postgres";
+const DB_PORT = process.env.DB_PORT || 5432;
+const DB_NAME = process.env.DB_NAME || "test_db";
 
 
 
@@ -67,7 +65,8 @@ describe("Operations routes test", () => {
         /* Insert values in the database */
         let j = 1;
         let text = "INSERT INTO operations (operations_date, ";
-        let values = [];
+        let values: any[] = [];
+        type Operation = typeof operations[number];
         for (let i = 0; i < operations.length; i++) {
             const element = operations[i];
             if (i === 0) {
@@ -79,7 +78,7 @@ describe("Operations routes test", () => {
             text += "('2025-10-0" + (i+1) + "', ";
             for (const key in element) {
                 text += `$${j}, `;
-                values.push(element[key]);
+                values.push(element[key as keyof Operation]);
                 j++;
             }
             text = text.slice(0, -2) + "), ";
@@ -199,7 +198,7 @@ describe("Operations routes test", () => {
          */
         test("Test SELECT Operations " + (i+1), async () => {
             /* Route code */
-            const jsonRequest = SelectController.parseSelectUrl("operations", queries[i], { id: 1 });
+            const jsonRequest = SelectController.parseSelectUrl("operations", queries[i], { userid: 1, email: "test@example.com", name: "Test User", authmethod: "password" });
             const response = await SelectController.executeSelect("operations", jsonRequest);
             const jsonResponse = JSON.parse(JSON.stringify(response));
             const expectedResponse = queriesResponses[i] || [];
