@@ -1,0 +1,60 @@
+services:
+  econoris-db:
+    build:
+      context: ./Database
+      dockerfile: Dockerfile
+    image: econoris-db:latest
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./Database:/docker-entrypoint-initdb.d
+    networks:
+      - econoris-net
+    healthcheck:
+      test: ["CMD-SHELL", "psql -U postgres -d econoris"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+
+  econoris-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: econoris-app:latest
+    restart: always
+    environment:
+      APP_NAME: ${APP_NAME}
+      APP_PORT: ${APP_PORT}
+      HOST_NAME: ${HOST_NAME}
+      BASE_URL: ${BASE_URL}
+      APP_ENV: ${APP_ENV}
+
+      DB_URI: postgresql://${DB_USER}:${DB_PASSWORD}@econoris-db:5432/${DB_NAME}
+
+      HASH_ALGORITHM: ${HASH_ALGORITHM}
+      HASH_ROUNDS: ${HASH_ROUNDS}
+
+      HANDSHAKE_STATIC_TOKEN: ${HANDSHAKE_STATIC_TOKEN}
+      AUTH_APP_URL: ${AUTH_APP_URL}
+      AUTH_APP_HANDSHAKE_URL: ${AUTH_APP_HANDSHAKE_URL}
+    depends_on:
+      econoris-db:
+        condition: service_healthy
+    networks:
+      - econoris-net
+      - flower_garden-net
+    ports:
+      - ${APP_PORT}:80
+
+volumes:
+  db_data:
+
+networks:
+  econoris-net:
+    driver: bridge
+  flower_garden-net:
+    external: true
