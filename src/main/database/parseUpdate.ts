@@ -171,8 +171,9 @@ export function parseJsonUpdateRequest(table: QueryTable, jsonRequest: JSONUpdat
 
     try {
         /* Verify keys values */
-        delete Constantes.Columns[table]["id"]
-        delete Constantes.Columns[table][table + "_id"]
+        Constantes.Columns[table] = Constantes.Columns[table].filter(
+            (col: string) => col !== "id" && col !== table + "_id"
+        );
         for (const key in jsonRequest.keysValues) {
             const value = jsonRequest.keysValues[key];
             if (key === undefined || key === null || key === "") {

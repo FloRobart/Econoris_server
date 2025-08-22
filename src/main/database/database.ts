@@ -205,9 +205,9 @@ export function getInsertQuery(table: QueryTable, jsonRequest: JSONInsertRequest
 
         query += ") RETURNING ";
         for (const key in jsonRequest.returnedKeys) {
-            let returnedKey = jsonRequest.returnedKeys[key];
-            if (jsonRequest.returnedKeys[key] !== "*") {
-                returnedKey = normalyzeKey(jsonRequest.returnedKeys[key], table) as ColumnsType;
+            let returnedKey = key;
+            if (key !== "*") {
+                returnedKey = normalyzeKey(key as ColumnsType, table) as ColumnsType;
             }
             query += `${returnedKey}, `;
         }

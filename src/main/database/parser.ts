@@ -31,7 +31,7 @@ import { clone } from "../utils/utils";
  *         ...
  *     ]
  */
-export function createJsonResponse(rows?: any[], warnings?: string[], errors?: string[]): JSONResponse {
+export function createJsonResponse(rows?: any[]|null, warnings?: string[], errors?: string[]): JSONResponse {
     return {
         rows: rows || [],
         warnings: warnings || [],

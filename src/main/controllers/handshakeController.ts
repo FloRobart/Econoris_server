@@ -45,7 +45,7 @@ export const handshake = async (req: Request, res: Response, next: NextFunction)
                 'Authorization': `Bearer ${config.handshake_static_token}`
             }
         }, (authRes: http.IncomingMessage) => {
-            if (authRes.statusCode >= 200 && authRes.statusCode < 300) {
+            if (authRes.statusCode &&authRes.statusCode >= 200 && authRes.statusCode < 300) {
                 config.private_token = params[1];
                 config.private_timestamp = parseInt(params[2], 10);
                 logger.success(`Handshake with Auth app successful.`);

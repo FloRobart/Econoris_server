@@ -219,7 +219,7 @@ export function parseSelectUrl(table: QueryTable, request: any, user: User): JSO
 export function parseJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelectRequest, user: User): JSONSelectRequest {
     let newJsonRequest: JSONSelectRequest = {
         keys: [],
-        aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase()) ? jsonRequest.aggregation : undefined,
+        aggregation: Constantes.AggregationOperator.includes(jsonRequest.aggregation?.toUpperCase() || "") ? jsonRequest.aggregation : undefined,
         limit: clone(jsonRequest.limit) || null,
         offset: clone(jsonRequest.offset) || 0,
         whereValues: [],
@@ -238,7 +238,7 @@ export function parseJsonSelectRequest(table: QueryTable, jsonRequest: JSONSelec
         /* Verify limit */
         newJsonRequest.limit = newJsonRequest.limit instanceof Array ? newJsonRequest.limit[newJsonRequest.limit.length - 1] : newJsonRequest.limit;
         newJsonRequest.limit = !Number.isNaN(parseInt(String(newJsonRequest.limit), 10)) ? parseInt(String(newJsonRequest.limit), 10) : null;
-        newJsonRequest.limit = (newJsonRequest.limit >= 0 ? newJsonRequest.limit : null);
+        newJsonRequest.limit = ((newJsonRequest.limit && newJsonRequest.limit >= 0) ? newJsonRequest.limit : null);
 
         /* Verify offset */
         newJsonRequest.offset = newJsonRequest.offset instanceof Array ? newJsonRequest.offset[newJsonRequest.offset.length - 1] : newJsonRequest.offset;

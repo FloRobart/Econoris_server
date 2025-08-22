@@ -135,7 +135,7 @@ export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user
                     }
 
                     if (Constantes.Columns[table].includes(key) || key === "*") {
-                        newJsonRequest.returnedKeys.push(key as ColumnsType);
+                        newJsonRequest.returnedKeys?.push(key as ColumnsType);
                     } else {
                         newJsonRequest.warnings.push("Returned key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
                     }
@@ -145,7 +145,7 @@ export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user
                 if (key === undefined || key === null || key === "") {
                     newJsonRequest.warnings.push("Returned key undefined, null or empty -> ignored");
                 } else if (Constantes.Columns[table].includes(key) || key === "*") {
-                    newJsonRequest.returnedKeys.push(key as ColumnsType);
+                    newJsonRequest.returnedKeys?.push(key as ColumnsType);
                 } else {
                     newJsonRequest.warnings.push("Returned key : '" + key + "' not in ['*'," + Constantes.Columns[table] + "] -> ignored");
                 }
@@ -156,14 +156,15 @@ export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user
             newJsonRequest.warnings.push("Returned keys undefined or null -> ignored");
         }
 
-        if (newJsonRequest.returnedKeys.length === 0) {
+        if (newJsonRequest.returnedKeys?.length === 0) {
             newJsonRequest.warnings.push("No returned key found -> no returned key");
             newJsonRequest.returnedKeys = null;
         }
 
         /* Verify insertions */
-        delete Constantes.Columns[table]["id"];
-        delete Constantes.Columns[table][table + "_id"];
+        Constantes.Columns[table] = Constantes.Columns[table].filter(
+            (col: string) => col !== "id" && col !== table + "_id"
+        );
 
         if(jsonRequest.insertions !== undefined && jsonRequest.insertions !== null) {
             if (Array.isArray(jsonRequest.insertions)) {
@@ -230,7 +231,7 @@ export function parseJsonInsertRequest(table: QueryTable, jsonRequest: any, user
  * }
  */
 function verifyKeyValue(table: QueryTable, key: string, value: string): any {
-    let response = {
+    let response: { [key: string]: any; warnings: string[] } = {
         warnings: []
     };
 

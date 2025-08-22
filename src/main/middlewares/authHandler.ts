@@ -41,7 +41,7 @@ export const authHandler = async (req: Request, res: Response, next: NextFunctio
     }, (response: http.IncomingMessage) => {
         response.on('data', (chunk) => {
             try {
-                if (response.statusCode >= 200 && response.statusCode < 300) {
+                if (response.statusCode && response.statusCode >= 200 && response.statusCode < 300) {
                     const user = JSON.parse(chunk.toString());
                     req.body.user = user;
                     next();
