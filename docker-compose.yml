@@ -15,16 +15,16 @@ services:
     networks:
       - econoris-net
     healthcheck:
-      test: ["CMD-SHELL", "psql -U postgres -d econoris"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME} || exit 1"]
       interval: 5s
       timeout: 30s
       retries: 5
 
-  econoris-app:
+  econoris-server:
     build:
       context: .
       dockerfile: Dockerfile
-    image: econoris-app:latest
+    image: econoris-server:latest
     restart: always
     environment:
       APP_NAME: ${APP_NAME}
@@ -33,7 +33,11 @@ services:
       BASE_URL: ${BASE_URL}
       APP_ENV: ${APP_ENV}
 
-      DB_URI: postgresql://${DB_USER}:${DB_PASSWORD}@econoris-db:5432/${DB_NAME}
+      DB_SCHEME: ${DB_SCHEME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
 
       HASH_ALGORITHM: ${HASH_ALGORITHM}
       HASH_ROUNDS: ${HASH_ROUNDS}

@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
-import { normalizePort } from '../utils/utils';
+
 
 dotenv.config();
+
+
 
 interface Config {
     readonly base_url: string;
@@ -34,7 +36,7 @@ const config: Config = {
     app_local: process.env.APP_LOCAL || 'en_US',
     admin_email: process.env.ADMIN_EMAIL || '',
 
-    db_uri: process.env.DB_URI || '',
+    db_uri: `${process.env.DB_SCHEME}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.DB_NAME}`,
 
     handshake_static_token: process.env.HANDSHAKE_STATIC_TOKEN || '',
     auth_app_handshake_url: process.env.AUTH_APP_HANDSHAKE_URL || '',
