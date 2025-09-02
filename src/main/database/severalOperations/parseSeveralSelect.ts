@@ -1,10 +1,11 @@
-import { executeQuery, getSelectQuery } from "./database";
-import { JSONSelectRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../utils/types";
-import * as Constantes from "../utils/constantes";
-import * as logger from '../utils/logger';
-import { createJsonResponse } from "./parser";
-import { clone } from "../utils/utils";
-import { User } from "../models/UserModels";
+import { executeQuery } from "../database";
+import { getSelectQuery } from "../severalDatabase";
+import { JSONSelectRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../../utils/types";
+import * as Constantes from "../../utils/constantes";
+import * as logger from '../../utils/logger';
+import { createJsonResponse } from "../parser";
+import { clone } from "../../utils/utils";
+import { User } from "../../models/UserModels";
 
 
 

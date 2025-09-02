@@ -1,11 +1,10 @@
 import { Router } from "express";
 import {
-    getOperations,
-    getOperationsById,
-    postOperations,
-    putOperationsById,
-    deleteOperationsById
-} from "../controllers/operationController";
+    getOperationsSeveral,
+    postOperationsSeveral,
+    putOperationsSeveral,
+    deleteOperationsSeveral,
+} from "../controllers/operationSeveralController";
 
 
 
@@ -17,28 +16,16 @@ const router = Router();
 /* Select */
 /*========*/
 /**
- * @swagger
- * /operations:
- *   get:
- *     summary: Get all operations
- *     description: Get all operations; You can filter the results with the parameters in the query string
+ * @
+ * /operations/get:
+ *   post:
+ *     summary: Get all operations corresponding at parameters passed in body of the request
  *     tags:
- *       - Operations
+ *       - "Multiple Operations"
  *     parameters:
- *       - in: query
- *         name: limit
- *         description: Limit the number of results
- *         required: false
- *         example: 10
+ *       - in: body
  *         schema:
- *           type: integer
- *       - in: query
- *         name: offset
- *         description: Offset the results
- *         required: false
- *         example: 0
- *         schema:
- *           type: integer
+ *           $ref: "#/components/schemas/OperationRequestBodySelect"
  *     responses:
  *       200:
  *         description: List of operations
@@ -65,65 +52,7 @@ const router = Router();
  *             schema:
  *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
  */
-router.get('/', getOperations);
-
-/**
- * @swagger
- * /operations/id/{id}:
- *   get:
- *     summary: Get operation with id
- *     tags:
- *       - Operations
- *     parameters:
- *       - in: path
- *         name: id
- *         description: ID of the operation
- *         required: true
- *         schema:
- *           type: integer
- *           minimum: 1
- *           example: 1
- *       - in: query
- *         name: limit
- *         description: Limit the number of results
- *         required: false
- *         example: 10
- *         schema:
- *           type: integer
- *       - in: query
- *         name: offset
- *         description: Offset the results
- *         required: false
- *         example: 0
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: List of operations
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#components/schemas/OperationResponseBody"
- *       204:
- *         description: No results found in database
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#components/schemas/OperationResponseBodyEmpty"
- *       400:
- *         description: Bad request. Change your request for to fix this error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Error"
- *       500:
- *         description: Internal server error. Please create an issue on Github
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
- */
-router.get('/id/:id', getOperationsById);
+router.post('/get', getOperationsSeveral);
 
 
 
@@ -131,19 +60,22 @@ router.get('/id/:id', getOperationsById);
 /* Insert */
 /*========*/
 /**
- * @swagger
+ * @
  * /operations:
  *   post:
  *     summary: Create one or multiple operations
  *     tags:
- *       - Operations
+ *       - "Multiple Operations"
  *     parameters:
  *       - in: body
  *         name: operations
- *         description: Operations to create.
+ *         description: |
+ *           Operations to create
+ *           <br>
+ *           You can create multiple operations at once as follows: {keys: ["key1", "key2"], values: [["value1-forKey1", "value2-forKey2"], ["value3-forKey1", "value4-forKey2"]]}. The keys and values must be in the same order.
  *         required: true
  *         schema:
- *           $ref: "#/components/schemas/OperationRequestBodyInsertNew"
+ *           $ref: "#/components/schemas/OperationRequestBodyInsert"
  *     responses:
  *       200:
  *         description: Operations created
@@ -170,7 +102,7 @@ router.get('/id/:id', getOperationsById);
  *             schema:
  *               $ref: "#/components/schemas/Error"
  */
-router.post('/', postOperations);
+router.post('/', postOperationsSeveral);
 
 
 
@@ -178,12 +110,12 @@ router.post('/', postOperations);
 /* Update */
 /*========*/
 /**
- * @swagger
+ * @
  * /operations:
  *   put:
  *     summary: Update one or multiple operations
  *     tags:
- *       - Operations
+ *       - "Multiple Operations"
  *     parameters:
  *       - in: body
  *         name: operations
@@ -217,7 +149,7 @@ router.post('/', postOperations);
  *             schema:
  *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
  */
-router.put('/id/:id', putOperationsById);
+router.put('/', putOperationsSeveral);
 
 
 
@@ -225,21 +157,19 @@ router.put('/id/:id', putOperationsById);
 /* Delete */
 /*========*/
 /**
- * @swagger
- * /operations/id/{id}:
+ * @
+ * /operations:
  *   delete:
  *     summary: Delete operations
  *     tags:
- *       - Operations
+ *       - "Multiple Operations"
  *     parameters:
- *       - in: path
- *         name: id
- *         description: ID of the operation
+ *       - in: body
+ *         name: operations
+ *         description: Operations to delete
  *         required: true
  *         schema:
- *           type: integer
- *           minimum: 1
- *           example: 1
+ *           $ref: "#/components/schemas/OperationRequestBodyDelete"
  *     responses:
  *       200:
  *         description: Operations updated
@@ -266,7 +196,7 @@ router.put('/id/:id', putOperationsById);
  *             schema:
  *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
  */
-router.delete('/id/:id', deleteOperationsById);
+router.delete('/', deleteOperationsSeveral);
 
 
 

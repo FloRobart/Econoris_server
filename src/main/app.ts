@@ -1,5 +1,6 @@
 import express from 'express';
 import operationRoutes from './routes/operationRoutes';
+import operationSeveralRoutes from './routes/operationSeveralRoutes';
 import { errorHandler } from './middlewares/errorHandler';
 import { connectToDatabase } from './database/database';
 import * as logger from './utils/logger';
@@ -63,6 +64,7 @@ app.use("/handshake", handshakeRoutes);
 app.use(authHandler);
 
 app.use('/operations', operationRoutes);
+app.use('/operations/several', operationSeveralRoutes);
 
 app.use(errorHandler);
 

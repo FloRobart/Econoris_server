@@ -186,6 +186,33 @@
  *               oneOf:
  *                 - type: string
  *                 - type: integer
+ *     OperationRequestBodyInsertNew:
+ *       type: object
+ *       required:
+ *         - operations_date
+ *         - operations_name
+ *         - operations_amount
+ *         - operations_category
+ *         - operations_validated
+ *       properties:
+ *         operations_date:
+ *           type: string
+ *         operations_name:
+ *           type: string
+ *         operations_amount:
+ *           type: number
+ *         operations_source:
+ *           type: string
+ *         operations_destination:
+ *           type: string
+ *         operations_costs:
+ *           type: number
+ *         operations_category:
+ *           type: string
+ *         operations_validated:
+ *           type: boolean
+ *         operations_redundancy:
+ *           type: string
  */
 
 

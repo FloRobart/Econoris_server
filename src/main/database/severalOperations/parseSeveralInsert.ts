@@ -1,10 +1,11 @@
-import { executeQuery, getInsertQuery } from "./database";
-import { JSONInsertRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../utils/types";
-import * as Constantes from "../utils/constantes";
-import * as logger from '../utils/logger';
-import { createJsonResponse } from "./parser";
-import { clone } from "../utils/utils";
-import { User } from "../models/UserModels";
+import { executeQuery } from "../database";
+import { getInsertQuery } from "../severalDatabase";
+import { JSONInsertRequest, JSONResponse, QueryTable, ColumnsType, LogicalOperatorType } from "../../utils/types";
+import * as Constantes from "../../utils/constantes";
+import * as logger from '../../utils/logger';
+import { createJsonResponse } from "../parser";
+import { clone } from "../../utils/utils";
+import { User } from "../../models/UserModels";
 
 
 
