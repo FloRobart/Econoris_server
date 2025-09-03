@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { JSONResponse, QueryTable } from '../utils/types';
-import { createJsonResponse } from '../database/parser';
-import * as SelectController from "../database/parseSelect";
-import * as InsertController from "../database/parseInsert";
-import * as UpdateController from "../database/parseUpdate";
-import * as DeleteController from "../database/parseDelete";
+import { QueryTable } from '../utils/types';
+import { JsonHttpResponse, createJsonResponse } from '../models/JsonHttpResponse';
+import * as OperationsDao from '../database/operationsDao';
 import { User } from '../models/UserModels';
+import { Operations } from '../models/OperationsModel';
 
 
 
@@ -20,16 +18,16 @@ export const getOperations = async (req: Request, res: Response, next: NextFunct
     /* If you modify this code, also modify the Swagger documentation and unit tests */
     try {
         const user: User = req.body.user;
-        const jsonRequest = SelectController.parseSelectUrl(table, req.query, user);
+        const limit: number = req.query.limit ? parseInt(req.query.limit as string) : 0;
+        const offset: number | null = req.query.offset ? parseInt(req.query.offset as string) : null;
 
-        let jsonResponse: JSONResponse;
-        if (jsonRequest.errors.length > 0) {
-            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
-        } else {
-            jsonResponse = await SelectController.executeSelect(table, jsonRequest);
-        }
+        OperationsDao.selectOperations(user.userid, limit, offset).then((operations) => {
+            const jsonResponse: JsonHttpResponse = createJsonResponse(operations);
 
-        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
+            res.status(operations.length > 0 ? 200 : 204).json(jsonResponse);
+        }).catch((error) => {
+            next(error);
+        });
     } catch (error) {
         next(error);
     }
@@ -39,35 +37,17 @@ export const getOperationsById = async (req: Request, res: Response, next: NextF
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const user: User = req.body.user;
-        const jsonRequest = SelectController.parseSelectUrl(table, { ...req.params, ...req.query }, user);
+        const id: number = req.params.id ? parseInt(req.params.id) : -1;
+        const limit: number = req.query.limit ? parseInt(req.query.limit as string) : 0;
+        const offset: number | null = req.query.offset ? parseInt(req.query.offset as string) : null;
 
-        let jsonResponse: JSONResponse;
-        if (jsonRequest.errors.length > 0) {
-            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
-        } else {
-            jsonResponse = await SelectController.executeSelect(table, jsonRequest);
-        }
+        OperationsDao.selectOperations(user.userid, limit, offset, { operations_id: id }).then((operations) => {
+            const jsonResponse: JsonHttpResponse = createJsonResponse(operations);
 
-        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
-    } catch (error) {
-        next(error);
-    }
-}
-
-export const getOperationsComplexe = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const user: User = req.body.user;
-        const jsonRequest = SelectController.parseJsonSelectRequest(table, req.body, user);
-
-        let jsonResponse: JSONResponse;
-        if (jsonRequest.errors.length > 0) {
-            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
-        } else {
-            jsonResponse = await SelectController.executeSelect(table, jsonRequest);
-        }
-
-        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length == 0 && jsonResponse.warnings.length == 0) ? 204 : 200)).json(jsonResponse);
+            res.status(operations.length > 0 ? 200 : 204).json(jsonResponse);
+        }).catch((error) => {
+            next(error);
+        });
     } catch (error) {
         next(error);
     }
@@ -82,16 +62,21 @@ export const postOperations = async (req: Request, res: Response, next: NextFunc
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const user: User = req.body.user;
-        const jsonRequest = InsertController.parseJsonInsertRequest(table, req.body, user);
+        const operation: Operations = req.body.operation;
 
-        let jsonResponse: JSONResponse;
-        if (jsonRequest.errors.length > 0) {
-            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
-        } else {
-            jsonResponse = await InsertController.executeInsert(table, jsonRequest);
+        if (!operation || Object.keys(operation).length === 0 || !operation.operations_id) {
+            const jsonResponse: JsonHttpResponse = createJsonResponse([], [], ["No operation provided"]);
+            res.status(400).json(jsonResponse);
+            return;
         }
+        
+        OperationsDao.insertOperation(user.userid, operation).then((insertedOperation) => {
+            const jsonResponse: JsonHttpResponse = createJsonResponse(insertedOperation !== null ? [insertedOperation] : [], [], insertedOperation === null ? ["Failed inserting operation into database"] : []);
 
-        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
+            res.status(insertedOperation !== null ? 200 : 500).json(jsonResponse);
+        }).catch((error) => {
+            next(error);
+        });
     } catch (error) {
         next(error);
     }
@@ -106,16 +91,21 @@ export const putOperations = async (req: Request, res: Response, next: NextFunct
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const user: User = req.body.user;
-        const jsonRequest = UpdateController.parseJsonUpdateRequest(table, req.body, user);
+        const operation = req.body.operation;
 
-        let jsonResponse: JSONResponse;
-        if (jsonRequest.errors.length > 0) {
-            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
-        } else {
-            jsonResponse = await UpdateController.executeUpdate(table, jsonRequest);
+        if (!operation || Object.keys(operation).length === 0 || !operation.operations_id) {
+            const jsonResponse: JsonHttpResponse = createJsonResponse([], [], ["No operation provided"]);
+            res.status(400).json(jsonResponse);
+            return;
         }
 
-        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
+        OperationsDao.updateOperation(user.userid, operation).then((updatedOperation) => {
+            const jsonResponse: JsonHttpResponse = createJsonResponse(updatedOperation !== null ? [updatedOperation] : [], [], updatedOperation === null ? ["Failed updating operation in database"] : []);
+
+            res.status(updatedOperation !== null ? 200 : 500).json(jsonResponse);
+        }).catch((error) => {
+            next(error);
+        });
     } catch (error) {
         next(error);
     }
@@ -126,39 +116,19 @@ export const putOperations = async (req: Request, res: Response, next: NextFunct
 /*========*/
 /* Delete */
 /*========*/
-export const deleteOperations = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        /* If you modify this code, also modify the Swagger documentation and unit tests */
-        const user: User = req.body.user;
-        const jsonRequest = DeleteController.parseJsonDeleteRequest(table, req.body, user);
-
-        let jsonResponse: JSONResponse;
-        if (jsonRequest.errors.length > 0) {
-            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
-        } else {
-            jsonResponse = await DeleteController.executeDelete(table, jsonRequest);
-        }
-
-        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
-    } catch (error) {
-        next(error);
-    }
-}
-
 export const deleteOperationsById = async (req: Request, res: Response, next: NextFunction) => {
     try {
         /* If you modify this code, also modify the Swagger documentation and unit tests */
         const user: User = req.body.user;
-        const jsonRequest = DeleteController.parseDeleteUrl(table, { ...req.params }, user);
+        const operations_id = req.params.id ? parseInt(req.params.id) : -1;
 
-        let jsonResponse: JSONResponse;
-        if (jsonRequest.errors.length > 0) {
-            jsonResponse = createJsonResponse([], jsonRequest.warnings, jsonRequest.errors);
-        } else {
-            jsonResponse = await DeleteController.executeDelete(table, jsonRequest);
-        }
+        OperationsDao.deleteOperationById(user.userid, operations_id).then((success) => {
+            const jsonResponse: JsonHttpResponse = createJsonResponse([], [], success ? [] : ["Failed deleting operation from database"]);
 
-        res.status(jsonResponse.errors.length > 0 ? 500 : ((jsonResponse.rows.length === 0 && jsonResponse.warnings.length === 0) ? 204 : 200)).json(jsonResponse);
+            res.status(success ? 200 : 400).json(jsonResponse);
+        }).catch((error) => {
+            next(error);
+        });
     } catch (error) {
         next(error);
     }
