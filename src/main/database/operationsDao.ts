@@ -20,8 +20,8 @@ export async function selectOperations(userid: number, limit: number = 0, offset
 
     for (const [key, value] of Object.entries(constraints)) {
         if (typeof value === 'string') {
-            query += ` AND ${key} LIKE '%$${values.length + 1}%'`;
-            values.push(value);
+            query += ` AND ${key} LIKE $${values.length + 1}`;
+            values.push(`%${value}%`);
         } else {
             query += ` AND ${key} = $${values.length + 1}`;
             values.push(value);
