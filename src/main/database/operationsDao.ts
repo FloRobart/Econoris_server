@@ -15,7 +15,7 @@ import { executeQuery } from "./database";
  * @returns Array of Operations objects.
  */
 export async function selectOperations(userid: number, limit: number = 0, offset: number|null = null, constraints: { [key: string]: string|number } = {}): Promise<Operations[]> {
-    let query = `SELECT * FROM operations WHERE userid = $1`;
+    let query = `SELECT * FROM operations WHERE operations_userid = $1`;
     let values: (string|number)[] = [userid];
 
     for (const [key, value] of Object.entries(constraints)) {
@@ -48,17 +48,17 @@ export async function selectOperations(userid: number, limit: number = 0, offset
  * @returns The inserted operation with its new ID.
  */
 export async function insertOperation(userid: number, operation: Operations): Promise<Operations|null> {
-    let query = `INSERT INTO operations (userid, `;
+    let query = `INSERT INTO operations (operations_userid, `;
     let values: (string|number)[] = [userid];
 
     for (const [key, value] of Object.entries(operation)) {
-        if (value === undefined || key === "operations_id" || key === "userid") {
+        if (value !== undefined && key !== "operations_id" && key !== "operations_userid") {
             query += `${key}, `;
             values.push(value);
         }
     }
 
-    query = query.slice(0, -2) + `) VALUES ($1, ${values.map((_, i) => `$${i + 2}`).join(", ")}) RETURNING *`;
+    query = query.slice(0, -2) + `) VALUES (${values.map((_, i) => `$${i + 1}`).join(", ")}) RETURNING *`;
     const result = await executeQuery({ text: query, values }) as Operations[];
     return (result && result.length > 0) ? result[0] : null;
 }
@@ -75,13 +75,13 @@ export async function updateOperation(userid: number, operation: Operations): Pr
     let setClauses: string[] = [];
 
     for (const [key, value] of Object.entries(operation)) {
-        if (value !== undefined && key !== "operations_id" && key !== "userid") {
+        if (value !== undefined && key !== "operations_id" && key !== "operations_userid") {
             setClauses.push(`${key} = $${values.length + 1}`);
             values.push(value);
         }
     }
 
-    query += setClauses.join(", ") + ` WHERE operations_id = $${values.length + 1} AND userid = $${values.length + 2} RETURNING *`;
+    query += setClauses.join(", ") + ` WHERE operations_id = $${values.length + 1} AND operations_userid = $${values.length + 2} RETURNING *`;
     values.push(operation.operations_id!);
     values.push(userid);
 
@@ -96,6 +96,6 @@ export async function updateOperation(userid: number, operation: Operations): Pr
  * @returns True if the operation was deleted, false otherwise.
  */
 export async function deleteOperationById(userid: number, operations_id: number): Promise<boolean> {
-    const result = await executeQuery({ text: `DELETE FROM operations WHERE operations_id = $1 AND userid = $2`, values: [operations_id, userid] });
+    const result = await executeQuery({ text: `DELETE FROM operations WHERE operations_id = $1 AND operations_userid = $2`, values: [operations_id, userid] });
     return (result !== null);
 }

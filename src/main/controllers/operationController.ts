@@ -64,7 +64,7 @@ export const postOperations = async (req: Request, res: Response, next: NextFunc
         const user: User = req.body.user;
         const operation: Operations = req.body.operation;
 
-        if (!operation || Object.keys(operation).length === 0 || !operation.operations_id) {
+        if (!operation || Object.keys(operation).length === 0) {
             const jsonResponse: JsonHttpResponse = createJsonResponse([], [], ["No operation provided"]);
             res.status(400).json(jsonResponse);
             return;
