@@ -2,10 +2,8 @@ import { Router } from "express";
 import {
     getOperations,
     getOperationsById,
-    getOperationsComplexe,
     postOperations,
     putOperations,
-    deleteOperations,
     deleteOperationsById
 } from "../controllers/operationController";
 
@@ -23,7 +21,7 @@ const router = Router();
  * /operations:
  *   get:
  *     summary: Get all operations
- *     description: Get all operations; You can filter the results with the parameters in the query string
+ *     description: Get all operations
  *     tags:
  *       - Operations
  *     parameters:
@@ -127,46 +125,6 @@ router.get('/', getOperations);
  */
 router.get('/id/:id', getOperationsById);
 
-/**
- * @swagger
- * /operations/get:
- *   post:
- *     summary: Get all operations corresponding at parameters passed in body of the request
- *     tags:
- *       - Operations
- *     parameters:
- *       - in: body
- *         schema:
- *           $ref: "#/components/schemas/OperationRequestBodySelect"
- *     responses:
- *       200:
- *         description: List of operations
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#components/schemas/OperationResponseBody"
- *       204:
- *         description: No results found in database
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#components/schemas/OperationResponseBodyEmpty"
- *       400:
- *         description: Bad request. Change your request for to fix this error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Error"
- *       500:
- *         description: Internal server error. Please create an issue on Github
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
- */
-router.post('/get', getOperationsComplexe);
-
-
 
 /*========*/
 /* Insert */
@@ -175,19 +133,16 @@ router.post('/get', getOperationsComplexe);
  * @swagger
  * /operations:
  *   post:
- *     summary: Create one or multiple operations
+ *     summary: Create one operation
  *     tags:
  *       - Operations
  *     parameters:
  *       - in: body
- *         name: operations
- *         description: |
- *           Operations to create
- *           <br>
- *           You can create multiple operations at once as follows: {keys: ["key1", "key2"], values: [["value1-forKey1", "value2-forKey2"], ["value3-forKey1", "value4-forKey2"]]}. The keys and values must be in the same order.
+ *         name: operation
+ *         description: Operation to create.
  *         required: true
  *         schema:
- *           $ref: "#/components/schemas/OperationRequestBodyInsert"
+ *           $ref: "#/components/schemas/Operations"
  *     responses:
  *       200:
  *         description: Operations created
@@ -225,7 +180,7 @@ router.post('/', postOperations);
  * @swagger
  * /operations:
  *   put:
- *     summary: Update one or multiple operations
+ *     summary: Update one operation
  *     tags:
  *       - Operations
  *     parameters:
@@ -234,7 +189,7 @@ router.post('/', postOperations);
  *         description: Operations to update.
  *         required: true
  *         schema:
- *           $ref: "#/components/schemas/OperationRequestBodyUpdate"
+ *           $ref: "#/components/schemas/Operations"
  *     responses:
  *       200:
  *         description: Operations updated
@@ -268,48 +223,6 @@ router.put('/', putOperations);
 /*========*/
 /* Delete */
 /*========*/
-/**
- * @swagger
- * /operations:
- *   delete:
- *     summary: Delete operations
- *     tags:
- *       - Operations
- *     parameters:
- *       - in: body
- *         name: operations
- *         description: Operations to delete
- *         required: true
- *         schema:
- *           $ref: "#/components/schemas/OperationRequestBodyDelete"
- *     responses:
- *       200:
- *         description: Operations updated
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#components/schemas/OperationResponseBody"
- *       204:
- *         description: No results found in database
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#components/schemas/OperationResponseBodyEmpty"
- *       400:
- *         description: Bad request. Change your request for to fix this error
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Error"
- *       500:
- *         description: Internal server error. Please create an issue on Github
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/OperationResponseBodyEmpty"
- */
-router.delete('/', deleteOperations);
-
 /**
  * @swagger
  * /operations/id/{id}:

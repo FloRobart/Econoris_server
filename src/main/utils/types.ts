@@ -1,51 +1,10 @@
-export type JSONSelectRequest = {
-    keys: (OperationsType|LoansType|TimetableType)[],
-    aggregation?: string,
-    limit: number|null|number[]|string|string[],
-    offset: number|number[]|string|string[],
-    whereValues: WhereValuesType[],
-    warnings: string[],
-    errors: string[]
-}
-
-export type JSONInsertRequest = {
-    returnedKeys: (OperationsType|LoansType|TimetableType|"*")[]|null,
-    insertions: any,
-    warnings: string[],
-    errors: string[]
-}
-
-export type JSONUpdateRequest = {
-    keysValues: any,
-    whereValues: WhereValuesType[],
-    warnings: string[],
-    errors: string[]
-}
-
-export type JSONDeleteRequest = {
-    whereValues: WhereValuesType[],
-    warnings: string[],
-    errors: string[]
-}
-
-export type JSONResponse = {
-    rows: any[],
-    warnings: string[],
-    errors: string[]
-}
-
 export type QueryType = "SELECT" | "INSERT" | "UPDATE" | "DELETE";
 export type QueryTable = "operations" | "loans" | "timetable";
 export type Query = { text: string; values: (string | number | boolean | null)[]; };
 export type AggregationType = "SUM" | "AVG" | "COUNT" | "MAX" | "MIN";
 export type ComparisonOperatorType = "=" | ">" | "<" | "<=" | ">=" | "<>" | "!=" | "LIKE";
 export type LogicalOperatorType = "AND" | "OR";
-export type WhereValuesType = {
-    key: OperationsType|LoansType|TimetableType,
-    comparisonOperator?: ComparisonOperatorType,
-    value: string|number|boolean|null,
-    logicalOperator?: LogicalOperatorType
-};
+
 
 /* Operations types */
 export type OperationsType = "*"|"id"           |"date"           |"name"           |"amount"           |"source"           |"destination"           |"costs"           |"category"           |"validated"           |"redundancy"           |"createdat"           |"userid"|

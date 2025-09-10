@@ -4,12 +4,12 @@ CREATE TABLE operations (
     operations_date DATE DEFAULT CURRENT_DATE,
     operations_name VARCHAR(255) NOT NULL,
     operations_amount NUMERIC(12, 2) NOT NULL,
+    operations_category VARCHAR(255) NOT NULL,
     operations_source VARCHAR(255),
     operations_destination VARCHAR(255),
     operations_costs NUMERIC(12, 2) DEFAULT 0.0,
-    operations_category VARCHAR(255),
     operations_validated BOOLEAN DEFAULT TRUE,
     operations_redundancy VARCHAR(25),
     operations_createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    operations_userid INTEGER
+    operations_userid INTEGER NOT NULL
 );
