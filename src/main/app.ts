@@ -7,6 +7,7 @@ import fs from 'node:fs';
 import config from './config/config';
 import { authHandler } from './middlewares/authHandler';
 import handshakeRoutes from './routes/handshakeRoutes';
+import cors from 'cors';
 
 
 
@@ -60,9 +61,9 @@ connectToDatabase(config.db_uri);
 /* Routes */
 app.use(express.json());
 app.use("/handshake", handshakeRoutes);
-app.use(authHandler);
+app.use(cors(config.corsOptions), authHandler);
 
-app.use('/operations', operationRoutes);
+app.use('/operations', cors(config.corsOptions), operationRoutes);
 
 app.use(errorHandler);
 

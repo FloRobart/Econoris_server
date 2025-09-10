@@ -24,6 +24,14 @@ interface Config {
 
     readonly hash_algorithm: string; // Hash algorithm for security, default is sha256
     readonly hash_rounds: number;
+
+    /* CORS */
+    readonly corsOptions: {
+        origin: string[];
+        methods: string[];
+        credentials: boolean;
+        allowedHeaders: string[];
+    };
 }
 
 
@@ -44,6 +52,14 @@ const config: Config = {
 
     hash_algorithm: process.env.HASH_ALGORITHM || 'sha256',
     hash_rounds: parseInt(process.env.HASH_ROUNDS || '10', 10) || 10,
+
+    /* CORS */
+    corsOptions: {
+        origin: (process.env.CORS_ALLOWED_ORIGINS || '').split(',').map(origin => origin.trim()),
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization'],
+    },
 };
 
 
