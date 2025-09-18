@@ -14,7 +14,7 @@ let client: pg.Client;
  * @example dburi = "postgresql://<user>:<password>@<host>:<port>/<db_name>"
  * @returns true if connected successfully, otherwise false
  */
-export async function connectToDatabase(dburi: string|{host: string, user: string, password: string, port: number}): Promise<boolean> {
+export async function connectToDatabase(dburi: string | { host: string, user: string, password: string, port: number }): Promise<boolean> {
     try {
         client = new Client(dburi);
         await client.connect();
@@ -67,11 +67,8 @@ export async function closeDatabaseConnection(): Promise<boolean> {
  * @returns Array of rows returned by the query or an empty array if no rows are returned or an error occurs
  * @returns null if the query is not supported
  */
-export async function executeQuery(query: Query): Promise<any[]|null> {
+export async function executeQuery(query: Query): Promise<any[] | null> {
     try {
-        logger.debug("EXECUTING QUERY :", query.text);
-        logger.debug("WITH VALUES     :", query.values);
-
         const res = await client.query(query);
         return res.rows || [];
     } catch (err) {
