@@ -32,7 +32,11 @@ connectToDatabase(config.db_uri);
 
 /* Routes */
 app.use(express.json());
+
+app.get('/', (_req, res) => { res.status(200).send('HEALTH CHECK') });
+
 app.use("/handshake", handshakeRoutes);
+
 app.use(cors(config.corsOptions), authHandler);
 
 app.use('/operations', cors(config.corsOptions), operationRoutes);
