@@ -9,6 +9,7 @@ import { authHandler } from './middlewares/authHandler';
 import handshakeRoutes from './routes/handshakeRoutes';
 import cors from 'cors';
 import { ENABLE_ENV } from './config/enableenv';
+import { defaultRouteHandler } from './middlewares/defaultRouteHandler';
 
 
 
@@ -36,6 +37,7 @@ app.use(cors(config.corsOptions), authHandler);
 
 app.use('/operations', cors(config.corsOptions), operationRoutes);
 
+app.use(defaultRouteHandler);
 app.use(errorHandler);
 
 

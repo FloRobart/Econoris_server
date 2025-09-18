@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import * as logger from '../utils/logger';
 import config from '../config/config';
 import http from 'node:http';
+import { AppError } from '../models/ErrorModel';
+
 
 
 /**
@@ -16,21 +18,21 @@ export const authHandler = async (req: Request, res: Response, next: NextFunctio
 
     if (!req.headers['authorization']) {
         logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-        res.status(401).json({ error: 'Unauthorized' });
+        next(new AppError('Unauthorized', 401));
         return;
     }
 
     const authorization = req.headers['authorization'];
     if (!authorization || authorization.split(' ').length !== 2) {
         logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-        res.status(401).json({ error: 'Unauthorized' });
+        next(new AppError('Unauthorized', 401));
         return;
     }
 
     const [schema, token] = authorization.split(' ');
     if (!token || schema !== "Bearer") {
         logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-        res.status(401).json({ error: 'Unauthorized' });
+        next(new AppError('Unauthorized', 401));
         return;
     }
 
@@ -47,17 +49,17 @@ export const authHandler = async (req: Request, res: Response, next: NextFunctio
                     next();
                 } else {
                     logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-                    res.status(401).json({ error: 'Unauthorized' });
+                    next(new AppError('Unauthorized', 401));
                     return;
                 }
-            } catch (error) {
-                logger.error('Error parsing user data', { error });
-                res.status(401).json({ error: 'Unauthorized' });
+            } catch (err) {
+                logger.error('Error parsing user data', { err });
+                next(new AppError('Unauthorized', 401));
                 return;
             }
         });
     }).on('error', (err) => {
         logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-        res.status(401).json({ error: 'Unauthorized' });
+        next(new AppError('Unauthorized', 401));
     });
 };

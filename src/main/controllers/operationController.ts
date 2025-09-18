@@ -1,13 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { QueryTable } from '../utils/types';
 import { JsonHttpResponse, createJsonResponse } from '../models/JsonHttpResponse';
 import * as OperationsDao from '../database/operationsDao';
 import { User } from '../models/UserModels';
 import { Operations } from '../models/OperationsModel';
-
-
-
-const table: QueryTable = "operations";
+import * as logger from '../utils/logger';
+import { AppError } from '../models/ErrorModel';
 
 
 
@@ -25,11 +22,13 @@ export const getOperations = async (req: Request, res: Response, next: NextFunct
             const jsonResponse: JsonHttpResponse = createJsonResponse(operations);
 
             res.status(operations.length > 0 ? 200 : 204).json(jsonResponse);
-        }).catch((error) => {
-            next(error);
+        }).catch((err) => {
+            logger.error(err);
+            next(new AppError());
         });
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        logger.error(err);
+        next(new AppError());
     }
 }
 
@@ -45,11 +44,13 @@ export const getOperationsById = async (req: Request, res: Response, next: NextF
             const jsonResponse: JsonHttpResponse = createJsonResponse(operations);
 
             res.status(operations.length > 0 ? 200 : 204).json(jsonResponse);
-        }).catch((error) => {
-            next(error);
+        }).catch((err) => {
+            logger.error(err);
+            next(new AppError());
         });
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        logger.error(err);
+        next(new AppError());
     }
 }
 
@@ -74,11 +75,13 @@ export const postOperations = async (req: Request, res: Response, next: NextFunc
             const jsonResponse: JsonHttpResponse = createJsonResponse(insertedOperation !== null ? [insertedOperation] : [], [], insertedOperation === null ? ["Failed inserting operation into database"] : []);
 
             res.status(insertedOperation !== null ? 200 : 500).json(jsonResponse);
-        }).catch((error) => {
-            next(error);
+        }).catch((err) => {
+            logger.error(err);
+            next(new AppError());
         });
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        logger.error(err);
+        next(new AppError());
     }
 }
 
@@ -103,11 +106,13 @@ export const putOperations = async (req: Request, res: Response, next: NextFunct
             const jsonResponse: JsonHttpResponse = createJsonResponse(updatedOperation !== null ? [updatedOperation] : [], [], updatedOperation === null ? ["Failed updating operation in database"] : []);
 
             res.status(updatedOperation !== null ? 200 : 500).json(jsonResponse);
-        }).catch((error) => {
-            next(error);
+        }).catch((err) => {
+            logger.error(err);
+            next(new AppError());
         });
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        logger.error(err);
+        next(new AppError());
     }
 }
 
@@ -126,10 +131,12 @@ export const deleteOperationsById = async (req: Request, res: Response, next: Ne
             const jsonResponse: JsonHttpResponse = createJsonResponse([], [], success ? [] : ["Failed deleting operation from database"]);
 
             res.status(success ? 200 : 400).json(jsonResponse);
-        }).catch((error) => {
-            next(error);
+        }).catch((err) => {
+            logger.error(err);
+            next(new AppError());
         });
-    } catch (error) {
-        next(error);
+    } catch (err) {
+        logger.error(err);
+        next(new AppError());
     }
 }
