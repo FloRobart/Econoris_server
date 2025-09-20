@@ -3,6 +3,7 @@ import config from '../config/config';
 import * as logger from '../utils/logger';
 import http from 'node:http';
 import { createHash } from 'node:crypto';
+import { AppError } from '../models/ErrorModel';
 
 
 
@@ -15,7 +16,7 @@ import { createHash } from 'node:crypto';
 export const handshake = async (req: Request, res: Response, next: NextFunction) => {
     try {
         if (!req.query['params'] || !req.headers['authorization']) {
-            res.status(400).send();
+            next(new AppError('Bad Request', 400));
             return;
         }
 
@@ -23,17 +24,17 @@ export const handshake = async (req: Request, res: Response, next: NextFunction)
         const authorizationToken = req.headers['authorization'].split(' ')[1];
 
         if (authorizationToken !== config.handshake_static_token) {
-            res.status(401).send();
+            next(new AppError('Unauthorized', 401));
             return;
         }
 
         if (params.length !== 3) {
-            res.status(400).send();
+            next(new AppError('Bad Request', 400));
             return;
         }
 
         if (params[0] !== config.app_name) {
-            res.status(400).send();
+            next(new AppError('Bad Request', 400));
             return;
         }
 
@@ -55,6 +56,6 @@ export const handshake = async (req: Request, res: Response, next: NextFunction)
         });
     } catch (error) {
         logger.error('Error during handshake :', error);
-        next(error);
+        next(new AppError('Internal Server Error', 500));
     }
 }
