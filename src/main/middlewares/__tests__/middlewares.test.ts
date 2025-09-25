@@ -1,6 +1,6 @@
-import { defaultRouteHandler } from '../../src/main/middlewares/defaultRouteHandler';
-import { errorHandler } from '../../src/main/middlewares/errorHandler';
-import { AppError, internalMessage } from '../../src/main/models/ErrorModel';
+import { defaultRouteHandler } from '../defaultRouteHandler';
+import { errorHandler } from '../errorHandler';
+import { AppError, internalMessage } from '../../models/ErrorModel';
 
 describe('middlewares', () => {
     test('defaultRouteHandler calls next with AppError', () => {

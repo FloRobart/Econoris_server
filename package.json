@@ -7,8 +7,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/main/server.ts",
-    "test": "jest src/tests --detectOpenHandles",
-    "test:watch": "jest src/tests --detectOpenHandles --watch",
+    "test": "jest --runInBand",
+
     "db-start": "docker build -t econoris-db-image ./Database --build-arg postgres && docker run --name econoris-db-container -p 18200:5432 -e POSTGRES_PASSWORD=postgres -d econoris-db-image",
     "db-stop": "docker container stop econoris-db-container && docker container rm econoris-db-container && docker image rm econoris-db-image",
     "db-logs": "docker logs econoris-db-container",

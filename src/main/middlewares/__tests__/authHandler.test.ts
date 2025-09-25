@@ -1,4 +1,4 @@
-import { authHandler } from '../../src/main/middlewares/authHandler';
+import { authHandler } from '../authHandler';
 import http from 'node:http';
 import { Request, Response, NextFunction } from 'express';
 

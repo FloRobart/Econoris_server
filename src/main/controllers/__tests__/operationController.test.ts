@@ -1,5 +1,5 @@
-import * as controller from '../../src/main/controllers/operationController';
-import * as OperationsDao from '../../src/main/database/operationsDao';
+import * as controller from '../operationController';
+import * as OperationsDao from '../../database/operationsDao';
 import { Request, Response, NextFunction } from 'express';
 
 describe('operationController', () => {

@@ -1,13 +1,13 @@
 // Ensure config app_env is set to desired levels before importing
-import config from '../main/config/config';
-import { ENABLE_ENV } from '../main/config/enableenv';
+import config from '../../config/config';
+import { ENABLE_ENV } from '../../config/enableenv';
 
-jest.mock('../main/email/errorEmail', () => ({
+jest.mock('../../email/errorEmail', () => ({
   sendErrorEmail: jest.fn(async () => Promise.resolve())
 }));
 
-import * as logger from '../main/utils/logger';
-import { sendErrorEmail } from '../main/email/errorEmail';
+import * as logger from '../logger';
+import { sendErrorEmail } from '../../email/errorEmail';
 
 describe('logger', () => {
   let origEnv: string;

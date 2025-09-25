@@ -1,5 +1,5 @@
-import { normalizePort, normalyzeKey, clone } from '../../src/main/utils/utils';
-import * as logger from '../../src/main/utils/logger';
+import { normalizePort, normalyzeKey, clone } from '../utils';
+import * as logger from '../logger';
 
 describe('utils', () => {
     beforeEach(() => {
