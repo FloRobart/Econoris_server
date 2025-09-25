@@ -23,5 +23,9 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
 
+# Ajout d'un utilisateur non-root avec UID/GID fixes
+RUN addgroup -g 1800 -S econorisgroup && adduser -u 1800 -S econorisuser -G econorisgroup
+USER econorisuser
+
 # Par défaut : lance le serveur
 CMD ["node", "dist/server.js"]
