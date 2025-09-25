@@ -16,6 +16,11 @@ interface Config {
 
     readonly db_uri: string;
 
+    /* Email */
+    readonly mail_service: string;
+    readonly mail_username: string;
+    readonly mail_password: string;
+
     private_token?: string; // FlorAccess private token
     private_timestamp?: number; // FlorAccess private timestamp
     readonly handshake_static_token?: string;
@@ -45,6 +50,11 @@ const config: Config = {
     admin_email: process.env.ADMIN_EMAIL || '',
 
     db_uri: `${process.env.DB_SCHEME}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.DB_NAME}`,
+
+    /* Email */
+    mail_service: process.env.MAIL_SERVICE || 'gmail',
+    mail_username: process.env.MAIL_USERNAME || '',
+    mail_password: process.env.MAIL_PASSWORD || '',
 
     handshake_static_token: process.env.HANDSHAKE_STATIC_TOKEN || '',
     auth_app_handshake_url: process.env.AUTH_APP_HANDSHAKE_URL || '',
