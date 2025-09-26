@@ -2,11 +2,11 @@
   "name": "econoris",
   "version": "2.0.0",
   "description": "Éconoris est une application web de gestion de finances personnelles.",
-  "main": "src/main/server.ts",
+  "main": "src/server.ts",
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/main/server.ts",
+    "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server.ts",
     "test": "jest --runInBand",
 
     "db-start": "docker build -t econoris-db-image ./Database --build-arg postgres && docker run --name econoris-db-container -p 18200:5432 -e POSTGRES_PASSWORD=postgres -d econoris-db-image",
