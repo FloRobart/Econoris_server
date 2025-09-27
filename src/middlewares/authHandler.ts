@@ -36,6 +36,18 @@ export const authHandler = async (req: Request, res: Response, next: NextFunctio
         return;
     }
 
+    verifToken(req, next, token, 2);
+};
+
+
+/**
+ * Verify token with auth app
+ * @param req Request
+ * @param next NextFunction
+ * @param token Token to verify
+ * @param maxRetry Maximum number of retries if auth app responds with error
+ */
+function verifToken(req: Request, next: NextFunction, token: string, maxRetry: number) {
     http.get(`${config.auth_app_url}/jwt/user?jwt=${token}`, {
         headers: {
             'Authorization': `${config.app_name} ${config.private_token}`
@@ -48,18 +60,22 @@ export const authHandler = async (req: Request, res: Response, next: NextFunctio
                     req.body.user = user;
                     next();
                 } else {
-                    logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-                    next(new AppError('Unauthorized', 401));
-                    return;
+                    if (maxRetry > 1) {
+                        setTimeout(() => {
+                            verifToken(req, next, token, maxRetry - 1);
+                        }, 3000);
+                        return;
+                    } else {
+                        next(new AppError('Unauthorized', 401));
+                        return;
+                    }
                 }
             } catch (err) {
-                logger.error('Error parsing user data', { err });
                 next(new AppError('Unauthorized', 401));
                 return;
             }
         });
     }).on('error', (err) => {
-        logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
         next(new AppError('Unauthorized', 401));
     });
-};
+}
