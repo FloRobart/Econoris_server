@@ -61,16 +61,39 @@ describe('authHandler', () => {
         fakeResponse._read = () => {};
         fakeResponse.statusCode = 401;
 
+        // Mock http.get to return 401 on first call and 200 on retry
+        let callCount = 0;
         jest.spyOn(http, 'get').mockImplementation((url: any, opts: any, cb: any) => {
-            cb(fakeResponse);
-            process.nextTick(() => {
-                fakeResponse.emit('data', Buffer.from('notjson'));
-            });
+            callCount += 1;
+            const resp = new (require('stream').Readable)();
+            resp._read = () => {};
+            if (callCount === 1) {
+                resp.statusCode = 401;
+                cb(resp);
+                process.nextTick(() => {
+                    resp.emit('data', Buffer.from('notjson'));
+                });
+            } else {
+                resp.statusCode = 200;
+                cb(resp);
+                process.nextTick(() => {
+                    resp.emit('data', Buffer.from(JSON.stringify({ userid: 1 })));
+                });
+            }
             return { on: () => {} } as any;
         });
 
+        // mock setTimeout to call the retry immediately to avoid dealing with fake timers
+        const setTimeoutSpy = jest.spyOn(global, 'setTimeout').mockImplementation((fn: Function, _ms?: number, ..._args: any[]) => {
+            fn();
+            return 0 as any;
+        });
+
         await authHandler(req as Request, res as Response, next);
+        // allow pending microtasks to run
         await new Promise((r) => setImmediate(r));
         expect(next).toHaveBeenCalled();
+
+        setTimeoutSpy.mockRestore();
     });
 });
