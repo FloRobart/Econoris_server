@@ -2,7 +2,7 @@ module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
     collectCoverage: false,
-    collectCoverageFrom: ['src/main/utils/**/*.ts', 'src/main/controllers/**/*.ts', 'src/main/middlewares/**/*.ts'],
+    collectCoverageFrom: ['src/utils/**/*.ts', 'src/controllers/**/*.ts', 'src/middlewares/**/*.ts'],
     coverageDirectory: 'coverage',
     coverageThreshold: {
         './src/**/*.ts': {

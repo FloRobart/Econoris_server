@@ -13,7 +13,7 @@ describe('middlewares', () => {
     });
 
     test('errorHandler logs and returns json with internalMessage', () => {
-        const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
+        const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
         const err = new AppError('Boom', 418, 2);
         const res: any = { status: jest.fn().mockReturnThis(), json: jest.fn() };
         errorHandler(err as any, {} as any, res, jest.fn());

@@ -5,7 +5,7 @@ WORKDIR /app
 # Copier le code source
 COPY tsconfig.json ./
 COPY package*.json ./
-COPY ./src/main ./src/main
+COPY ./src ./src
 
 # Installer les dépendances
 RUN npm ci
