@@ -14,6 +14,8 @@ import { AppError } from '../models/ErrorModel';
  * @returns void
  */
 export const authHandler = async (req: Request, res: Response, next: NextFunction) => {
+    logger.info(`Incoming request`, { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+
     if (req.url === '/api-docs' || req.url === '/api-docs.json') { next(); return; }
 
     if (!req.headers['authorization']) {
