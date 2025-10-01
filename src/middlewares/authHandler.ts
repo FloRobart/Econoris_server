@@ -19,21 +19,21 @@ export const authHandler = async (req: Request, res: Response, next: NextFunctio
     if (req.url === '/api-docs' || req.url === '/api-docs.json') { next(); return; }
 
     if (!req.headers['authorization']) {
-        logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+        logger.warning('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
         next(new AppError('Unauthorized', 401));
         return;
     }
 
     const authorization = req.headers['authorization'];
     if (!authorization || authorization.split(' ').length !== 2) {
-        logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+        logger.warning('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
         next(new AppError('Unauthorized', 401));
         return;
     }
 
     const [schema, token] = authorization.split(' ');
     if (!token || schema !== "Bearer") {
-        logger.error('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+        logger.warning('Unauthorized access attempt', { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
         next(new AppError('Unauthorized', 401));
         return;
     }
