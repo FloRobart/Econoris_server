@@ -10,6 +10,7 @@ import handshakeRoutes from './routes/handshakeRoutes';
 import cors from 'cors';
 import { ENABLE_ENV } from './config/enableenv';
 import { defaultRouteHandler } from './middlewares/defaultRouteHandler';
+import path from 'node:path';
 
 
 
@@ -35,6 +36,9 @@ app.use(cors(config.corsOptions));
 app.use(express.json());
 
 app.get('/', (_req, res) => { res.status(200).send('HEALTH CHECK') });
+app.get("/favicon.ico", (_req, res) => {
+    res.sendFile(path.join(__dirname, "../public/favicon.ico"));
+});
 
 app.use("/handshake", handshakeRoutes);
 
