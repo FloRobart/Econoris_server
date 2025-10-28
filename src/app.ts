@@ -52,6 +52,12 @@ const app = express();
         app.set('trust proxy', true);
     }
 
+    /* Logger */
+    app.use(async (req: Request, _res: Response, next: NextFunction) => {
+        logger.info(`Incoming request`, { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+        next();
+    });
+
     /* Rate Limiter */
     app.use(limiter);
 
@@ -65,13 +71,6 @@ const app = express();
     app.get("/favicon.ico", (_req, res) => {
         res.sendFile(path.join(__dirname, "../public/favicon.ico"));
     });
-
-    /* Logger */
-    app.use(async (req: Request, _res: Response, next: NextFunction) => {
-        logger.info(`Incoming request`, { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-        next();
-    });
-
 
     /* Swagger - only in development */
     if (AppConfig.app_env.includes('dev')) {
