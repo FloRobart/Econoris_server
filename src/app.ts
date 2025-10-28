@@ -13,7 +13,8 @@ import helmet from 'helmet';
 import { helmetOptions } from './core/middlewares/helmet_http_headers.middleware';
 import operationsRoutes from './modules/operations/operations.routes';
 import { authorizationValidator } from './core/middlewares/validators/auth_validator.middleware';
-import { AuthorizationHeaderSchema } from './modules/auth/auth.schema';
+import loansRoutes from './modules/loans/loans.routes';
+import subscriptionsRoutes from './modules/subscriptions/subscriptions.routes';
 
 
 
@@ -126,13 +127,13 @@ const app = express();
     app.use('/operations', operationsRoutes);
 
     /* subscriptions routes */
-    // app.use('/subscriptions', subscriptionsRoutes);
+    app.use('/subscriptions', subscriptionsRoutes);
 
     /* work hours routes */
     // app.use('/work-hours', work_hoursRoutes);
 
     /* loans routes */
-    // app.use('/loans', loansRoutes);
+    app.use('/loans', loansRoutes);
 
 
     /* Default Route Handler (404) */

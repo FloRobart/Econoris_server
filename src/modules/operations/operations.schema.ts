@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, ZodDate, ZodNumber } from "zod";
 
 
 
@@ -7,21 +7,21 @@ import { z } from "zod";
 /*========*/
 export const OperationsSchema = z.object({
     id: z.int().min(1),
-    levy_date: z.date(),
+    levy_date: z.date().default(new Date()),
     label: z.string().trim().min(1).max(255),
     amount: z.number(),
     category: z.string().trim().min(1).max(255),
 
-    source: z.string().trim().max(255).nullable(),
-    destination: z.string().trim().max(255).nullable(),
-    costs: z.number(),
-    validated: z.boolean(),
+    source: z.string().trim().max(255).nullable().default(null),
+    destination: z.string().trim().max(255).nullable().default(null),
+    costs: z.number().default(0.0),
+    validated: z.boolean().default(false),
 
     user_id: z.int().min(1),
-    subscription_id: z.int().min(1).nullable(),
+    subscription_id: z.int().min(1).nullable().default(null),
 
-    created_at: z.date(),
-    updated_at: z.date(),
+    created_at: z.date().readonly(),
+    updated_at: z.date().readonly(),
 });
 
 
@@ -31,11 +31,10 @@ export const OperationsSchema = z.object({
 /*========*/
 export const OperationsInsertSchema = OperationsSchema.extend({
     user_id: OperationsSchema.shape.user_id.optional(),
-    levy_date: z.string().min(1).refine((val) => {
-        return !isNaN(Date.parse(val));
-    }).transform((val) => {
-        return new Date(val);
-    }),
+    levy_date: z.preprocess<unknown, ZodDate>(
+        (val) => typeof val === "string" ? new Date(val) : val,
+        z.date(),
+    ),
 }).omit({
     id: true,
 
@@ -51,13 +50,10 @@ export const OperationsInsertSchema = OperationsSchema.extend({
 /* UPDATE */
 /*========*/
 export const OperationsIdUpdateSchema = z.object({
-    id: z.string()
-        .trim()
-        .regex(/^[0-9]+$/)
-        .refine((val) => {
-            const n = Number(val);
-            return Number.isInteger(n) && n > 0;
-        }),
+    id: z.preprocess<unknown, ZodNumber>(
+        (val) => typeof val === "string" ? Number(val.trim()) : val,
+        z.int().min(1),
+    ),
 });
 
 export const OperationsUpdateSchema = OperationsInsertSchema.extend({

@@ -78,10 +78,6 @@
  *         - label
  *         - amount
  *         - category
- *         - source
- *         - destination
- *         - costs
- *         - validated
  *       properties:
  *         levy_date:
  *           type: string

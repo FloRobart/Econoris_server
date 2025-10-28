@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z, ZodDate, ZodNumber } from "zod";
 
 
 
@@ -7,17 +7,17 @@ import { z } from "zod";
 /*========*/
 export const LoansSchema = z.object({
     id: z.int().min(1),
-    loan_date: z.date(),
+    loan_date: z.date().default(new Date()),
     amount: z.number(),
-    refunded_amount: z.number().min(0),
+    refunded_amount: z.number().min(0).default(0.0),
 
     borrower: z.string().trim().min(1).max(255),
     reason: z.string().trim().min(1).max(255),
 
     user_id: z.int().min(1),
 
-    created_at: z.date(),
-    updated_at: z.date(),
+    created_at: z.date().readonly(),
+    updated_at: z.date().readonly(),
 });
 
 
@@ -27,11 +27,10 @@ export const LoansSchema = z.object({
 /*========*/
 export const LoansInsertSchema = LoansSchema.extend({
     user_id: LoansSchema.shape.user_id.optional(),
-    loan_date: z.string().min(1).refine((val) => {
-        return !isNaN(Date.parse(val));
-    }).transform((val) => {
-        return new Date(val);
-    }),
+    loan_date: z.preprocess<unknown, ZodDate>(
+        (val) => typeof val === "string" ? new Date(val) : val,
+        z.date(),
+    ),
 }).omit({
     id: true,
 
@@ -45,13 +44,10 @@ export const LoansInsertSchema = LoansSchema.extend({
 /* UPDATE */
 /*========*/
 export const LoansIdUpdateSchema = z.object({
-    id: z.string()
-        .trim()
-        .regex(/^[0-9]+$/)
-        .refine((val) => {
-            const n = Number(val);
-            return Number.isInteger(n) && n > 0;
-        }),
+    id: z.preprocess<unknown, ZodNumber>(
+        (val) => typeof val === "string" ? Number(val.trim()) : val,
+        z.int().min(1),
+    ),
 });
 
 export const LoansUpdateSchema = LoansInsertSchema.extend({
