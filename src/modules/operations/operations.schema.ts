@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 
 
@@ -31,6 +31,11 @@ export const OperationsSchema = z.object({
 /*========*/
 export const OperationsInsertSchema = OperationsSchema.extend({
     user_id: OperationsSchema.shape.user_id.optional(),
+    levy_date: z.string().min(1).refine((val) => {
+        return !isNaN(Date.parse(val));
+    }).transform((val) => {
+        return new Date(val);
+    }),
 }).omit({
     id: true,
 
@@ -55,7 +60,9 @@ export const OperationsIdUpdateSchema = z.object({
         }),
 });
 
-export const OperationsUpdateSchema = OperationsInsertSchema;
+export const OperationsUpdateSchema = OperationsInsertSchema.extend({
+    id: OperationsSchema.shape.id,
+});
 
 
 

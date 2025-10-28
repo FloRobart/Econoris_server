@@ -12,7 +12,7 @@ import { AppError } from "../../models/AppError.model";
  */
 export const paramsQueryValidator = (schema: ZodType) => (req: Request, _res: Response, next: NextFunction) => {
     try {
-        req.body = { ...req.body, validated: { ...req.body.validated, params: schema.parse({ ...req.params, ...req.query }) } };
+        req.body = { ...req.body, validatedData: { ...req.body.validatedData, params: schema.parse({ ...req.params, ...req.query }) } };
         next();
     } catch (error) {
         next(new AppError("Invalid request data", 400));
