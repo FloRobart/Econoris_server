@@ -1,7 +1,6 @@
 import { AppError } from "../../core/models/AppError.model";
 import { Database } from "../../core/models/Database.model";
 import { Operation, OperationInsert, OperationUpdate } from "./operations.types";
-import * as logger from '../../core/utils/logger';
 
 
 

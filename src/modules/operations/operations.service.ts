@@ -1,9 +1,9 @@
 import { Operation, OperationInsert, OperationUpdate } from './operations.types';
 import * as OperationsRepository from './operations.repository';
 import { OperationsSchema } from './operations.schema';
-import * as logger from '../../core/utils/logger';
 import { ZodError } from 'zod';
 import { AppError } from '../../core/models/AppError.model';
+
 
 
 /*========*/
