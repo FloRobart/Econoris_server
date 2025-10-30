@@ -20,6 +20,7 @@ export const SubscriptionsSchema = z.object({
     start_date: z.date(),
     end_date: z.date().nullable().default(null),
     day_of_month: z.int().min(0).max(31).nullable().default(1),
+    last_generated_at: z.date().nullable().default(null),
 
     user_id: z.int().min(1),
 

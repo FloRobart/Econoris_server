@@ -25,6 +25,7 @@ CREATE TABLE subscriptions (
     start_date DATE NOT NULL,
     end_date DATE,
     day_of_month INTEGER DEFAULT 1,
+    last_generated_at DATE DEFAULT NULL,
 
     user_id INTEGER NOT NULL,
 

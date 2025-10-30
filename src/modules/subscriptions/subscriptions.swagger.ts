@@ -21,6 +21,7 @@
  *         - start_date
  *         - end_date
  *         - day_of_month
+ *         - last_generated_at
  *         - user_id
  *         - created_at
  *         - updated_at
@@ -65,6 +66,9 @@
  *         day_of_month:
  *           type: number
  *           exemple: 15
+ *         last_generated_at:
+ *           type: string
+ *           exemple: "2024-01-01T00:00:00.000Z"
  *         user_id:
  *           type: number
  *           exemple: 1
