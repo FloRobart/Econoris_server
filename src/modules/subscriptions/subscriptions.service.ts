@@ -1,6 +1,6 @@
 import { Subscription, SubscriptionInsert, SubscriptionUpdate } from './subscriptions.types';
 import * as SubscriptionsRepository from './subscriptions.repository';
-import { SubscriptionsSchema } from './subscriptions.schema';
+import { SubscriptionsSchema, SubscriptionsUpdateSchema } from './subscriptions.schema';
 import { ZodError } from 'zod';
 import { AppError } from '../../core/models/AppError.model';
 import { insertMissingOperations } from '../operations/operations.service';
@@ -66,10 +66,10 @@ export async function selectAllSubscriptionsEnded(): Promise<Subscription[]> {
 export async function insertSubscriptions(subscriptionData: SubscriptionInsert): Promise<Subscription> {
     try {
         const subscriptions = await SubscriptionsRepository.insertSubscriptions(subscriptionData);
-        const validatedSubscriptions = SubscriptionsSchema.parse(subscriptions);
-        await insertMissingOperations(validatedSubscriptions);
+        const parsedSubscriptions = SubscriptionsSchema.parse(subscriptions);
+        await insertMissingOperations(parsedSubscriptions);
 
-        return validatedSubscriptions;
+        return parsedSubscriptions;
     } catch (error) {
         throw (error instanceof ZodError) ? new AppError("Failed to parse subscription (subscription inserted successfully)", 500) : error;
     }
@@ -109,13 +109,30 @@ export async function updateSubscriptionsLastGeneratedAt(subscriptionId: number,
 
 /**
  * Update the last_generated_at field of a subscription.
- * @param subscriptionId ID of the subscription to update.
- * @param lastGeneratedAt The new last_generated_at value.
+ * @param subscriptions Array of subscriptions to update.
+ * @param active The new active status.
  * @throws AppError if there is an issue updating the field.
  */
 export async function updateBulkSubscriptionsActive(subscriptions: SubscriptionUpdate[], active: boolean): Promise<void> {
+    let parsedSubscriptions: SubscriptionUpdate[];
     try {
-        await SubscriptionsRepository.updateBulkSubscriptionsActive(subscriptions, active);
+        parsedSubscriptions = SubscriptionsUpdateSchema.array().parse(subscriptions);
+    } catch (error) {
+        throw new AppError("Failed to parse subscriptions", 500);
+    }
+
+    try {
+        const chunkSize = 500;
+        if (parsedSubscriptions.length > chunkSize) {
+            const chunks: SubscriptionUpdate[][] = [];
+            for (let i = 0; i < parsedSubscriptions.length; i += chunkSize) {
+                chunks.push(parsedSubscriptions.slice(i, i + chunkSize));
+            }
+            await Promise.all(chunks.map((chunk: SubscriptionUpdate[]) => SubscriptionsRepository.updateBulkSubscriptionsActive(chunk, active)));
+            return;
+        }
+
+        await SubscriptionsRepository.updateBulkSubscriptionsActive(parsedSubscriptions, active);
     } catch (error) {
         throw (error instanceof AppError) ? error : new AppError("Failed to update bulk subscriptions active status", 500);
     }

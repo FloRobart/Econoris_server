@@ -94,8 +94,9 @@ export async function insertBulkOperations(operationsData: OperationInsert[]): P
  * @throws AppError if there is an issue generating the operations.
  */
 export async function insertMissingOperations(subscription: Subscription): Promise<void> {
+    let parsedSubscription: Subscription;
     try {
-        subscription = SubscriptionsSchema.parse(subscription);
+        parsedSubscription = SubscriptionsSchema.parse(subscription);
     } catch (error) {
         throw new AppError("Failed to parse subscription", 500);
     }
@@ -103,33 +104,33 @@ export async function insertMissingOperations(subscription: Subscription): Promi
     try {
         const operationsToInsert: OperationInsert[] = [];
 
-        let currentDate: Date = subscription.last_generated_at ?? subscription.start_date;
+        let currentDate: Date = parsedSubscription.last_generated_at ?? parsedSubscription.start_date;
         const now: Date = new Date();
 
         const endOfCurrentMonth: Date = endOfMonth(now);
 
         while (true) {
-            let nextDate = getNextDate(currentDate, subscription.interval_unit, subscription.interval_value);
+            let nextDate = getNextDate(currentDate, parsedSubscription.interval_unit, parsedSubscription.interval_value);
 
-            if (subscription.interval_unit === 'months' && subscription.day_of_month) {
-                nextDate.setDate(subscription.day_of_month);
+            if (parsedSubscription.interval_unit === 'months' && parsedSubscription.day_of_month) {
+                nextDate.setDate(parsedSubscription.day_of_month);
             }
 
-            if (subscription.end_date && isAfter(nextDate, subscription.end_date)) break;
+            if (parsedSubscription.end_date && isAfter(nextDate, parsedSubscription.end_date)) break;
             if (isAfter(nextDate, endOfCurrentMonth)) break;
 
             let is_validate = nextDate <= now;
             operationsToInsert.push({
                 levy_date: nextDate,
-                label: subscription.label,
-                amount: subscription.amount,
-                category: subscription.category,
-                source: subscription.source,
-                destination: subscription.destination,
-                costs: subscription.costs,
+                label: parsedSubscription.label,
+                amount: parsedSubscription.amount,
+                category: parsedSubscription.category,
+                source: parsedSubscription.source,
+                destination: parsedSubscription.destination,
+                costs: parsedSubscription.costs,
                 is_validate,
-                subscription_id: subscription.id,
-                user_id: subscription.user_id,
+                subscription_id: parsedSubscription.id,
+                user_id: parsedSubscription.user_id,
             });
 
             currentDate = nextDate;
@@ -137,7 +138,7 @@ export async function insertMissingOperations(subscription: Subscription): Promi
 
         if (operationsToInsert.length > 0) {
             await insertBulkOperations(operationsToInsert);
-            await updateSubscriptionsLastGeneratedAt(subscription.id, currentDate);
+            await updateSubscriptionsLastGeneratedAt(parsedSubscription.id, currentDate);
         }
     } catch (error) {
         throw (error instanceof AppError) ? error : new AppError("Failed to generate missing operations", 500);
@@ -171,6 +172,17 @@ export async function updateOperations(operationData: OperationUpdate): Promise<
 export async function updateBulkOperationsValidate(operations: OperationUpdate[], isValidate: boolean): Promise<void> {
     try {
         const parsedOperations = OperationsUpdateSchema.array().parse(operations);
+
+        const chunkSize = 500;
+        if (parsedOperations.length > chunkSize) {
+            const chunks: OperationUpdate[][] = [];
+            for (let i = 0; i < parsedOperations.length; i += chunkSize) {
+                chunks.push(parsedOperations.slice(i, i + chunkSize));
+            }
+            await Promise.all(chunks.map((chunk: OperationUpdate[]) => OperationsRepository.updateBulkOperationsValidate(chunk, isValidate)));
+            return;
+        }
+
         await OperationsRepository.updateBulkOperationsValidate(parsedOperations, isValidate);
     } catch (error) {
         throw (error instanceof AppError) ? error : new AppError("Failed to update operations validate status", 500);
