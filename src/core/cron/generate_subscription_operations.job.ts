@@ -1,5 +1,5 @@
-import { selectSubscriptionsActive } from '../../modules/subscriptions/subscriptions.service';
-import { generateMissingOperations } from '../../modules/operations/operations.service';
+import { selectAllSubscriptionsActive } from '../../modules/subscriptions/subscriptions.service';
+import { insertMissingOperations } from '../../modules/operations/operations.service';
 import { AppError } from '../models/AppError.model';
 
 
@@ -10,9 +10,9 @@ import { AppError } from '../models/AppError.model';
  */
 export async function generateSubscriptionOperationsJob(): Promise<void> {
     try {
-        const subscriptions = await selectSubscriptionsActive();
+        const subscriptions = await selectAllSubscriptionsActive();
         for (const subscription of subscriptions) {
-            await generateMissingOperations(subscription);
+            await insertMissingOperations(subscription);
         }
     } catch (error) {
         throw (error instanceof AppError) ? error : new AppError("Failed to generate subscription operations", 500);

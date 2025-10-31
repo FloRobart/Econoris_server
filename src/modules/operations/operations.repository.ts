@@ -32,6 +32,29 @@ export async function selectOperations(userId: number): Promise<Operation[]> {
     }
 }
 
+/**
+ * Get all invalid operations.
+ * @returns An array of Operation objects.
+ * @throws AppError if there is an issue retrieving the operations.
+ */
+export async function selectAllOperationsInvalidate(): Promise<Operation[]> {
+    try {
+        const query = "SELECT * FROM operations WHERE is_validate = false AND levy_date <= CURRENT_DATE;";
+
+        const operations = await Database.execute<Operation>({ text: query, values: [] });
+
+        /* Automatic conversion of amount and costs fields to Number */
+        operations.forEach(op => {
+            if (typeof op.amount === 'string') op.amount = Number(op.amount);
+            if (typeof op.costs === 'string') op.costs = Number(op.costs);
+        });
+
+        return operations;
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to retrieve invalid operations", 500);
+    }
+}
+
 
 /*========*/
 /* INSERT */
@@ -99,16 +122,6 @@ export async function insertBulkOperations(operations: OperationInsert[]): Promi
 /* UPDATE */
 /*========*/
 /**
-    } catch (error) {
-        throw (error instanceof AppError) ? error : new AppError("Failed to insert bulk operations", 500);
-    }
-}
-
-
-/*========*/
-/* UPDATE */
-/*========*/
-/**
  * Update an existing operation for a user.
  * @param operationData The operation data to update.
  * @returns The updated Operation object.
@@ -143,6 +156,29 @@ export async function updateOperations(operationData: OperationUpdate): Promise<
         return result;
     } catch (error) {
         throw (error instanceof AppError) ? error : new AppError("Failed to update operations", 500);
+    }
+}
+
+/**
+ * Update multiple operations validate status in bulk.
+ * @param operations The array of operation data to update.
+ * @param isValidate The validate status to set.
+ * @throws AppError if there is an issue updating the operations.
+ */
+export async function updateBulkOperationsValidate(operations: OperationUpdate[], isValidate: boolean): Promise<void> {
+    try {
+        const query = "UPDATE operations SET is_validate = $1 WHERE ";
+        const values: any[] = [isValidate];
+
+        const conditions = operations.map<string>((operation, _index) => {
+            values.push(operation.id, operation.user_id);
+            return `(id = $${values.length - 1} AND user_id = $${values.length})`;
+        }).join(" OR ");
+
+        const finalQuery = query + conditions + ";";
+        await Database.execute({ text: finalQuery, values });
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to update operations validate status", 500);
     }
 }
 

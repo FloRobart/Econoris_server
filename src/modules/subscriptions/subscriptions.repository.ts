@@ -37,9 +37,9 @@ export async function selectSubscriptions(userId: number): Promise<Subscription[
  * @returns Subscription[] An array of active Subscription objects.
  * @throws AppError if there is an issue retrieving the active subscriptions.
  */
-export async function selectSubscriptionsActive(): Promise<Subscription[]> {
+export async function selectAllSubscriptionsActive(): Promise<Subscription[]> {
     try {
-        const query = "SELECT * FROM subscriptions WHERE active = TRUE AND start_date <= CURRENT_DATE AND (end_date IS NULL OR end_date >= CURRENT_DATE)";
+        const query = "SELECT * FROM subscriptions WHERE active = true AND start_date <= CURRENT_DATE AND (end_date IS NULL OR end_date >= CURRENT_DATE)";
 
         const subscriptions = await Database.execute<Subscription>({ text: query, values: [] });
 

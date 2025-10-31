@@ -6,6 +6,7 @@ import AppConfig from './config/AppConfig';
 import * as logger from './core/utils/logger';
 import cron from 'node-cron';
 import { generateSubscriptionOperationsJob } from './core/cron/generate_subscription_operations.job';
+import { validateOperationsJob } from './core/cron/validate_operations.job';
 
 
 
@@ -31,6 +32,10 @@ import { generateSubscriptionOperationsJob } from './core/cron/generate_subscrip
             logger.info("Starting subscription operations generation job");
             await generateSubscriptionOperationsJob();
             logger.success("Subscription operations generation job completed");
+
+            logger.info("Starting operations validation job");
+            await validateOperationsJob();
+            logger.success("Operations validation job completed");
         } catch (error) {
             logger.error(error);
         }

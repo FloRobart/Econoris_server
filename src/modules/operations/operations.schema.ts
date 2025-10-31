@@ -15,7 +15,7 @@ export const OperationsSchema = z.object({
     source: z.string().trim().max(255).nullable().default(null),
     destination: z.string().trim().max(255).nullable().default(null),
     costs: z.number().default(0.0),
-    validated: z.boolean().default(false),
+    is_validate: z.boolean().default(false),
 
     user_id: z.int().min(1),
     subscription_id: z.int().min(1).nullable().default(null),

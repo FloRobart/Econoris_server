@@ -3,7 +3,7 @@ import * as SubscriptionsRepository from './subscriptions.repository';
 import { SubscriptionsSchema } from './subscriptions.schema';
 import { ZodError } from 'zod';
 import { AppError } from '../../core/models/AppError.model';
-import { generateMissingOperations } from '../operations/operations.service';
+import { insertMissingOperations } from '../operations/operations.service';
 
 
 
@@ -30,9 +30,9 @@ export async function selectSubscriptions(userId: number): Promise<Subscription[
  * @returns Subscription[] An array of active Subscription objects.
  * @throws AppError if there is an issue retrieving the active subscriptions.
  */
-export async function selectSubscriptionsActive(): Promise<Subscription[]> {
+export async function selectAllSubscriptionsActive(): Promise<Subscription[]> {
     try {
-        const subscriptions = await SubscriptionsRepository.selectSubscriptionsActive();
+        const subscriptions = await SubscriptionsRepository.selectAllSubscriptionsActive();
         return SubscriptionsSchema.array().parse(subscriptions);
     } catch (error) {
         throw (error instanceof ZodError) ? new AppError("Failed to parse active subscriptions", 500) : error;
@@ -53,7 +53,7 @@ export async function insertSubscriptions(subscriptionData: SubscriptionInsert):
     try {
         const subscriptions = await SubscriptionsRepository.insertSubscriptions(subscriptionData);
         const validatedSubscriptions = SubscriptionsSchema.parse(subscriptions);
-        await generateMissingOperations(validatedSubscriptions);
+        await insertMissingOperations(validatedSubscriptions);
 
         return validatedSubscriptions;
     } catch (error) {
@@ -76,6 +76,20 @@ export async function updateSubscriptions(subscriptionData: SubscriptionUpdate):
         return SubscriptionsSchema.parse(subscriptions);
     } catch (error) {
         throw (error instanceof ZodError) ? new AppError("Failed to parse subscription (subscription updated successfully)", 500) : error;
+    }
+}
+
+/**
+ * Update the last_generated_at field of a subscription.
+ * @param subscriptionId ID of the subscription to update.
+ * @param lastGeneratedAt The new last_generated_at value.
+ * @throws AppError if there is an issue updating the field.
+ */
+export async function updateSubscriptionsLastGeneratedAt(subscriptionId: number, lastGeneratedAt: Date): Promise<void> {
+    try {
+        await SubscriptionsRepository.updateSubscriptionsLastGeneratedAt(subscriptionId, lastGeneratedAt);
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to update last_generated_at", 500);
     }
 }
 

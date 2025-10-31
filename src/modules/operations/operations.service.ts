@@ -1,7 +1,7 @@
 import { Operation, OperationInsert, OperationUpdate } from './operations.types';
 import * as OperationsRepository from './operations.repository';
-import { updateSubscriptionsLastGeneratedAt } from '../subscriptions/subscriptions.repository';
-import { OperationsInsertSchema, OperationsSchema } from './operations.schema';
+import { updateSubscriptionsLastGeneratedAt } from '../subscriptions/subscriptions.service';
+import { OperationsInsertSchema, OperationsSchema, OperationsUpdateSchema } from './operations.schema';
 import { ZodError } from 'zod';
 import { AppError } from '../../core/models/AppError.model';
 import { addDays, addWeeks, addMonths, isAfter, endOfMonth } from 'date-fns';
@@ -22,6 +22,20 @@ import { SubscriptionsSchema } from '../subscriptions/subscriptions.schema';
 export async function selectOperations(userId: number): Promise<Operation[]> {
     try {
         const operations = await OperationsRepository.selectOperations(userId);
+        return OperationsSchema.array().parse(operations);
+    } catch (error) {
+        throw (error instanceof ZodError) ? new AppError("Failed to parse operations", 500) : error;
+    }
+}
+
+/**
+ * Get all invalid operations.
+ * @returns An array of Operation objects.
+ * @throws AppError if there is an issue retrieving the operations.
+ */
+export async function selectAllOperationsInvalidate(): Promise<Operation[]> {
+    try {
+        const operations = await OperationsRepository.selectAllOperationsInvalidate();
         return OperationsSchema.array().parse(operations);
     } catch (error) {
         throw (error instanceof ZodError) ? new AppError("Failed to parse operations", 500) : error;
@@ -79,7 +93,7 @@ export async function insertBulkOperations(operationsData: OperationInsert[]): P
  * @param subscription The subscription object.
  * @throws AppError if there is an issue generating the operations.
  */
-export async function generateMissingOperations(subscription: Subscription): Promise<void> {
+export async function insertMissingOperations(subscription: Subscription): Promise<void> {
     try {
         subscription = SubscriptionsSchema.parse(subscription);
     } catch (error) {
@@ -104,7 +118,7 @@ export async function generateMissingOperations(subscription: Subscription): Pro
             if (subscription.end_date && isAfter(nextDate, subscription.end_date)) break;
             if (isAfter(nextDate, endOfCurrentMonth)) break;
 
-            let validated = nextDate <= now;
+            let is_validate = nextDate <= now;
             operationsToInsert.push({
                 levy_date: nextDate,
                 label: subscription.label,
@@ -113,7 +127,7 @@ export async function generateMissingOperations(subscription: Subscription): Pro
                 source: subscription.source,
                 destination: subscription.destination,
                 costs: subscription.costs,
-                validated,
+                is_validate,
                 subscription_id: subscription.id,
                 user_id: subscription.user_id,
             });
@@ -148,6 +162,21 @@ export async function updateOperations(operationData: OperationUpdate): Promise<
     }
 }
 
+/**
+ * Update multiple operations validate status in bulk.
+ * @param operations The array of operation data to update.
+ * @param isValidate The validate status to set.
+ * @throws AppError if there is an issue updating the operations.
+ */
+export async function updateBulkOperationsValidate(operations: OperationUpdate[], isValidate: boolean): Promise<void> {
+    try {
+        const parsedOperations = OperationsUpdateSchema.array().parse(operations);
+        await OperationsRepository.updateBulkOperationsValidate(parsedOperations, isValidate);
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to update operations validate status", 500);
+    }
+}
+
 
 /*========*/
 /* DELETE */
@@ -169,8 +198,9 @@ export async function deleteOperations(userId: number, operationId: number): Pro
 }
 
 
-
-
+/*===========*/
+/* UTILITIES */
+/*===========*/
 /**
  * Get the next date based on the current date, interval unit, and value.
  * @param current Current date
@@ -180,14 +210,14 @@ export async function deleteOperations(userId: number, operationId: number): Pro
  * @throws AppError if the interval unit is unsupported
  */
 function getNextDate(current: Date, unit: string, value: number): Date {
-  switch (unit) {
-    case 'days':
-      return addDays(current, value);
-    case 'weeks':
-      return addWeeks(current, value);
-    case 'months':
-      return addMonths(current, value);
-    default:
-      throw new AppError(`Unsupported interval unit : ${unit}`, 400);
-  }
+    switch (unit) {
+        case 'days':
+            return addDays(current, value);
+        case 'weeks':
+            return addWeeks(current, value);
+        case 'months':
+            return addMonths(current, value);
+        default:
+            throw new AppError(`Unsupported interval unit : ${unit}`, 400);
+    }
 }
