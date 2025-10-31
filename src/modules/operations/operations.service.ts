@@ -1,10 +1,10 @@
 import { Operation, OperationInsert, OperationUpdate } from './operations.types';
 import * as OperationsRepository from './operations.repository';
-import { updateSubscriptionsLastGeneratedAt } from '../subscriptions/subscriptions.service';
 import { OperationsInsertSchema, OperationsSchema, OperationsUpdateSchema } from './operations.schema';
 import { ZodError } from 'zod';
 import { AppError } from '../../core/models/AppError.model';
 import { addDays, addWeeks, addMonths, isAfter, endOfMonth } from 'date-fns';
+import { updateSubscriptionsLastGeneratedAt } from '../subscriptions/subscriptions.service';
 import { Subscription } from '../subscriptions/subscriptions.types';
 import { SubscriptionsSchema } from '../subscriptions/subscriptions.schema';
 
