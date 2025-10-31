@@ -65,6 +65,45 @@ export async function insertOperations(operationData: OperationInsert): Promise<
     }
 }
 
+/**
+ * Insert multiple operations for a user in bulk.
+ * @param operations The array of operation data to insert.
+ * @returns void
+ * @throws AppError if there is an issue inserting the operations.
+ */
+export async function insertBulkOperations(operations: OperationInsert[]): Promise<void> {
+    if (operations.length === 0) return;
+
+    try {
+        const keys = Object.keys(operations[0]);
+        const columns = keys.join(", ");
+        let query = `INSERT INTO operations (${columns}) VALUES `;
+        const values: any[] = [];
+
+        let valueIndex = 1;
+        for (const operation of operations) {
+            const placeholders = keys.map((_, i) => `$${valueIndex++}`).join(", ");
+            query += `(${placeholders}), `;
+            values.push(...keys.map(key => (operation as any)[key]));
+        }
+
+        query = query.slice(0, -2) + ";";
+        await Database.execute({ text: query, values });
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to insert bulk operations", 500);
+    }
+}
+
+
+/*========*/
+/* UPDATE */
+/*========*/
+/**
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to insert bulk operations", 500);
+    }
+}
+
 
 /*========*/
 /* UPDATE */

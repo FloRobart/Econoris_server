@@ -3,6 +3,7 @@ import * as SubscriptionsRepository from './subscriptions.repository';
 import { SubscriptionsSchema } from './subscriptions.schema';
 import { ZodError } from 'zod';
 import { AppError } from '../../core/models/AppError.model';
+import { generateMissingOperations } from '../operations/operations.service';
 
 
 
@@ -20,7 +21,21 @@ export async function selectSubscriptions(userId: number): Promise<Subscription[
         const subscriptions = await SubscriptionsRepository.selectSubscriptions(userId);
         return SubscriptionsSchema.array().parse(subscriptions);
     } catch (error) {
-        throw error;
+        throw (error instanceof ZodError) ? new AppError("Failed to parse subscriptions", 500) : error;
+    }
+}
+
+/**
+ * Get all active and started and not yet ended subscriptions.
+ * @returns Subscription[] An array of active Subscription objects.
+ * @throws AppError if there is an issue retrieving the active subscriptions.
+ */
+export async function selectSubscriptionsActive(): Promise<Subscription[]> {
+    try {
+        const subscriptions = await SubscriptionsRepository.selectSubscriptionsActive();
+        return SubscriptionsSchema.array().parse(subscriptions);
+    } catch (error) {
+        throw (error instanceof ZodError) ? new AppError("Failed to parse active subscriptions", 500) : error;
     }
 }
 
@@ -37,7 +52,10 @@ export async function selectSubscriptions(userId: number): Promise<Subscription[
 export async function insertSubscriptions(subscriptionData: SubscriptionInsert): Promise<Subscription> {
     try {
         const subscriptions = await SubscriptionsRepository.insertSubscriptions(subscriptionData);
-        return SubscriptionsSchema.parse(subscriptions);
+        const validatedSubscriptions = SubscriptionsSchema.parse(subscriptions);
+        await generateMissingOperations(validatedSubscriptions);
+
+        return validatedSubscriptions;
     } catch (error) {
         throw (error instanceof ZodError) ? new AppError("Failed to parse subscription (subscription inserted successfully)", 500) : error;
     }

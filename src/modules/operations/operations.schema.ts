@@ -38,8 +38,6 @@ export const OperationsInsertSchema = OperationsSchema.extend({
 }).omit({
     id: true,
 
-    subscription_id: true,
-
     created_at: true,
     updated_at: true,
 });
