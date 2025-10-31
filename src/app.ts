@@ -52,6 +52,29 @@ app.get("/favicon.ico", (_req, res) => {
     res.sendFile(path.join(__dirname, "../public/favicon.ico"));
 });
 
+/* Logger */
+app.use(async (req: Request, _res: Response, next: NextFunction) => {
+    logger.info(`Incoming request`, { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+    next();
+});
+
+
+/* Authentication Middleware */
+app.use(authorizationValidator);
+
+/* Operations routes */
+app.use('/operations', operationsRoutes);
+
+/* subscriptions routes */
+app.use('/subscriptions', subscriptionsRoutes);
+
+/* work hours routes */
+// app.use('/work-hours', work_hoursRoutes);
+
+/* loans routes */
+app.use('/loans', loansRoutes);
+
+
 /* Swagger - only in development */
 if (AppConfig.app_env.includes('dev')) {
     /* Swagger setup */
@@ -97,22 +120,6 @@ if (AppConfig.app_env.includes('dev')) {
         logger.error("Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
     }
 }
-
-
-/* Authentication Middleware */
-app.use(authorizationValidator);
-
-/* Operations routes */
-app.use('/operations', operationsRoutes);
-
-/* subscriptions routes */
-app.use('/subscriptions', subscriptionsRoutes);
-
-/* work hours routes */
-// app.use('/work-hours', work_hoursRoutes);
-
-/* loans routes */
-app.use('/loans', loansRoutes);
 
 
 /* Default Route Handler (404) */

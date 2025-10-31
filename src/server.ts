@@ -27,23 +27,25 @@ import { disableEndedSubscriptionsJob } from './core/cron/disabled_ended_subscri
     /*=================*/
     /* Cron Jobs Setup */
     /*=================*/
-    cron.schedule('0 3 * * *', async () => {
-        try {
-            logger.info("Starting subscription operations generation job");
-            await generateSubscriptionOperationsJob();
-            logger.success("Subscription operations generation job completed");
+    if (AppConfig.app_env.includes('prod')) {
+        cron.schedule('0 3 * * *', async () => {
+            try {
+                logger.info("Starting subscription operations generation job");
+                await generateSubscriptionOperationsJob();
+                logger.success("Subscription operations generation job completed");
 
-            logger.info("Starting operations validation job");
-            await validateOperationsJob();
-            logger.success("Operations validation job completed");
+                logger.info("Starting operations validation job");
+                await validateOperationsJob();
+                logger.success("Operations validation job completed");
 
-            logger.info("Starting disable ended subscriptions job");
-            await disableEndedSubscriptionsJob();
-            logger.success("Disable ended subscriptions job completed");
-        } catch (error) {
-            logger.error(error);
-        }
-    });
+                logger.info("Starting disable ended subscriptions job");
+                await disableEndedSubscriptionsJob();
+                logger.success("Disable ended subscriptions job completed");
+            } catch (error) {
+                logger.error(error);
+            }
+        });
+    }
 
 
     /*==================*/
