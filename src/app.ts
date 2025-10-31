@@ -1,16 +1,19 @@
 import express from 'express';
-import operationRoutes from './routes/operationRoutes';
-import { errorHandler } from './middlewares/errorHandler';
-import { connectToDatabase } from './database/database';
-import * as logger from './utils/logger';
+import { Request, Response, NextFunction } from 'express';
+import { errorHandler } from './core/middlewares/error.middleware';
+import * as logger from './core/utils/logger';
 import fs from 'node:fs';
-import config from './config/config';
-import { authHandler } from './middlewares/authHandler';
-import handshakeRoutes from './routes/handshakeRoutes';
+import AppConfig from './config/AppConfig';
+import { limiter } from './core/middlewares/rate_limiter.middleware';
 import cors from 'cors';
-import { ENABLE_ENV } from './config/enableenv';
-import { defaultRouteHandler } from './middlewares/defaultRouteHandler';
+import { defaultRouteHandler } from './core/middlewares/default_route.middleware';
 import path from 'node:path';
+import helmet from 'helmet';
+import { helmetOptions } from './core/middlewares/helmet_http_headers.middleware';
+import operationsRoutes from './modules/operations/operations.routes';
+import { authorizationValidator } from './core/middlewares/validators/auth_validator.middleware';
+import loansRoutes from './modules/loans/loans.routes';
+import subscriptionsRoutes from './modules/subscriptions/subscriptions.routes';
 
 
 
@@ -18,71 +21,70 @@ const app = express();
 
 
 
-/* Configuration */
-app.locals.title = config.app_name;
-app.locals.strftime = require('strftime').localizeByIdentifier(config.app_local);
-app.locals.lang = config.app_local;
-app.locals.email = config.admin_email;
+/* Cross Origin Resource Sharing (CORS) */
+app.use(cors(AppConfig.corsOptions));
 
+/* Security headers (Helmet) */
+app.use(helmet(helmetOptions));
 
+/* Trust proxy in production */
+if (AppConfig.app_env.includes('prod')) {
+    app.set('trust proxy', true);
+}
 
-/* Database */
-connectToDatabase(config.db_uri);
+/* Logger */
+app.use(async (req: Request, _res: Response, next: NextFunction) => {
+    logger.info(`Incoming request`, { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
+    next();
+});
 
+/* Rate Limiter */
+app.use(limiter);
 
-
-/* Routes */
-app.use(cors(config.corsOptions));
+/* Body parser */
 app.use(express.json());
 
+/* Health Check */
 app.get('/', (_req, res) => { res.status(200).send('HEALTH CHECK') });
+
+/* Favicon */
 app.get("/favicon.ico", (_req, res) => {
     res.sendFile(path.join(__dirname, "../public/favicon.ico"));
 });
 
-app.use("/handshake", handshakeRoutes);
-
-app.use(authHandler);
-
-app.use('/operations', operationRoutes);
-
-app.use(defaultRouteHandler);
-app.use(errorHandler);
-
-
-
 /* Swagger - only in development */
-if (ENABLE_ENV[config.app_env] === 5) {
+if (AppConfig.app_env.includes('dev')) {
     /* Swagger setup */
-    const SWAGGER_JSON_PATH = `${__dirname}/swagger/swagger.json`;
+    const SWAGGER_JSON_PATH = `${__dirname}/swagger/json/swagger.json`;
     const swaggerUi = require('swagger-ui-express');
     const swaggerJsDoc = require('swagger-jsdoc');
     const swaggerOptions = {
         swaggerDefinition: {
             openapi: '3.0.0',
             info: {
-                title: `${config.app_name} API`,
+                title: `${AppConfig.app_name} API`,
                 version: '2.0.0',
                 description: 'API documentation',
             },
             servers: [
                 {
-                    url: config.base_url,
+                    url: AppConfig.base_url,
                 },
             ],
         },
-        apis: [`${__dirname}/routes/*.ts`, `${__dirname}/swagger/*.ts`, `${__dirname}/routes/*.js`, `${__dirname}/swagger/*.js`], // files containing annotations as above
+        apis: [`${__dirname}/modules/**/*.ts`, `${__dirname}/swagger/**/*.ts`, `${__dirname}/modules/**/*.js`, `${__dirname}/swagger/**/*.js`],
     };
 
     const swaggerDocs = swaggerJsDoc(swaggerOptions);
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-    app.get('/api-docs.json', (req, res) => {
+    app.get('/api-docs.json', (_req, res) => {
         if (!app.locals.swaggerJsonFileCreated) {
-            res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + config.base_url + "/api-docs" });
+            res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + AppConfig.base_url + "/api-docs" });
             return;
         }
         return res.download(SWAGGER_JSON_PATH)
-    })
+    });
+
 
     /* Create swagger json file */
     try {
@@ -95,6 +97,29 @@ if (ENABLE_ENV[config.app_env] === 5) {
         logger.error("Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
     }
 }
+
+
+/* Authentication Middleware */
+app.use(authorizationValidator);
+
+/* Operations routes */
+app.use('/operations', operationsRoutes);
+
+/* subscriptions routes */
+app.use('/subscriptions', subscriptionsRoutes);
+
+/* work hours routes */
+// app.use('/work-hours', work_hoursRoutes);
+
+/* loans routes */
+app.use('/loans', loansRoutes);
+
+
+/* Default Route Handler (404) */
+app.use(defaultRouteHandler);
+
+/* Error Handler */
+app.use(errorHandler);
 
 
 
