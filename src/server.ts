@@ -7,6 +7,7 @@ import * as logger from './core/utils/logger';
 import cron from 'node-cron';
 import { generateSubscriptionOperationsJob } from './core/cron/generate_subscription_operations.job';
 import { validateOperationsJob } from './core/cron/validate_operations.job';
+import { disableEndedSubscriptionsJob } from './core/cron/disabled_ended_subscriptions.job';
 
 
 
@@ -36,6 +37,10 @@ import { validateOperationsJob } from './core/cron/validate_operations.job';
             logger.info("Starting operations validation job");
             await validateOperationsJob();
             logger.success("Operations validation job completed");
+
+            logger.info("Starting disable ended subscriptions job");
+            await disableEndedSubscriptionsJob();
+            logger.success("Disable ended subscriptions job completed");
         } catch (error) {
             logger.error(error);
         }

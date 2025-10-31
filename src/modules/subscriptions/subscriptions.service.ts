@@ -39,6 +39,20 @@ export async function selectAllSubscriptionsActive(): Promise<Subscription[]> {
     }
 }
 
+/**
+ * Get all ended subscriptions.
+ * @returns Subscription[] An array of ended Subscription objects.
+ * @throws AppError if there is an issue retrieving the ended subscriptions.
+ */
+export async function selectAllSubscriptionsEnded(): Promise<Subscription[]> {
+    try {
+        const subscriptions = await SubscriptionsRepository.selectAllSubscriptionsEnded();
+        return SubscriptionsSchema.array().parse(subscriptions);
+    } catch (error) {
+        throw (error instanceof ZodError) ? new AppError("Failed to parse ended subscriptions", 500) : error;
+    }
+}
+
 
 /*========*/
 /* INSERT */
@@ -90,6 +104,20 @@ export async function updateSubscriptionsLastGeneratedAt(subscriptionId: number,
         await SubscriptionsRepository.updateSubscriptionsLastGeneratedAt(subscriptionId, lastGeneratedAt);
     } catch (error) {
         throw (error instanceof AppError) ? error : new AppError("Failed to update last_generated_at", 500);
+    }
+}
+
+/**
+ * Update the last_generated_at field of a subscription.
+ * @param subscriptionId ID of the subscription to update.
+ * @param lastGeneratedAt The new last_generated_at value.
+ * @throws AppError if there is an issue updating the field.
+ */
+export async function updateBulkSubscriptionsActive(subscriptions: SubscriptionUpdate[], active: boolean): Promise<void> {
+    try {
+        await SubscriptionsRepository.updateBulkSubscriptionsActive(subscriptions, active);
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to update bulk subscriptions active status", 500);
     }
 }
 
