@@ -17,7 +17,7 @@ CREATE TABLE operations (
     source VARCHAR(255),
     destination VARCHAR(255),
     costs NUMERIC(12, 2) DEFAULT 0.0,
-    validated BOOLEAN DEFAULT FALSE,
+    is_validate BOOLEAN DEFAULT FALSE,
 
     user_id INTEGER NOT NULL,
     subscription_id INTEGER DEFAULT NULL,

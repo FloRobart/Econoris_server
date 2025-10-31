@@ -32,6 +32,52 @@ export async function selectSubscriptions(userId: number): Promise<Subscription[
     }
 }
 
+/**
+ * Get all active and started and not yet ended subscriptions.
+ * @returns Subscription[] An array of active Subscription objects.
+ * @throws AppError if there is an issue retrieving the active subscriptions.
+ */
+export async function selectAllSubscriptionsActive(): Promise<Subscription[]> {
+    try {
+        const query = "SELECT * FROM subscriptions WHERE active = true AND start_date <= CURRENT_DATE AND (end_date IS NULL OR end_date >= CURRENT_DATE)";
+
+        const subscriptions = await Database.execute<Subscription>({ text: query, values: [] });
+
+        /* Automatic conversion of amount and costs fields to Number */
+        subscriptions.forEach(sub => {
+            if (typeof sub.amount === 'string') sub.amount = Number(sub.amount);
+            if (typeof sub.costs === 'string') sub.costs = Number(sub.costs);
+        });
+
+        return subscriptions;
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to retrieve active subscriptions", 500);
+    }
+}
+
+/**
+ * Get all ended subscriptions.
+ * @returns Subscription[] An array of ended Subscription objects.
+ * @throws AppError if there is an issue retrieving the ended subscriptions.
+ */
+export async function selectAllSubscriptionsEnded(): Promise<Subscription[]> {
+    try {
+        const query = "SELECT * FROM subscriptions WHERE end_date IS NOT NULL AND end_date < CURRENT_DATE";
+
+        const subscriptions = await Database.execute<Subscription>({ text: query, values: [] });
+
+        /* Automatic conversion of amount and costs fields to Number */
+        subscriptions.forEach(sub => {
+            if (typeof sub.amount === 'string') sub.amount = Number(sub.amount);
+            if (typeof sub.costs === 'string') sub.costs = Number(sub.costs);
+        });
+
+        return subscriptions;
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to retrieve ended subscriptions", 500);
+    }
+}
+
 
 /*========*/
 /* INSERT */
@@ -104,6 +150,46 @@ export async function updateSubscriptions(subscriptionData: SubscriptionUpdate):
         return result;
     } catch (error) {
         throw (error instanceof AppError) ? error : new AppError("Failed to update subscriptions", 500);
+    }
+}
+
+/**
+ * Update the last_generated_at field of a subscription.
+ * @param subscriptionId ID of the subscription to update.
+ * @param lastGeneratedAt The new last_generated_at value.
+ * @throws AppError if there is an issue updating the field.
+ */
+export async function updateSubscriptionsLastGeneratedAt(subscriptionId: number, lastGeneratedAt: Date): Promise<void> {
+    try {
+        await Database.execute<void>({
+            text: `UPDATE subscriptions SET last_generated_at = $1 WHERE id = $2;`,
+            values: [lastGeneratedAt.toISOString(), subscriptionId]
+        });
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to update last_generated_at", 500);
+    }
+}
+
+/**
+ * Update the last_generated_at field of a subscription.
+ * @param subscriptionId ID of the subscription to update.
+ * @param lastGeneratedAt The new last_generated_at value.
+ * @throws AppError if there is an issue updating the field.
+ */
+export async function updateBulkSubscriptionsActive(subscriptions: SubscriptionUpdate[], active: boolean): Promise<void> {
+    try {
+        const query = "UPDATE subscriptions SET active = $1 WHERE ";
+        const values: any[] = [active];
+
+        const conditions = subscriptions.map<string>((subscription, _index) => {
+            values.push(subscription.id, subscription.user_id);
+            return `(id = $${values.length - 1} AND user_id = $${values.length})`;
+        }).join(" OR ");
+
+        const finalQuery = query + conditions + ";";
+        await Database.execute({ text: finalQuery, values });
+    } catch (error) {
+        throw (error instanceof AppError) ? error : new AppError("Failed to update bulk subscriptions active status", 500);
     }
 }
 

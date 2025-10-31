@@ -16,7 +16,7 @@
  *         - source
  *         - destination
  *         - costs
- *         - validated
+ *         - is_validate
  *         - user_id
  *         - subscription_id
  *         - created_at
@@ -46,7 +46,7 @@
  *         costs:
  *           type: number
  *           exemple: 2.50
- *         validated:
+ *         is_validate:
  *           type: boolean
  *           exemple: true
  *         user_id:
@@ -100,7 +100,7 @@
  *         costs:
  *           type: number
  *           exemple: 2.50
- *         validated:
+ *         is_validate:
  *           type: boolean
  *           exemple: true
  */
@@ -123,7 +123,7 @@
  *         - source
  *         - destination
  *         - costs
- *         - validated
+ *         - is_validate
  *       properties:
  *         levy_date:
  *           type: string
@@ -146,7 +146,7 @@
  *         costs:
  *           type: number
  *           exemple: 2.50
- *         validated:
+ *         is_validate:
  *           type: boolean
  *           exemple: true
  */
