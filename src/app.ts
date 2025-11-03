@@ -59,22 +59,6 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
 });
 
 
-/* Authentication Middleware */
-app.use(authorizationValidator);
-
-/* Operations routes */
-app.use('/operations', operationsRoutes);
-
-/* subscriptions routes */
-app.use('/subscriptions', subscriptionsRoutes);
-
-/* work hours routes */
-// app.use('/work-hours', work_hoursRoutes);
-
-/* loans routes */
-app.use('/loans', loansRoutes);
-
-
 /* Swagger - only in development */
 if (AppConfig.app_env.includes('dev')) {
     /* Swagger setup */
@@ -120,6 +104,22 @@ if (AppConfig.app_env.includes('dev')) {
         logger.error("Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
     }
 }
+
+
+/* Authentication Middleware */
+app.use(authorizationValidator);
+
+/* Operations routes */
+app.use('/operations', operationsRoutes);
+
+/* subscriptions routes */
+app.use('/subscriptions', subscriptionsRoutes);
+
+/* work hours routes */
+// app.use('/work-hours', work_hoursRoutes);
+
+/* loans routes */
+app.use('/loans', loansRoutes);
 
 
 /* Default Route Handler (404) */
