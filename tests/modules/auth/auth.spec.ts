@@ -58,10 +58,10 @@ const BaseUserSafeSchema: UserSafe = {
     auth_methods_id: 1,
     is_connected: true,
     is_verified_email: true,
-    last_login: new Date(),
+    last_login: new Date().toISOString(),
 
-    created_at: new Date(),
-    updated_at: new Date(),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
 };
 
 const CorrectUserSafeSchema: UserSafe[] = [
@@ -125,22 +125,22 @@ const IncorrectUserSafeSchema: any[] = [
         is_verified_email: 0, // should be boolean
     },{
         ...BaseUserSafeSchema,
-        last_login: "not-a-date", // should be date
+        last_login: "", // should be non-empty string
     },{
         ...BaseUserSafeSchema,
-        last_login: 123456789, // should be date
+        last_login: 123456789, // should be string
     },{
         ...BaseUserSafeSchema,
-        created_at: "not-a-date", // should be date
+        created_at: "", // should be non-empty string
     },{
         ...BaseUserSafeSchema,
-        created_at: 123456789, // should be date
+        created_at: 123456789, // should be string
     },{
         ...BaseUserSafeSchema,
-        updated_at: "not-a-date", // should be date
+        updated_at: "", // should be non-empty string
     },{
         ...BaseUserSafeSchema,
-        updated_at: 123456789, // should be date
+        updated_at: 123456789, // should be string
     },
 ];
 

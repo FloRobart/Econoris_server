@@ -59,6 +59,52 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
 });
 
 
+/* Swagger - only in development */
+if (AppConfig.app_env.includes('dev')) {
+    const SWAGGER_JSON_PATH = `${__dirname}/swagger/json/swagger.json`;
+    try {
+        /* Swagger setup */
+        const swaggerUi = require('swagger-ui-express');
+        const swaggerJsDoc = require('swagger-jsdoc');
+        const swaggerOptions = {
+            swaggerDefinition: {
+                openapi: '3.0.0',
+                info: {
+                    title: `${AppConfig.app_name} API`,
+                    version: '2.0.0',
+                    description: 'API documentation',
+                },
+                servers: [
+                    {
+                        url: AppConfig.base_url,
+                    },
+                ],
+            },
+            apis: [`${__dirname}/modules/**/*.ts`, `${__dirname}/swagger/**/*.ts`, `${__dirname}/modules/**/*.js`, `${__dirname}/swagger/**/*.js`],
+        };
+
+        const swaggerDocs = swaggerJsDoc(swaggerOptions);
+        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+        app.get('/api-docs.json', (_req, res) => {
+            if (!app.locals.swaggerJsonFileCreated) {
+                res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + AppConfig.base_url + "/api-docs" });
+                return;
+            }
+            return res.download(SWAGGER_JSON_PATH)
+        });
+
+        /* Create swagger json file */
+        fs.writeFileSync(SWAGGER_JSON_PATH, Buffer.from(JSON.stringify(swaggerDocs), 'utf8'));
+        app.locals.swaggerJsonFileCreated = true;
+        logger.success("Swagger JSON file created at :", SWAGGER_JSON_PATH);
+    } catch (err) {
+        logger.error(err);
+        app.locals.swaggerJsonFileCreated = false;
+        logger.error("Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
+    }
+}
+
+
 /* Authentication Middleware */
 app.use(authorizationValidator);
 
@@ -73,53 +119,6 @@ app.use('/subscriptions', subscriptionsRoutes);
 
 /* loans routes */
 app.use('/loans', loansRoutes);
-
-
-/* Swagger - only in development */
-if (AppConfig.app_env.includes('dev')) {
-    /* Swagger setup */
-    const SWAGGER_JSON_PATH = `${__dirname}/swagger/json/swagger.json`;
-    const swaggerUi = require('swagger-ui-express');
-    const swaggerJsDoc = require('swagger-jsdoc');
-    const swaggerOptions = {
-        swaggerDefinition: {
-            openapi: '3.0.0',
-            info: {
-                title: `${AppConfig.app_name} API`,
-                version: '2.0.0',
-                description: 'API documentation',
-            },
-            servers: [
-                {
-                    url: AppConfig.base_url,
-                },
-            ],
-        },
-        apis: [`${__dirname}/modules/**/*.ts`, `${__dirname}/swagger/**/*.ts`, `${__dirname}/modules/**/*.js`, `${__dirname}/swagger/**/*.js`],
-    };
-
-    const swaggerDocs = swaggerJsDoc(swaggerOptions);
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-    app.get('/api-docs.json', (_req, res) => {
-        if (!app.locals.swaggerJsonFileCreated) {
-            res.status(500).json({ error: "The Swagger JSON file encountered a problem creating it. Please see : " + AppConfig.base_url + "/api-docs" });
-            return;
-        }
-        return res.download(SWAGGER_JSON_PATH)
-    });
-
-
-    /* Create swagger json file */
-    try {
-        fs.writeFileSync(SWAGGER_JSON_PATH, Buffer.from(JSON.stringify(swaggerDocs), 'utf8'));
-        app.locals.swaggerJsonFileCreated = true;
-        logger.success("Swagger JSON file created at :", SWAGGER_JSON_PATH);
-    } catch (err) {
-        logger.error(err);
-        app.locals.swaggerJsonFileCreated = false;
-        logger.error("Error creating swagger JSON file at :", SWAGGER_JSON_PATH);
-    }
-}
 
 
 /* Default Route Handler (404) */

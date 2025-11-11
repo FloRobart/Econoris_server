@@ -7,7 +7,7 @@ import z from "zod";
 /*=========*/
 /**
  * Schéma de validation pour l'en-tête 'Authorization' contenant un JWT.
- * Le format attendu est 'Bearer <token>'.
+ * Le format attendu est 'Bearer token'.
  */
 export const AuthorizationHeaderSchema = z.string().trim().regex(/^Bearer\s[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/);
 
@@ -39,8 +39,8 @@ export const UserSafeSchema = z.object({
     auth_methods_id: z.int().min(1),
     is_connected: z.boolean(),
     is_verified_email: z.boolean(),
-    last_login: z.date(),
+    last_login: z.string().nonempty(),
 
-    created_at: z.date(),
-    updated_at: z.date(),
+    created_at: z.string().nonempty(),
+    updated_at: z.string().nonempty(),
 });
