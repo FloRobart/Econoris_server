@@ -13,9 +13,9 @@ import { AppError } from '../models/AppError.model';
  */
 export const errorHandler = (
     error: AppError,
-    req: Request,
+    _req: Request,
     res: Response,
-    next: NextFunction
+    _next: NextFunction
 ) => {
     if (error.httpStatus >= 500) {
         logger.error(error.stack);
