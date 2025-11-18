@@ -39,7 +39,7 @@ export const UserSafeSchema = z.object({
     auth_methods_id: z.int().min(1),
     is_connected: z.boolean(),
     is_verified_email: z.boolean(),
-    last_login: z.string().nonempty(),
+    last_logout_at: z.string().nonempty(),
 
     created_at: z.string().nonempty(),
     updated_at: z.string().nonempty(),

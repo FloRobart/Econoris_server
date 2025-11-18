@@ -4,6 +4,7 @@ import { AuthorizationHeaderSchema, UserSafeSchema } from "../../../modules/auth
 import { UserSafe } from "../../../modules/auth/auth.types";
 import AppConfig from "../../../config/AppConfig";
 import axios from "axios";
+import { ZodError } from "zod";
 
 
 
@@ -35,12 +36,14 @@ async function getUserFromAPI(token: string): Promise<UserSafe> {
         const response = await axios.get(AppConfig.auth_app_url + "/users", {
             headers: { Authorization: `Bearer ${token}` }
         });
+
         if (response.status !== 200) {
             throw new AppError("Invalid user token", response.status);
         }
         return UserSafeSchema.parse(response.data);
     } catch (error: any) {
         if (error instanceof AppError) throw error;
+        if (error instanceof ZodError) { throw new AppError("Invalid user data format", 500); }
         const status = error?.response?.status || 500;
         throw new AppError("Error retrieving user information", status);
     }

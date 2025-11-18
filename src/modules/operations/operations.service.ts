@@ -109,6 +109,23 @@ export async function insertMissingOperations(subscription: Subscription): Promi
 
         const endOfCurrentMonth: Date = endOfMonth(now);
 
+        // Ajout de l'opération pour le mois de début si aucune opération n'a encore été générée
+        if (!parsedSubscription.last_generated_at) {
+            let is_validate = currentDate <= now;
+            operationsToInsert.push({
+                levy_date: currentDate,
+                label: parsedSubscription.label,
+                amount: parsedSubscription.amount,
+                category: parsedSubscription.category,
+                source: parsedSubscription.source,
+                destination: parsedSubscription.destination,
+                costs: parsedSubscription.costs,
+                is_validate,
+                subscription_id: parsedSubscription.id,
+                user_id: parsedSubscription.user_id,
+            });
+        }
+
         while (true) {
             let nextDate = getNextDate(currentDate, parsedSubscription.interval_unit, parsedSubscription.interval_value);
 
