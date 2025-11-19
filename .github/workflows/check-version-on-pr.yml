@@ -39,9 +39,10 @@ jobs:
             exit 0
           fi
           tag_version=${latest_tag#v}
-          if [ "$pkg_version" = "$tag_version" ]; then
-            echo "❌ La version du package.json ($pkg_version) n'a pas été modifiée depuis le dernier tag ($latest_tag). Veuillez incrémenter la version avant de merger."
+          compare=$(npx semver -r ">" "$pkg_version" "$tag_version")
+          if [ "$pkg_version" = "$tag_version" ] || [ "$compare" = "false" ]; then
+            echo "❌ La version du package.json ($pkg_version) doit être strictement supérieure au dernier tag ($latest_tag). Veuillez incrémenter la version avant de merger."
             exit 1
           else
-            echo "✅ La version du package.json ($pkg_version) est différente du dernier tag ($latest_tag)."
+            echo "✅ La version du package.json ($pkg_version) est supérieure au dernier tag ($latest_tag)."
           fi
