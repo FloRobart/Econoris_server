@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as OperationsController from "./operations.controller";
 import { bodyValidator } from "../../core/middlewares/validators/body_validator.middleware";
-import { OperationsIdDeleteSchema, OperationsIdUpdateSchema, OperationsInsertSchema } from "./operations.schema";
+import { OperationsIdDeleteSchema, OperationsIdUpdateSchema, OperationsInsertSchema, OperationsUpdateSchema } from "./operations.schema";
 import { paramsQueryValidator } from "../../core/middlewares/validators/params_query_validator.middleware";
 
 
@@ -164,7 +164,7 @@ router.post('/', bodyValidator(OperationsInsertSchema), OperationsController.ins
  *             schema:
  *               $ref: '#/components/schemas/error500'
  */
-router.put('/:id', paramsQueryValidator(OperationsIdUpdateSchema), bodyValidator(OperationsInsertSchema), OperationsController.updateOperations);
+router.put('/:id', paramsQueryValidator(OperationsIdUpdateSchema), bodyValidator(OperationsUpdateSchema), OperationsController.updateOperations);
 
 
 /*========*/
