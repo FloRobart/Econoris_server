@@ -42,5 +42,4 @@ export const UserSafeSchema = z.object({
     last_logout_at: z.string().nonempty(),
 
     created_at: z.string().nonempty(),
-    updated_at: z.string().nonempty(),
 });

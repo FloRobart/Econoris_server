@@ -61,7 +61,6 @@ const BaseUserSafeSchema: UserSafe = {
     last_logout_at: new Date().toISOString(),
 
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
 };
 
 const CorrectUserSafeSchema: UserSafe[] = [
@@ -135,12 +134,6 @@ const IncorrectUserSafeSchema: any[] = [
     },{
         ...BaseUserSafeSchema,
         created_at: 123456789, // should be string
-    },{
-        ...BaseUserSafeSchema,
-        updated_at: "", // should be non-empty string
-    },{
-        ...BaseUserSafeSchema,
-        updated_at: 123456789, // should be string
     },
 ];
 
