@@ -14,6 +14,7 @@ import operationsRoutes from './modules/operations/operations.routes';
 import { authorizationValidator } from './core/middlewares/validators/auth_validator.middleware';
 import loansRoutes from './modules/loans/loans.routes';
 import subscriptionsRoutes from './modules/subscriptions/subscriptions.routes';
+import morgan from 'morgan';
 
 
 
@@ -49,14 +50,25 @@ app.get('/', (_req, res) => { res.status(200).send('HEALTH CHECK') });
 
 /* Favicon */
 app.get("/favicon.ico", (_req, res) => {
-    res.sendFile(path.join(__dirname, "../public/favicon.ico"));
+    res.sendFile(path.join(process.cwd(), "public", "icons", "favicon.ico"));
 });
 
 /* Logger */
-app.use(async (req: Request, _res: Response, next: NextFunction) => {
-    logger.info(`Incoming request`, { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-    next();
+morgan.token("remote-user", (req: Request) => {
+    const defaultUser = "Unknown User";
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return defaultUser;
+    try {
+        const payloadBase64 = token.split(".")[1];
+        const payloadBuffer = Buffer.from(payloadBase64, "base64");
+        const payloadString = payloadBuffer.toString("utf-8");
+        const payload = JSON.parse(payloadString);
+        return payload?.email || defaultUser;
+    } catch (err) {
+        return defaultUser;
+    }
 });
+app.use(morgan(AppConfig.log_format));
 
 
 /* Swagger - only in development */
