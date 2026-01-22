@@ -63,9 +63,9 @@ if (AppConfig.app_env.includes('dev')) {
         swaggerDefinition: {
             openapi: '3.0.0',
             info: {
-                title: `Genesis-app`,
+                title: AppConfig.app_env,
                 version: packageJson.version,
-                description: 'Genesis-app documentation',
+                description: `${AppConfig.app_env} documentation`,
             },
         },
         apis: [`${__dirname}/modules/**/*.ts`, `${__dirname}/modules/**/*.js`],
