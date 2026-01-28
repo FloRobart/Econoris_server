@@ -1,7 +1,6 @@
 services:
   econoris-db:
     image: florobart/econoris-db:latest
-    image: econoris-db:latest
     restart: always
     environment:
       POSTGRES_DB: ${DB_NAME}
@@ -19,6 +18,7 @@ services:
 
   econoris-server:
     image: florobart/econoris-server:latest
+    working_dir: /app
     restart: always
     env_file: .env
     depends_on:
