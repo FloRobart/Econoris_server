@@ -29,7 +29,9 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
 
 # Ajout d'un utilisateur non-root avec UID/GID fixes
-RUN addgroup -g 1800 -S econorisgroup && adduser -u 1800 -S econorisuser -G econorisgroup
+# Utiliser les options longues pour éviter les ambiguïtés entre différentes variantes d'adduser/addgroup
+RUN addgroup --gid 1800 --system econorisgroup && \
+	adduser --uid 1800 --system --ingroup econorisgroup --disabled-password --gecos "" --no-create-home econorisuser
 USER econorisuser
 
 # Par défaut : lance le serveur

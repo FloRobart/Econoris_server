@@ -21,13 +21,8 @@ const router = Router();
  *       - Loans
  *     summary: Retrieve a list of loans of the authenticated user
  *     description: Retrieve a list of loans associated with the authenticated user.
- *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of loans
@@ -66,19 +61,14 @@ router.get('/', LoansController.selectLoans);
  *       - Loans
  *     summary: Create a new loan for the authenticated user
  *     description: Create a new loan associated with the authenticated user.
- *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
- *       - in: body
- *         name: loan
- *         required: true
- *         description: Loan object that needs to be added
- *         schema:
- *           $ref: '#/components/schemas/LoansInsert'
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoansInsert'
  *     responses:
  *       201:
  *         description: Created loan
@@ -119,25 +109,21 @@ router.post('/', bodyValidator(LoansInsertSchema), LoansController.insertLoans);
  *       - Loans
  *     summary: Update an existing loan for the authenticated user
  *     description: Update an existing loan associated with the authenticated user.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
  *           example: 1
- *       - in: body
- *         name: loan
- *         required: true
- *         description: Loan object that needs to be updated
- *         schema:
- *           $ref: '#/components/schemas/LoansUpdate'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoansUpdate'
  *     responses:
  *       200:
  *         description: Updated loan
@@ -178,13 +164,9 @@ router.put('/:id', paramsQueryValidator(LoansIdUpdateSchema), bodyValidator(Loan
  *       - Loans
  *     summary: Delete an existing loan for the authenticated user
  *     description: Delete an existing loan associated with the authenticated user.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
  *       - in: path
  *         name: id
  *         required: true

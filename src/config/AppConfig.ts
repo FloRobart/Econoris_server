@@ -13,6 +13,7 @@ interface AppConfigInterface {
     readonly host_name: string;
     readonly base_url: string;
     readonly app_env: string;
+    readonly log_format: string;
 
     /* Database */
     readonly db_uri: string;
@@ -46,6 +47,7 @@ const config: AppConfigInterface = {
     host_name: process.env.HOST_NAME || 'localhost',
     base_url: process.env.BASE_URL || 'http://localhost:80',
     app_env: process.env.APP_ENV?.toLowerCase() || 'dev',
+    log_format: process.env.LOG_FORMAT || 'combined',
 
     /* Database */
     db_uri: `${process.env.DB_SCHEME}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:5432/${process.env.DB_NAME}`,
