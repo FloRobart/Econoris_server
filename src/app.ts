@@ -30,14 +30,8 @@ app.use(helmet(helmetOptions));
 
 /* Trust proxy in production */
 if (AppConfig.app_env.includes('prod')) {
-    app.set('trust proxy', true);
+    app.set('trust proxy', 1);
 }
-
-/* Logger */
-app.use(async (req: Request, _res: Response, next: NextFunction) => {
-    logger.info(`Incoming request`, { ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress, method: req.method, url: req.url });
-    next();
-});
 
 /* Rate Limiter */
 app.use(limiter);
@@ -53,6 +47,8 @@ app.get("/favicon.ico", (_req, res) => {
     res.sendFile(path.join(process.cwd(), "public", "icons", "favicon.ico"));
 });
 
+/* Static public files */
+app.use(express.static(path.join(process.cwd(), "public")));
 
 /* Swagger setup for API documentation in development environment */
 if (AppConfig.app_env.includes('dev')) {
@@ -63,17 +59,28 @@ if (AppConfig.app_env.includes('dev')) {
         swaggerDefinition: {
             openapi: '3.0.0',
             info: {
-                title: AppConfig.app_env,
+                title: AppConfig.app_name,
                 version: packageJson.version,
-                description: `${AppConfig.app_env} documentation`,
+                description: `${AppConfig.app_name} documentation`,
             },
         },
-        apis: [`${__dirname}/modules/**/*.ts`, `${__dirname}/modules/**/*.js`],
+        apis: [
+            `${__dirname}/modules/**/*.ts`,
+            `${__dirname}/modules/**/*.js`,
+            `${__dirname}/swagger/**/*.ts`,
+            `${__dirname}/swagger/**/*.js`,
+        ],
+    };
+
+    const swaggerUiOptions = {
+        explorer: false,
+        swaggerOptions: {
+            deepLinking: false,
+        },
     };
 
     const swaggerDocs = swaggerJsDoc(swaggerOptions);
-    app.use('/api-docs', morgan(config.log));
-    app.get('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    app.use('/api-docs', morgan(AppConfig.log_format), swaggerUi.serve, swaggerUi.setup(swaggerDocs, swaggerUiOptions));
     app.get('/api-docs.json', (_req, res) => {
         res.setHeader('Content-Type', 'application/json');
         res.send(swaggerDocs);
@@ -84,9 +91,15 @@ if (AppConfig.app_env.includes('dev')) {
 /* Authentication Middleware */
 app.use(authorizationValidator);
 
+
 /* Logger */
-morgan.token("remote-user", (req: Request) => { return req.body.user.email || "Unknown User" });
+morgan.token("remote-user", (req: Request) => {
+    const bodyUserEmail = (req as any)?.body?.user?.email;
+    const reqUserEmail = (req as any)?.user?.email;
+    return bodyUserEmail || reqUserEmail || "Unknown User";
+});
 app.use(morgan(AppConfig.log_format));
+
 
 /* Operations routes */
 app.use('/operations', operationsRoutes);

@@ -35,3 +35,14 @@
  *           type: string
  *           example: "Internal server error"
  */
+
+/* Sécuity Schemes */
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */

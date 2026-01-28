@@ -1,7 +1,7 @@
 import { Router } from "express";
 import * as SubscriptionsController from "./subscriptions.controller";
 import { bodyValidator } from "../../core/middlewares/validators/body_validator.middleware";
-import { SubscriptionsIdDeleteSchema, SubscriptionsIdUpdateSchema, SubscriptionsInsertSchema } from "./subscriptions.schema";
+import { SubscriptionsIdDeleteSchema, SubscriptionsIdUpdateSchema, SubscriptionsInsertSchema, SubscriptionsUpdateSchema } from "./subscriptions.schema";
 import { paramsQueryValidator } from "../../core/middlewares/validators/params_query_validator.middleware";
 
 
@@ -21,13 +21,8 @@ const router = Router();
  *       - Subscriptions
  *     summary: Retrieve a list of subscriptions of the authenticated user
  *     description: Retrieve a list of subscriptions associated with the authenticated user.
- *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of subscriptions
@@ -66,19 +61,14 @@ router.get('/', SubscriptionsController.selectSubscriptions);
  *       - Subscriptions
  *     summary: Create a new subscription for the authenticated user
  *     description: Create a new subscription associated with the authenticated user.
- *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
- *       - in: body
- *         name: subscription
- *         required: true
- *         description: Subscription object that needs to be added
- *         schema:
- *           $ref: '#/components/schemas/SubscriptionsInsert'
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SubscriptionsInsert'
  *     responses:
  *       201:
  *         description: Created subscription
@@ -119,25 +109,21 @@ router.post('/', bodyValidator(SubscriptionsInsertSchema), SubscriptionsControll
  *       - Subscriptions
  *     summary: Update an existing subscription for the authenticated user
  *     description: Update an existing subscription associated with the authenticated user.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
  *           example: 1
- *       - in: body
- *         name: subscription
- *         required: true
- *         description: Subscription object that needs to be updated
- *         schema:
- *           $ref: '#/components/schemas/SubscriptionsUpdate'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SubscriptionsUpdate'
  *     responses:
  *       200:
  *         description: Updated subscription
@@ -164,7 +150,7 @@ router.post('/', bodyValidator(SubscriptionsInsertSchema), SubscriptionsControll
  *             schema:
  *               $ref: '#/components/schemas/error500'
  */
-router.put('/:id', paramsQueryValidator(SubscriptionsIdUpdateSchema), bodyValidator(SubscriptionsInsertSchema), SubscriptionsController.updateSubscriptions);
+router.put('/:id', paramsQueryValidator(SubscriptionsIdUpdateSchema), bodyValidator(SubscriptionsUpdateSchema), SubscriptionsController.updateSubscriptions);
 
 
 /*========*/
@@ -178,13 +164,9 @@ router.put('/:id', paramsQueryValidator(SubscriptionsIdUpdateSchema), bodyValida
  *       - Subscriptions
  *     summary: Delete an existing subscription for the authenticated user
  *     description: Delete an existing subscription associated with the authenticated user.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
  *       - in: path
  *         name: id
  *         required: true

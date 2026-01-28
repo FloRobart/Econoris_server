@@ -21,13 +21,8 @@ const router = Router();
  *       - Operations
  *     summary: Retrieve a list of operations of the authenticated user
  *     description: Retrieve a list of operations associated with the authenticated user.
- *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of operations
@@ -66,19 +61,14 @@ router.get('/', OperationsController.selectOperations);
  *       - Operations
  *     summary: Create a new operation for the authenticated user
  *     description: Create a new operation associated with the authenticated user.
- *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
- *       - in: body
- *         name: operation
- *         required: true
- *         description: Operation object that needs to be added
- *         schema:
- *           $ref: '#/components/schemas/OperationsInsert'
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/OperationsInsert'
  *     responses:
  *       201:
  *         description: Created operation
@@ -119,25 +109,21 @@ router.post('/', bodyValidator(OperationsInsertSchema), OperationsController.ins
  *       - Operations
  *     summary: Update an existing operation for the authenticated user
  *     description: Update an existing operation associated with the authenticated user.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: integer
  *           example: 1
- *       - in: body
- *         name: operation
- *         required: true
- *         description: Operation object that needs to be updated
- *         schema:
- *           $ref: '#/components/schemas/OperationsUpdate'
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/OperationsUpdate'
  *     responses:
  *       200:
  *         description: Updated operation
@@ -178,13 +164,9 @@ router.put('/:id', paramsQueryValidator(OperationsIdUpdateSchema), bodyValidator
  *       - Operations
  *     summary: Delete an existing operation for the authenticated user
  *     description: Delete an existing operation associated with the authenticated user.
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
- *       - in: headers
- *         name: Authorization
- *         required: true
- *         schema:
- *           type: string
- *           example: "Bearer <token>"
  *       - in: path
  *         name: id
  *         required: true
