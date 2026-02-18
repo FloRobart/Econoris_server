@@ -10,8 +10,8 @@ export const SubscriptionsSchema = z.object({
     label: z.string().min(1).max(255),
     amount: z.number(),
     category: z.string().min(1).max(255),
-    source: z.string().max(255).nullable(),
-    destination: z.string().max(255).nullable(),
+    source: z.string().max(255).nullable().default(null),
+    destination: z.string().max(255).nullable().default(null),
     costs: z.number().default(0.0),
     active: z.boolean().default(true),
 
