@@ -43,6 +43,8 @@ export const SubscriptionsInsertSchema = SubscriptionsSchema.extend({
 }).omit({
     id: true,
 
+    last_generated_at: true,
+
     created_at: true,
     updated_at: true,
 });
