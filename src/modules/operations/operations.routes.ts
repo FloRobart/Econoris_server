@@ -103,7 +103,7 @@ router.post('/', bodyValidator(OperationsInsertSchema), OperationsController.ins
 /*========*/
 /**
  * @swagger
- * /operations:
+ * /operations/{id}:
  *   put:
  *     tags:
  *       - Operations
@@ -158,7 +158,7 @@ router.put('/:id', paramsQueryValidator(OperationsIdUpdateSchema), bodyValidator
 /*========*/
 /**
  * @swagger
- * /operations:
+ * /operations/{id}:
  *   delete:
  *     tags:
  *       - Operations
