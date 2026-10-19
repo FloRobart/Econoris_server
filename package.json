@@ -17,7 +17,7 @@
     "url": "git+https://github.com/FloRobart/Econoris.git"
   },
   "author": "FloRobart",
-  "license": "GNU GPL-3.0",
+  "license": "GPL-3.0-only",
   "bugs": {
     "url": "https://github.com/FloRobart/Econoris/issues"
   },
